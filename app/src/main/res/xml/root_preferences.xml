@@ -1,0 +1,48 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="权限设置">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="float"
+            app:summary="悬浮窗显示的必要权限"
+            app:title="悬浮窗权限" />
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="accessibility"
+            app:summary="应用核心服务"
+            app:title="无障碍功能" />
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="read"
+            android:title="储存访问权限"
+            app:summary="用于获取[一点到校]登陆信息"/>
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="power"
+            app:title="忽略电池优化" />
+<!--        <SwitchPreferenceCompat-->
+<!--            app:defaultValue="false"-->
+<!--            app:key="hide"-->
+<!--            app:title="在最近任务列表隐藏" />-->
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="功能设置">
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="notice"
+            app:title="开启状态栏通知" />
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="vibrate"
+            app:title="开启悬浮窗时振动" />
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="token"
+            app:summary="需先在[一点到校]app内登陆"
+            app:title="获取[一点到校]登陆信息" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

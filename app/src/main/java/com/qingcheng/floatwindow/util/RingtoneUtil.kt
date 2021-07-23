@@ -21,6 +21,8 @@ object RingtoneUtil {
 
     fun stop() {
         mediaPlayer?.stop()
+        mediaPlayer?.release()
+        mediaPlayer=null
     }
 
     fun ring(context: Context, ms: Long) {

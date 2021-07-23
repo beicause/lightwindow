@@ -20,6 +20,7 @@ object VibratorUtil {
 
     fun cancel() {
         vibrator?.cancel()
+        vibrator=null
     }
 
     fun vibrate(context: Context, ms: Long) {

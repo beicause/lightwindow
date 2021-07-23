@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Configuration
 
 object ScreenDisplayUtil  {
-
         fun getWidth(context: Context):Int{
             return context.resources.displayMetrics.widthPixels
         }

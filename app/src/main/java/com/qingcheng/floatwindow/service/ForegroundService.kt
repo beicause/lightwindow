@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.app.*
 import android.content.Intent
 import android.os.IBinder
-import com.qingcheng.floatwindow.MainActivity
 import com.qingcheng.floatwindow.R
+import com.qingcheng.floatwindow.SettingsActivity
 
 class ForegroundService : Service() {
     private val noticeId = 1
@@ -38,7 +38,7 @@ class ForegroundService : Service() {
                     PendingIntent.getActivity(
                         this,
                         0,
-                        Intent(this, MainActivity::class.java),
+                        Intent(this, SettingsActivity::class.java),
                         0
                     )
                 )

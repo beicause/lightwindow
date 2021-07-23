@@ -26,6 +26,7 @@ class SensorListener(context: Context) : SensorEventListener {
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+
     fun enable(type: Int) {
         manager.registerListener(
             this,

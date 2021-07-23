@@ -13,5 +13,7 @@
     <color name="light_blue_A400">#FF00B0FF</color>
     <color name="black_overlay">#66000000</color>
     <color name="holo_orange_light">#FFBB33</color>
+    <color name="anti_purple">#9DFF11</color>
     <color name="primary_blue">#007AFF</color>
+    <color name="transparent">#00000000</color>
 </resources>

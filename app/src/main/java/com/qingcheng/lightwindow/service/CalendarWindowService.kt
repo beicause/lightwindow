@@ -5,17 +5,17 @@ import android.content.Intent
 import android.os.IBinder
 import android.os.Process
 import androidx.room.Room
+import com.qingcheng.lightwindow.cache.CacheName
 import com.qingcheng.lightwindow.database.EventDataBase
 import com.qingcheng.lightwindow.util.FileUtil
 import com.qingcheng.lightwindow.util.NetworkRequestUtil
 import com.qingcheng.lightwindow.util.ScreenDisplayUtil
 import com.qingcheng.lightwindow.util.SharedPreferencesUtil
 import com.qingcheng.lightwindow.view.*
-import com.qingcheng.lightwindow.cache.CacheName
 import org.json.JSONObject
 
 /**
- * 日程表悬浮窗服务
+ * 创建日程表悬浮窗的服务
  * */
 class CalendarWindowService : Service() {
     companion object{

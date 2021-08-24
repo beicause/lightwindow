@@ -1,9 +1,13 @@
 package com.qingcheng.lightwindow.util
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.qingcheng.lightwindow.cache.SpName
 import org.json.JSONObject
-
+/**
+ * sp工具类
+ * @see SharedPreferences
+ * */
 object SharedPreferencesUtil {
     private val defaultName:String= SpName.SP_NAME_CACHE.name
 

@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.first
 import java.util.*
 
 /**
- * 核心服务，运行锁屏，传感器监听，设置并接收闹钟提醒，发送通知
+ * 日程表核心服务，运行锁屏，传感器监听，设置并接收闹钟提醒，发送通知
  * */
 class CoreService : Service() {
     companion object {

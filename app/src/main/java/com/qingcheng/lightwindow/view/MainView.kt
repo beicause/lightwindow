@@ -10,10 +10,12 @@ import android.view.View
 import android.webkit.*
 import android.widget.ImageView
 import com.qingcheng.lightwindow.R
+import com.qingcheng.lightwindow.cache.CacheName
 import com.qingcheng.lightwindow.service.CoreService
 import com.qingcheng.lightwindow.util.SharedPreferencesUtil
-import com.qingcheng.lightwindow.cache.CacheName
-
+/**
+ * 主界面悬浮窗类
+ * */
 @SuppressLint("SetJavaScriptEnabled")
 class MainView(context: Context) :
     BaseFloatWindow<View>(context, View.inflate(context, R.layout.main, null)) {

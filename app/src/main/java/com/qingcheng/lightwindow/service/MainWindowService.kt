@@ -4,16 +4,16 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.os.Process
+import com.qingcheng.lightwindow.cache.CacheName
 import com.qingcheng.lightwindow.util.FileUtil
 import com.qingcheng.lightwindow.util.NetworkRequestUtil
 import com.qingcheng.lightwindow.util.SharedPreferencesUtil
 import com.qingcheng.lightwindow.view.MainView
 import com.qingcheng.lightwindow.view.ViewManager
-import com.qingcheng.lightwindow.cache.CacheName
 import org.json.JSONObject
 
 /**
- * 主界面悬浮窗服务
+ * 创建主界面悬浮窗的服务
  * */
 class MainWindowService : Service() {
     override fun onBind(intent: Intent?): IBinder? {

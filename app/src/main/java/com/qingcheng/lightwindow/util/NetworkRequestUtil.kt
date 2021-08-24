@@ -4,6 +4,9 @@ import okhttp3.*
 import java.io.IOException
 
 object NetworkRequestUtil {
+    /**
+     * 获取服务器提供的网页版本号，用于和本地网页版本号进行比较，实现更新
+     * */
     inline fun getVersion(
         crossinline onFailure: () -> Unit,
         crossinline onResponse: (Response) -> Unit

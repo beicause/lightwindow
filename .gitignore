@@ -13,3 +13,5 @@
 .externalNativeBuild
 .cxx
 local.properties
+/lightwindow.jks
+/lightwindow_certificate.pem

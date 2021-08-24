@@ -12,8 +12,10 @@
     <color name="light_blue_A200">#FF40C4FF</color>
     <color name="light_blue_A400">#FF00B0FF</color>
     <color name="black_overlay">#66000000</color>
-    <color name="holo_orange_light">#FFBB33</color>
-    <color name="anti_purple">#9DFF11</color>
-    <color name="primary_blue">#007AFF</color>
+    <color name="holo_orange_light">#ffFFBB33</color>
+    <color name="anti_purple">#ff9DFF11</color>
+    <color name="primary_blue">#ff007AFF</color>
+    <color name="p_blue_light">#ff69a8ff</color>
+    <color name="p_blue_dark">#ff004fcb</color>
     <color name="transparent">#00000000</color>
 </resources>

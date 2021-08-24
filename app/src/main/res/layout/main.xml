@@ -4,32 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:cardBackgroundColor="@color/primary_blue"
-    app:cardCornerRadius="3dp"
+    app:cardCornerRadius="5dp"
     app:contentPadding="1dp">
 
     <WebView
-        android:id="@+id/wv_cld"
+        android:id="@+id/wv_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
     </WebView>
 
     <ImageView
-        android:id="@+id/iv_cld_close"
+        android:id="@+id/iv_main_close"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_gravity="top|end"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
-        android:gravity="center"
         android:src="@drawable/close" />
 
-    <ImageView
-        android:id="@+id/iv_zoom"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:src="@drawable/zoom" />
-
 </androidx.cardview.widget.CardView>
+

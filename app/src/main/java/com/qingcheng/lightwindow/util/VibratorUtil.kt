@@ -5,7 +5,9 @@ import android.content.Context
 import android.os.VibrationEffect
 import android.os.Vibrator
 import java.util.*
-
+/**
+ * 振动
+ * */
 object VibratorUtil {
     private var vibrator: Vibrator? = null
     /**

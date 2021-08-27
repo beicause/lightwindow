@@ -7,6 +7,9 @@ import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ComponentActivity
 
+/**
+ * 请求权限
+ * */
 object PermissionRequestUtil {
     /**
      * 判断悬浮窗权限

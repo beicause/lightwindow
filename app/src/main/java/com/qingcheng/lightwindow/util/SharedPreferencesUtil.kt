@@ -5,19 +5,25 @@ import android.content.SharedPreferences
 import com.qingcheng.lightwindow.cache.SpName
 import org.json.JSONObject
 /**
- * sp工具类
+ * SharedPreferences工具
  * @see SharedPreferences
  * */
 object SharedPreferencesUtil {
+    //默认的sp文件名
     private val defaultName:String= SpName.SP_NAME_CACHE.name
-
+    /**
+     * sharedPreference存入键值对
+     * @param context
+     * @param key 键
+     * @param value 值
+     * @param name 存入的sharedPreference文件名
+     * */
     fun put(context: Context, key: String, value: String,name:String=defaultName) {
         context.getSharedPreferences(name, Context.MODE_PRIVATE).edit().putString(key, value).apply()
     }
     fun put(context: Context, key: String, value: Int,name: String=defaultName) {
         context.getSharedPreferences(name, Context.MODE_PRIVATE).edit().putInt(key, value).apply()
     }
-
     fun put(context: Context, key: String, value: Boolean,name: String=defaultName) {
         context.getSharedPreferences(name, Context.MODE_PRIVATE).edit().putBoolean(key, value).apply()
     }

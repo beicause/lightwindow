@@ -2,7 +2,9 @@ package com.qingcheng.lightwindow.util
 
 import android.content.Context
 import android.content.res.Configuration
-
+/**
+ * 屏幕显示
+ * */
 object ScreenDisplayUtil {
     /**
      *@return 屏幕宽度

@@ -8,6 +8,9 @@ import android.view.View
 import android.view.WindowManager
 import com.qingcheng.lightwindow.util.ScreenDisplayUtil
 
+/**
+ * 可拖拽悬浮窗基类
+ * */
 @SuppressLint("ClickableViewAccessibility")
 open class  BaseDragView<T:View> (context: Context,view: T) :
     BaseFloatWindow<T>(context, view) {

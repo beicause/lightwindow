@@ -13,7 +13,7 @@ import com.qingcheng.lightwindow.util.PermissionRequestUtil
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (!PermissionRequestUtil.isOverlays(this) /*|| !MainAccessibilityService.isEnable*/)
+        if (!PermissionRequestUtil.isOverlays(this))
             PermissionRequestUtil.requestOverlaysPermissionDialog(this)
         else {
             if (!SensorListener.isAvailable(this, Sensor.TYPE_GRAVITY)) {

@@ -2,6 +2,9 @@ package com.qingcheng.lightwindow.util
 
 import java.io.File
 
+/**
+ * 文件操作
+ * */
 object FileUtil {
     /**
      * 删除文件或文件夹的所有文件

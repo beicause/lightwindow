@@ -4,7 +4,7 @@ import android.content.Context
 import kotlin.reflect.KClass
 
 /**
- * 悬浮窗管理类，特别注意：多进程下本类不能跨进程共享
+ * 悬浮窗管理类，方便实现单例模式，特别注意：多进程下本类不能跨进程共享
  * */
 object ViewManager {
     val allView = mutableMapOf<String, Any>()

@@ -21,6 +21,7 @@ class ZoomView(context: Context) :
             height = width
         }
         applyView {
+            //长按中心图标2秒恢复默认大小
             findViewById<ImageView>(R.id.iv_zoom_drag).setOnTouchListener { _, _ ->
                 val runnable = Runnable {
                     ViewManager.get(CalendarView::class).apply {
@@ -50,6 +51,7 @@ class ZoomView(context: Context) :
                 }
                 return@setOnTouchListener false
             }
+            //水平放大
             findViewById<ImageView>(R.id.iv_up_h).setOnTouchListener { _, _ ->
                 ViewManager.get(CalendarView::class).apply {
                     animator =
@@ -67,6 +69,7 @@ class ZoomView(context: Context) :
                 onActionMove = { animator.cancel() }
                 return@setOnTouchListener false
             }
+            //水平缩小
             findViewById<ImageView>(R.id.iv_down_h).setOnTouchListener { _, _ ->
                 ViewManager.get(CalendarView::class).apply {
                     animator = ValueAnimator.ofInt(view.height, 200f.toDip().toInt()).apply {
@@ -82,6 +85,7 @@ class ZoomView(context: Context) :
                 onActionMove = { animator.cancel() }
                 return@setOnTouchListener false
             }
+            //垂直放大
             findViewById<ImageView>(R.id.iv_up_v).setOnTouchListener { _, _ ->
                 ViewManager.get(CalendarView::class).apply {
                     animator =
@@ -98,7 +102,7 @@ class ZoomView(context: Context) :
                 onActionMove = { animator.cancel() }
                 return@setOnTouchListener false
             }
-
+            //垂直缩小
             findViewById<ImageView>(R.id.iv_down_v).setOnTouchListener { _, _ ->
                 ViewManager.get(CalendarView::class).apply {
                     animator = ValueAnimator.ofInt(view.width, 200f.toDip().toInt()).apply {

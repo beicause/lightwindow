@@ -1,2 +1,4 @@
 rootProject.name = "qingchengapp"
 include ':app'
+include ':calender'
+include ':baseutil'

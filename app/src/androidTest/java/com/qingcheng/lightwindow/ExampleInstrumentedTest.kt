@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.qingcheng.calender.database.Event
-import com.qingcheng.calender.database.EventDataBase
+import com.qingcheng.calendar.database.Event
+import com.qingcheng.calendar.database.EventDataBase
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first

@@ -11,7 +11,9 @@ Android系统，最低Android 8.0（API Level 26）
 
 ## 下载
 
-下载链接：请点击[这里](https://qingcheng.asia/app-release.apk)
+暂未创建发行版，您可以自行编译  
+
+[//]:下载链接：请点击[这里](https://qingcheng.asia/app-release.apk)
 
 ## 特性
 

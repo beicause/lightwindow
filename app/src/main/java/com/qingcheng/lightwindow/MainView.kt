@@ -8,11 +8,12 @@ import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.webkit.*
-import com.qingcheng.baseutil.cache.CacheName
-import com.qingcheng.baseutil.util.SharedPreferencesUtil
-import com.qingcheng.baseutil.view.BaseFloatWindow
-import com.qingcheng.calender.R
-import com.qingcheng.calender.service.CoreService
+import com.qingcheng.base.cache.CacheName
+import com.qingcheng.base.util.SharedPreferencesUtil
+import com.qingcheng.base.util.ToastUtil
+import com.qingcheng.base.view.BaseFloatWindow
+import com.qingcheng.calendar.R
+import com.qingcheng.calendar.service.CldCoreService
 
 /**
  * 主界面悬浮窗类
@@ -42,6 +43,18 @@ class MainView(context: Context) :
                                 it
                             )
                         }
+                    }
+
+                    override fun onReceivedError(
+                        view: WebView?,
+                        request: WebResourceRequest?,
+                        error: WebResourceError?
+                    ) {
+                        view?.destroy()
+                        this@MainView.view.visibility=View.GONE
+                        ToastUtil.showToast("网络异常，加载失败")
+                        handler.postDelayed({stopService()},1500)
+                        super.onReceivedError(view, request, error)
                     }
                 }
                 webChromeClient = object : WebChromeClient() {
@@ -93,12 +106,12 @@ class MainView(context: Context) :
 
         @JavascriptInterface
         fun startService() {
-            context.startForegroundService(Intent(context, CoreService::class.java))
+            context.startForegroundService(Intent(context, CldCoreService::class.java))
         }
 
         @JavascriptInterface
         fun stopService() {
-            context.stopService(Intent(context, CoreService::class.java))
+            context.stopService(Intent(context, CldCoreService::class.java))
         }
 
         @JavascriptInterface
@@ -106,7 +119,7 @@ class MainView(context: Context) :
             val manager = context.getSystemService(Service.ACTIVITY_SERVICE) as ActivityManager
             val list = manager.getRunningServices(10)
             for (s in list) {
-                if (s.service.className == CoreService::class.qualifiedName) return true
+                if (s.service.className == CldCoreService::class.qualifiedName) return true
             }
             return false
         }

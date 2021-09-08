@@ -3,7 +3,8 @@ package com.qingcheng.lightwindow
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.qingcheng.baseutil.util.PermissionRequestUtil
+import com.qingcheng.base.util.PermissionRequestUtil
+import com.qingcheng.base.util.ToastUtil
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -11,7 +12,8 @@ class MainActivity : AppCompatActivity() {
         if (!PermissionRequestUtil.isOverlays(this))
             PermissionRequestUtil.requestOverlaysPermissionDialog(this)
         else {
-//            startForegroundService(Intent(this, CoreService::class.java))
+            ToastUtil.context = this
+            ToastUtil.offsetBottom()
             startService(Intent(this, MainWindowService::class.java))
             finish()
         }

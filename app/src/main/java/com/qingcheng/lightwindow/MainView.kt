@@ -7,13 +7,19 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.view.View
-import android.webkit.*
+import android.webkit.JavascriptInterface
 import com.qingcheng.base.cache.CacheName
 import com.qingcheng.base.util.SharedPreferencesUtil
 import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.base.view.BaseFloatWindow
-import com.qingcheng.calendar.R
 import com.qingcheng.calendar.service.CldCoreService
+import com.tencent.smtt.export.external.interfaces.ConsoleMessage
+import com.tencent.smtt.export.external.interfaces.WebResourceError
+import com.tencent.smtt.export.external.interfaces.WebResourceRequest
+import com.tencent.smtt.sdk.WebChromeClient
+import com.tencent.smtt.sdk.WebSettings
+import com.tencent.smtt.sdk.WebView
+import com.tencent.smtt.sdk.WebViewClient
 
 /**
  * 主界面悬浮窗类
@@ -37,6 +43,7 @@ class MainView(context: Context) :
                     override fun onPageFinished(view: WebView?, url: String?) {
                         evaluateJavascript("javascript:getVersion()") {
                             Log.i("main版本", it)
+                            if (it == "null") throwError()
                             SharedPreferencesUtil.put(
                                 context,
                                 CacheName.CACHE_MAIN_VERSION.name,
@@ -50,10 +57,7 @@ class MainView(context: Context) :
                         request: WebResourceRequest?,
                         error: WebResourceError?
                     ) {
-                        view?.destroy()
-                        this@MainView.view.visibility=View.GONE
-                        ToastUtil.showToast("网络异常，加载失败")
-                        handler.postDelayed({stopService()},1500)
+                        throwError()
                         super.onReceivedError(view, request, error)
                     }
                 }
@@ -74,9 +78,16 @@ class MainView(context: Context) :
                         mapOf("close" to { post { this@MainView.zoomOut() } })
                     ), jsInterfaceName
                 )
-                loadUrl("https://qingcheng.asia/main/")
+                loadUrl("https://qingcheng.asia/#/guide/")
             }
         }
+    }
+
+    private fun throwError() {
+        view.findViewById<WebView>(R.id.wv_main).destroy()
+        this@MainView.view.visibility = View.GONE
+        ToastUtil.showToast("网络异常，加载失败")
+        view.handler.postDelayed({ stopService() }, 1500)
     }
 
     fun zoomIn() {
@@ -105,17 +116,17 @@ class MainView(context: Context) :
         }
 
         @JavascriptInterface
-        fun startService() {
+        fun startCldService() {
             context.startForegroundService(Intent(context, CldCoreService::class.java))
         }
 
         @JavascriptInterface
-        fun stopService() {
+        fun stopCldService() {
             context.stopService(Intent(context, CldCoreService::class.java))
         }
 
         @JavascriptInterface
-        fun isRunning(): Boolean {
+        fun isCldRunning(): Boolean {
             val manager = context.getSystemService(Service.ACTIVITY_SERVICE) as ActivityManager
             val list = manager.getRunningServices(10)
             for (s in list) {

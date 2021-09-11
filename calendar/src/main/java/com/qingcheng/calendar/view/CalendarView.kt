@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.view.View
-import android.webkit.*
+import android.webkit.JavascriptInterface
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
@@ -22,6 +22,13 @@ import com.qingcheng.calendar.database.getTime
 import com.qingcheng.calendar.database.getTimeString
 import com.qingcheng.calendar.service.AlarmManagerUtil
 import com.qingcheng.calendar.service.CalendarWindowService.Companion.dataBase
+import com.tencent.smtt.export.external.interfaces.ConsoleMessage
+import com.tencent.smtt.export.external.interfaces.WebResourceError
+import com.tencent.smtt.export.external.interfaces.WebResourceRequest
+import com.tencent.smtt.sdk.WebChromeClient
+import com.tencent.smtt.sdk.WebSettings
+import com.tencent.smtt.sdk.WebView
+import com.tencent.smtt.sdk.WebViewClient
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
 import org.json.JSONArray
@@ -37,7 +44,6 @@ class CalendarView(context: Context) :
     BaseFloatWindow<View>(context, View.inflate(context, R.layout.calendar, null)) {
     private val jsInterfaceName = "Android"
     var stopService = {}
-
     init {
         applyParams {
             width =
@@ -61,6 +67,7 @@ class CalendarView(context: Context) :
                     override fun onPageFinished(view: WebView?, url: String?) {
                         evaluateJavascript("javascript:getVersion()") {
                             Log.i("cld版本", it)
+                            if (it == "null") throwError()
                             SharedPreferencesUtil.put(
                                 context,
                                 CacheName.CACHE_CLD_VERSION.name,
@@ -73,10 +80,7 @@ class CalendarView(context: Context) :
                         request: WebResourceRequest?,
                         error: WebResourceError?
                     ) {
-                        view?.destroy()
-                        this@CalendarView.view.visibility=View.GONE
-                        ToastUtil.showToast("网络异常，加载失败")
-                        handler.postDelayed({stopService()},1500)
+                        throwError()
                         super.onReceivedError(view, request, error)
                     }
                 }
@@ -132,6 +136,13 @@ class CalendarView(context: Context) :
                 loadUrl("https://qingcheng.asia/cld/")
             }
         }
+    }
+
+    private fun throwError() {
+        view.findViewById<WebView>(R.id.wv_cld).destroy()
+        this@CalendarView.view.visibility = View.GONE
+        ToastUtil.showToast("网络异常，加载失败")
+        view.handler.postDelayed({ stopService() }, 1500)
     }
 
     fun rotateIn() {

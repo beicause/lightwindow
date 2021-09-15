@@ -22,6 +22,7 @@ import com.qingcheng.calendar.database.getTime
 import com.qingcheng.calendar.database.getTimeString
 import com.qingcheng.calendar.service.AlarmManagerUtil
 import com.qingcheng.calendar.service.CalendarWindowService.Companion.dataBase
+import com.qingcheng.calendar.util.csust.CsustRequest
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage
 import com.tencent.smtt.export.external.interfaces.WebResourceError
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest
@@ -44,6 +45,7 @@ class CalendarView(context: Context) :
     BaseFloatWindow<View>(context, View.inflate(context, R.layout.calendar, null)) {
     private val jsInterfaceName = "Android"
     var stopService = {}
+
     init {
         applyParams {
             width =
@@ -75,11 +77,13 @@ class CalendarView(context: Context) :
                             )
                         }
                     }
+
                     override fun onReceivedError(
                         view: WebView?,
                         request: WebResourceRequest?,
                         error: WebResourceError?
                     ) {
+                        Log.e("webview error", error?.description.toString())
                         throwError()
                         super.onReceivedError(view, request, error)
                     }
@@ -297,6 +301,14 @@ class CalendarView(context: Context) :
                     }
                 }
             }
+        }
+
+        @JavascriptInterface
+        fun requestCsustEvents(username: String, password: String): String {
+            val el: List<Event>
+            runBlocking { el = CsustRequest.getCsustEvents(username, password) }
+            Log.i("csust", el.toString())
+            return listToString(el)
         }
     }
 }

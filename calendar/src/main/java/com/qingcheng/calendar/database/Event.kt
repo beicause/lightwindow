@@ -1,7 +1,6 @@
 package com.qingcheng.calendar.database
 
 import androidx.room.Entity
-import org.json.JSONObject
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -14,7 +13,7 @@ import java.util.*
 )
 data class Event(
     val title: String = "",
-    val time: String = "12:00:00",
+    val time: String = "00:00:00",
     val detail: String = "",
     val day: String = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).format(Date()),
     val color: String = "#000000",
@@ -49,7 +48,7 @@ data class Event(
     /**
      * @return 是否是系统闹钟事件
      * */
-    fun isAlarmEvent():Boolean{
+    fun isAlarmEvent(): Boolean {
         return alarm.substring(0, 1) == "*"
     }
 
@@ -64,14 +63,14 @@ data class Event(
      * @return 事件对象的JSON格式
      * */
     override fun toString(): String {
-        return JSONObject().apply {
-            put("title", title)
-            put("time", time)
-            put("detail", detail)
-            put("day", day)
-            put("color", color)
-            put("alarm", alarm)
-        }.toString()
+        return """{
+            "title": "$title",
+            "time": "$time",
+            "detail": "$detail",
+            "day": "$day",
+            "color": "$color",
+            "alarm": "$alarm",
+        }""".trimIndent()
     }
 }
 

@@ -3,6 +3,8 @@
 ## 简介  
 
 轻程Android应用，是基于WindowManager和WebView构建的便捷多功能悬浮窗APP。  
+主界面项目[qc_app_main](https://gitee.com/beicause/qc_app_main)  
+日程表项目[qc_app_calendar](https://gitee.com/beicause/qc_app_calendar)
 
 ## 运行要求
 
@@ -33,6 +35,7 @@ Android系统，最低Android 8.0（API Level 26）
 - 在轻程APP上支持通知和闹钟提醒
 - 目前支持导入下列大学的教务课表：
   - 合肥工业大学
+  - 长沙理工大学
 
 ---
 >音乐谱  

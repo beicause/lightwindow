@@ -12,6 +12,8 @@ import com.qingcheng.base.util.NetworkRequestUtil
 import com.qingcheng.base.util.SharedPreferencesUtil
 import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.base.view.ViewManager
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 /**
@@ -23,21 +25,37 @@ class MainWindowService : Service() {
     }
 
     override fun onCreate() {
-        ToastUtil.context=this
+        ToastUtil.context = this
         ToastUtil.offsetBottom()
 
-        val version =
+        val localVersion =
             SharedPreferencesUtil.getString(this, CacheName.CACHE_MAIN_VERSION.name)
-        NetworkRequestUtil.getVersion({ runOnUI{ ToastUtil.showToast("网络异常") } }, { response ->
-            response.body?.string()?.let {
-                Log.i("获取版本",it)
+        MainScope().launch {
+            try {
+                NetworkRequestUtil.getVersion().body?.string()
+            } catch (e: Exception) {
+                runOnUI { ToastUtil.showToast("网络异常") }
+                null
+            }?.let {
+                Log.i("获取版本", it)
                 if (JSONObject(it).getString("version")
-                        .toInt() != (if (version == "null") 0 else version.toInt())
+                        .toInt() != (if (localVersion == "null") 0 else localVersion.toInt())
                 ) {
-                    FileUtil.deleteDir(this.cacheDir)
+                    FileUtil.deleteDir(this@MainWindowService.cacheDir)
                 }
             }
-        })
+
+        }
+//        NetworkRequestUtil.getVersion({ runOnUI{ ToastUtil.showToast("网络异常") } }, { response ->
+//            response.body?.string()?.let {
+//                Log.i("获取版本",it)
+//                if (JSONObject(it).getString("version")
+//                        .toInt() != (if (version == "null") 0 else version.toInt())
+//                ) {
+//                    FileUtil.deleteDir(this.cacheDir)
+//                }
+//            }
+//        })
         ViewManager.new(::MainView, this).apply {
             stopService = { stopSelf() }
             zoomIn()

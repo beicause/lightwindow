@@ -7,8 +7,6 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.room.Room
-import com.qingcheng.base.listener.ScreenStateReceiver
-import com.qingcheng.base.listener.SensorListener
 import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.base.util.VibratorUtil
 import com.qingcheng.calendar.R
@@ -16,6 +14,8 @@ import com.qingcheng.calendar.database.Event
 import com.qingcheng.calendar.database.EventDataBase
 import com.qingcheng.calendar.database.getTime
 import com.qingcheng.calendar.database.getTimeString
+import com.qingcheng.calendar.receiver.ScreenStateReceiver
+import com.qingcheng.calendar.receiver.SensorListener
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first

@@ -9,7 +9,6 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -55,7 +54,7 @@ object CsustRequest {
                     .post(FormBody.Builder().add("encoded", encoded).build())
                     .build()
             ).execute().let {
-                it.headers["Set-Cookie"] ?: throw IOException("cookie is null")
+                it.headers["Set-Cookie"] ?: throw NullPointerException("cookie is null")
             }
         }
     }
@@ -74,7 +73,7 @@ object CsustRequest {
                     .build()
             ).execute().body?.string()?.let { html ->
                 parseResponse(html, day)
-            } ?: throw IOException("schedule html is null")
+            } ?: throw NullPointerException("schedule html is null")
         }
     }
 

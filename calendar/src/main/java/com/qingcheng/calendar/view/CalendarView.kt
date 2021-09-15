@@ -23,6 +23,7 @@ import com.qingcheng.calendar.database.getTimeString
 import com.qingcheng.calendar.service.AlarmManagerUtil
 import com.qingcheng.calendar.service.CalendarWindowService.Companion.dataBase
 import com.qingcheng.calendar.util.csust.CsustRequest
+import com.qingcheng.calendar.util.gnnu.GnnuRequest
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage
 import com.tencent.smtt.export.external.interfaces.WebResourceError
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest
@@ -308,6 +309,14 @@ class CalendarView(context: Context) :
             val el: List<Event>
             runBlocking { el = CsustRequest.getCsustEvents(username, password) }
             Log.i("csust", el.toString())
+            return listToString(el)
+        }
+
+        @JavascriptInterface
+        fun requestGnnuEvents(username: String, password: String): String {
+            val el: List<Event>
+            runBlocking { el = GnnuRequest.getGnnuSchedule(username, password) }
+            Log.i("gnnu", el.toString())
             return listToString(el)
         }
     }

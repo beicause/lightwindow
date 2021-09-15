@@ -1,28 +1,32 @@
 package com.qingcheng.calendar.util.gnnu
 
+import com.qingcheng.calendar.database.Event
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.io.IOException
+import org.json.JSONObject
+import org.jsoup.Jsoup
 import java.math.BigInteger
 import java.security.KeyFactory
 import java.security.spec.RSAPublicKeySpec
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.crypto.Cipher
 
 object GnnuRequest {
 
-    suspend fun getGnnuSchedule(username: String, password: String) {
+    suspend fun getGnnuSchedule(username: String, password: String): List<Event> {
         val cookie = login(username, password)
         val calendar = Calendar.getInstance()
         val xqm = if (calendar.get(Calendar.MONTH) >= 8) 3 else 12
-        val res = withContext(Dispatchers.IO) {
+        val json = withContext(Dispatchers.IO) {
             val client = OkHttpClient()
             client.newCall(
                 Request.Builder()
                     .url("http://jwgl.gnnu.cn/jwglxt/kbcx/xskbcx_cxXsKb.html?gnmkdm=N2151&su=$username")
+                    .addHeader("Cookie", cookie)
                     .post(
                         FormBody.Builder()
                             .add("xqm", "" + xqm)
@@ -31,9 +35,68 @@ object GnnuRequest {
                             .build()
                     )
                     .build()
-            ).execute()
+            ).execute().body?.string() ?: throw NullPointerException("schedule json is null")
         }
-        println(res.body?.string())
+        return parseJson(json, getTermDate(username, cookie))
+    }
+
+    private fun parseJson(s: String, start: Date): List<Event> {
+        val kbList = JSONObject(s).getJSONArray("kbList")
+        val list = mutableListOf<Event>()
+        for (i in 0 until kbList.length()) {
+            val k = kbList.getJSONObject(i)
+            val title = k.getString("kcmc")
+            val detail = k.getString("cdmc")
+            val xqj = k.getInt("xqj")
+            val time = when (k.getString("jc").split("-")[0]) {
+                "1" -> "08:20"
+                "2" -> "09:10"
+                "3" -> "10:15"
+                "4" -> "11:05"
+                "5" -> "14:00"
+                "6" -> "14:50"
+                "7" -> "15:55"
+                "8" -> "16:45"
+                "9" -> "19:10"
+                "10" -> "20:00"
+                "11" -> "20:50"
+                else -> throw Exception("course time error")
+            } + ":00"
+
+            val startWeek: Int
+            val endWeek: Int
+            k.getString("zcd").split("-").let {
+                startWeek = it[0].toInt()
+                endWeek = it[1].substring(0, it[1].length - 1).toInt()
+            }
+            val calendar = Calendar.getInstance()
+            for (w in startWeek..endWeek) {
+                calendar.time = start
+                calendar.set(Calendar.DAY_OF_WEEK, if (xqj == 7) 0 else xqj)
+                calendar.add(Calendar.WEEK_OF_YEAR, w - 1)
+                val day = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).format(calendar.time)
+                list.add(Event(title, time, detail, day))
+            }
+        }
+        return list
+    }
+
+    private suspend fun getTermDate(username: String, cookie: String): Date {
+        return withContext(Dispatchers.IO) {
+            val client = OkHttpClient()
+            val html = client.newCall(
+                Request.Builder()
+                    .url("http://jwgl.gnnu.cn/jwglxt/xtgl/index_cxAreaFive.html?localeKey=zh_CN&gnmkdm=index&su=$username")
+                    .addHeader("Cookie", cookie)
+                    .post(FormBody.Builder().build())
+                    .build()
+            ).execute().body?.string() ?: throw NullPointerException("term date is null")
+            val elements = Jsoup.parse(html)
+                .getElementsContainingText("" + Calendar.getInstance().get(Calendar.YEAR))
+            SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).parse(
+                elements[0].text().split("(")[1].split("至")[0]
+            ) ?: throw NullPointerException("date parse error")
+        }
     }
 
     private suspend fun login(username: String, password: String): String {
@@ -73,7 +136,8 @@ object GnnuRequest {
                     .get()
                     .build()
             ).execute().let {
-                val arr = it.body?.string()?.split("\"") ?: throw IOException("public key is null")
+                val arr = it.body?.string()?.split("\"")
+                    ?: throw NullPointerException("public key is null")
                 val m = arr[3]
                 val e = arr[7]
                 val cs = it.headers.values("Set-Cookie")

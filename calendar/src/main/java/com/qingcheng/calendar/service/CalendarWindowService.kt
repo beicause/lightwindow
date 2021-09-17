@@ -51,7 +51,6 @@ class CalendarWindowService : Service() {
             }
         }
 
-        ViewManager.new(::ZoomView, this)
         ViewManager.new(::CalendarView, this@CalendarWindowService).apply {
             applyParams {
                 if (ScreenUtil.isLandscape(this@CalendarWindowService)) {
@@ -67,7 +66,7 @@ class CalendarWindowService : Service() {
 
     override fun onDestroy() {
         dataBase?.close()
-        ViewManager.destroy(ZoomView::class, CalendarView::class)
+        ViewManager.destroy(CalendarView::class)
         Process.killProcess(Process.myPid())
     }
 }

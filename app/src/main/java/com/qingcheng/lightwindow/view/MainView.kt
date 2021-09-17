@@ -1,4 +1,4 @@
-package com.qingcheng.lightwindow
+package com.qingcheng.lightwindow.view
 
 import android.annotation.SuppressLint
 import android.app.ActivityManager
@@ -9,10 +9,13 @@ import android.util.Log
 import android.view.View
 import android.webkit.JavascriptInterface
 import com.qingcheng.base.cache.CacheName
+import com.qingcheng.base.util.ScreenUtil
 import com.qingcheng.base.util.SharedPreferencesUtil
 import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.base.view.BaseFloatWindow
+import com.qingcheng.base.view.ViewManager
 import com.qingcheng.calendar.service.CldCoreService
+import com.qingcheng.lightwindow.R
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage
 import com.tencent.smtt.export.external.interfaces.WebResourceError
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest
@@ -32,8 +35,17 @@ class MainView(context: Context) :
 
     init {
         applyParams {
-            width = 350f.toIntDip()
-            height = 620f.toIntDip()
+            width =
+                if (SharedPreferencesUtil.getInt(
+                        context,
+                        CacheName.CACHE_MAIN_WIDTH.name
+                    ) == 0
+                ) 350.toIntDip()
+                else SharedPreferencesUtil.getInt(context, CacheName.CACHE_MAIN_WIDTH.name)
+            height =
+                if (SharedPreferencesUtil.getInt(context, CacheName.CACHE_MAIN_HEIGHT.name) == 0)
+                    620.toIntDip()
+                else SharedPreferencesUtil.getInt(context, CacheName.CACHE_MAIN_HEIGHT.name)
         }
         applyView {
             findViewById<WebView>(R.id.wv_main).apply {
@@ -72,10 +84,28 @@ class MainView(context: Context) :
                         return super.onConsoleMessage(consoleMessage)
                     }
                 }
+                val zoom: () -> Unit = {
+                    post {
+                        ViewManager.new(::ZoomView, context).apply {
+                            addToWindow()
+                            view.visibility = View.VISIBLE
+                            setPosition(0, 0)
+                            view.post {
+                                moveTo(
+                                    toX = (ScreenUtil.getWidth(context) - view.width) / 2,
+                                    toY = (ScreenUtil.getHeight(context) - view.height) / 2
+                                )
+                            }
+                        }
+                    }
+                }
                 addJavascriptInterface(
                     JsInterface(
                         context,
-                        mapOf("close" to { post { this@MainView.zoomOut() } })
+                        mapOf(
+                            "close" to { post { this@MainView.zoomOut() } },
+                            "zoom" to zoom
+                        )
                     ), jsInterfaceName
                 )
                 loadUrl("https://qingcheng.asia/#/guide/")
@@ -116,7 +146,13 @@ class MainView(context: Context) :
         }
 
         @JavascriptInterface
+        fun showZoom() {
+            other?.get("zoom")?.invoke()
+        }
+
+        @JavascriptInterface
         fun startCldService() {
+            showZoom()
             context.startForegroundService(Intent(context, CldCoreService::class.java))
         }
 

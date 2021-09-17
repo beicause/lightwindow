@@ -15,7 +15,6 @@ import com.qingcheng.base.util.ScreenUtil
 import com.qingcheng.base.util.SharedPreferencesUtil
 import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.base.view.BaseFloatWindow
-import com.qingcheng.base.view.ViewManager
 import com.qingcheng.calendar.R
 import com.qingcheng.calendar.database.Event
 import com.qingcheng.calendar.database.getTime
@@ -104,21 +103,6 @@ class CalendarView(context: Context) :
                     }
                 }
 
-                val zoom: () -> Unit = {
-                    post {
-                        ViewManager.new(::ZoomView, context).apply {
-                            addToWindow()
-                            view.visibility = View.VISIBLE
-                            setPosition(0, 0)
-                            view.post {
-                                moveTo(
-                                    toX = (ScreenUtil.getWidth(context) - view.width) / 2,
-                                    toY = (ScreenUtil.getHeight(context) - view.height) / 2
-                                )
-                            }
-                        }
-                    }
-                }
                 webChromeClient = object : WebChromeClient() {
                     override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
                         consoleMessage?.apply {
@@ -133,8 +117,7 @@ class CalendarView(context: Context) :
                 addJavascriptInterface(
                     JsInterface(
                         context, mapOf(
-                            "close" to close,
-                            "zoom" to zoom
+                            "close" to close
                         )
                     ), jsInterfaceName
                 )
@@ -219,11 +202,6 @@ class CalendarView(context: Context) :
         @JavascriptInterface
         fun close() {
             other?.get("close")?.invoke()
-        }
-
-        @JavascriptInterface
-        fun showZoom() {
-            other?.get("zoom")?.invoke()
         }
 
         @JavascriptInterface

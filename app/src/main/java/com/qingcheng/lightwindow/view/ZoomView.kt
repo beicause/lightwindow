@@ -1,16 +1,17 @@
-package com.qingcheng.calendar.view
+package com.qingcheng.lightwindow.view
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
-import android.webkit.WebView
 import android.widget.ImageView
 import com.qingcheng.base.util.ScreenUtil
 import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.base.view.BaseDragView
 import com.qingcheng.base.view.ViewManager
-import com.qingcheng.calendar.R
+import com.qingcheng.lightwindow.R
+import com.tencent.smtt.sdk.WebView
+
 
 /**
  * 点击缩放后打开的悬浮窗，具有调整日程表大小的功能
@@ -29,7 +30,7 @@ class ZoomView(context: Context) :
             findViewById<ImageView>(R.id.iv_zoom_drag).setOnTouchListener { _, _ ->
                 ToastUtil.showToast("长按2秒可恢复默认大小")
                 val runnable = Runnable {
-                    ViewManager.get(CalendarView::class).apply {
+                    ViewManager.get(MainView::class)!!.apply {
                         applyParams {
                             width = 350f.toIntDip()
                             height = (350 / 0.618f).toIntDip()
@@ -45,7 +46,7 @@ class ZoomView(context: Context) :
                 handler.postDelayed(runnable, 2000)
                 onActionUp = {
                     handler.removeCallbacks(runnable)
-                    ViewManager.get(CalendarView::class)!!.view.findViewById<WebView>(R.id.wv_cld)
+                    ViewManager.get(MainView::class)!!.view.findViewById<WebView>(R.id.wv_main)
                         .evaluateJavascript(
                             "javascript:showZoom()", null
                         )
@@ -60,7 +61,7 @@ class ZoomView(context: Context) :
             }
             //水平放大
             findViewById<ImageView>(R.id.iv_up_h).setOnTouchListener { _, _ ->
-                ViewManager.get(CalendarView::class).apply {
+                ViewManager.get(MainView::class)!!.apply {
                     animator =
                         ValueAnimator.ofInt(view.height, ScreenUtil.getHeight(context))
                             .apply {
@@ -78,7 +79,7 @@ class ZoomView(context: Context) :
             }
             //水平缩小
             findViewById<ImageView>(R.id.iv_down_h).setOnTouchListener { _, _ ->
-                ViewManager.get(CalendarView::class).apply {
+                ViewManager.get(MainView::class)!!.apply {
                     animator = ValueAnimator.ofInt(view.height, 200f.toDip().toInt()).apply {
                         addUpdateListener {
                             applyParams { height = it.animatedValue as Int }
@@ -94,7 +95,7 @@ class ZoomView(context: Context) :
             }
             //垂直放大
             findViewById<ImageView>(R.id.iv_up_v).setOnTouchListener { _, _ ->
-                ViewManager.get(CalendarView::class).apply {
+                ViewManager.get(MainView::class)!!.apply {
                     animator =
                         ValueAnimator.ofInt(view.width, ScreenUtil.getWidth(context)).apply {
                             addUpdateListener {
@@ -111,7 +112,7 @@ class ZoomView(context: Context) :
             }
             //垂直缩小
             findViewById<ImageView>(R.id.iv_down_v).setOnTouchListener { _, _ ->
-                ViewManager.get(CalendarView::class).apply {
+                ViewManager.get(MainView::class)!!.apply {
                     animator = ValueAnimator.ofInt(view.width, 200f.toDip().toInt()).apply {
                         addUpdateListener {
                             applyParams { width = it.animatedValue as Int }

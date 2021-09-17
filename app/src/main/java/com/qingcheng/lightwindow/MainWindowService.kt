@@ -12,6 +12,7 @@ import com.qingcheng.base.util.NetworkRequestUtil
 import com.qingcheng.base.util.SharedPreferencesUtil
 import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.base.view.ViewManager
+import com.qingcheng.lightwindow.view.MainView
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject

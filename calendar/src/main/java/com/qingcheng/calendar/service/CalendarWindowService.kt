@@ -5,15 +5,11 @@ import android.content.Intent
 import android.os.IBinder
 import android.os.Process
 import androidx.room.Room
-import com.qingcheng.base.cache.CacheName
-import com.qingcheng.base.runOnUI
+import com.qingcheng.base.checkVersion
 import com.qingcheng.base.util.*
 import com.qingcheng.base.view.ViewManager
 import com.qingcheng.calendar.database.EventDataBase
 import com.qingcheng.calendar.view.*
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import org.json.JSONObject
 
 /**
  * 创建日程表悬浮窗的服务，运行于进程 :cld_window
@@ -34,22 +30,8 @@ class CalendarWindowService : Service() {
 
         dataBase = Room.databaseBuilder(applicationContext, EventDataBase::class.java, "events")
             .enableMultiInstanceInvalidation().build()
-        val localVersion =
-            SharedPreferencesUtil.getString(this, CacheName.CACHE_CLD_VERSION.name)
-        MainScope().launch {
-            try {
-                NetworkRequestUtil.getVersion().body?.string()
-            } catch (e: Exception) {
-                runOnUI { ToastUtil.showToast("网络异常") }
-                null
-            }?.let {
-                if (JSONObject(it).getString("version")
-                        .toInt() != (if (localVersion == "null") 0 else localVersion.toInt())
-                ) {
-                    FileUtil.deleteDir(this@CalendarWindowService.cacheDir)
-                }
-            }
-        }
+
+        checkVersion(this)
 
         ViewManager.new(::CalendarView, this@CalendarWindowService).apply {
             applyParams {

@@ -3,12 +3,14 @@ package com.qingcheng.lightwindow.view
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.Service
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.webkit.JavascriptInterface
 import com.qingcheng.base.cache.CacheName
+import com.qingcheng.base.runOnUI
 import com.qingcheng.base.util.ScreenUtil
 import com.qingcheng.base.util.SharedPreferencesUtil
 import com.qingcheng.base.util.ToastUtil
@@ -58,7 +60,7 @@ class MainView(context: Context) :
                             if (it == "null") throwError()
                             SharedPreferencesUtil.put(
                                 context,
-                                CacheName.CACHE_MAIN_VERSION.name,
+                                CacheName.CACHE_VERSION.name,
                                 it
                             )
                         }
@@ -108,7 +110,7 @@ class MainView(context: Context) :
                         )
                     ), jsInterfaceName
                 )
-                loadUrl("https://qingcheng.asia/#/guide/")
+                loadUrl("https://qingcheng.asia/guide/")
             }
         }
     }
@@ -116,7 +118,7 @@ class MainView(context: Context) :
     private fun throwError() {
         view.findViewById<WebView>(R.id.wv_main).destroy()
         this@MainView.view.visibility = View.GONE
-        ToastUtil.showToast("网络异常，加载失败")
+        ToastUtil.showToast("加载失败")
         view.handler.postDelayed({ stopService() }, 1500)
     }
 
@@ -152,8 +154,8 @@ class MainView(context: Context) :
 
         @JavascriptInterface
         fun startCldService() {
-            showZoom()
             context.startForegroundService(Intent(context, CldCoreService::class.java))
+            runOnUI { ToastUtil.showToast("日程表开始运行") }
         }
 
         @JavascriptInterface
@@ -169,6 +171,12 @@ class MainView(context: Context) :
                 if (s.service.className == CldCoreService::class.qualifiedName) return true
             }
             return false
+        }
+
+        @JavascriptInterface
+        fun getClipboardText(): String {
+            val manager = context.getSystemService(Service.CLIPBOARD_SERVICE) as ClipboardManager
+            return "" + manager.primaryClip?.getItemAt(0)?.text
         }
     }
 }

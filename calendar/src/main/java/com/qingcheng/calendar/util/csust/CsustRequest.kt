@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object CsustRequest {
-
+    private val dispatcher = Dispatchers.IO
     suspend fun getCsustEvents(username: String, password: String): List<Event> {
         val u = Base64.getEncoder().encodeToString(username.toByteArray())
         val p = Base64.getEncoder().encodeToString(password.toByteArray())
@@ -47,7 +47,7 @@ object CsustRequest {
     }
 
     private suspend fun getCookie(encoded: String, client: OkHttpClient): String {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             client.newCall(
                 Request.Builder()
                     .url("http://xk.csust.edu.cn/jsxsd/xk/LoginToXk")
@@ -64,7 +64,7 @@ object CsustRequest {
         day: String,
         client: OkHttpClient
     ): List<Event> {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             client.newCall(
                 Request.Builder()
                     .url("http://xk.csust.edu.cn/jsxsd/framework/main_index_loadkb.jsp?rq=$day")

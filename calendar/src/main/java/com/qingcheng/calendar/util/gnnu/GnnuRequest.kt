@@ -16,12 +16,12 @@ import java.util.*
 import javax.crypto.Cipher
 
 object GnnuRequest {
-
+    private val dispatcher = Dispatchers.IO
     suspend fun getGnnuSchedule(username: String, password: String): List<Event> {
         val cookie = login(username, password)
         val calendar = Calendar.getInstance()
         val xqm = if (calendar.get(Calendar.MONTH) >= 8) 3 else 12
-        val json = withContext(Dispatchers.IO) {
+        val json = withContext(dispatcher) {
             val client = OkHttpClient()
             client.newCall(
                 Request.Builder()
@@ -82,7 +82,7 @@ object GnnuRequest {
     }
 
     private suspend fun getTermDate(username: String, cookie: String): Date {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             val client = OkHttpClient()
             val html = client.newCall(
                 Request.Builder()
@@ -103,7 +103,7 @@ object GnnuRequest {
         val csrftoken = "e70b4137-6f70-425f-b9ce-ec7f4b572039,e70b41376f70425fb9ceec7f4b572039"
         val data = getPublicKey()
         val enPassword = encodePassword(data, password)
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             val client = OkHttpClient().newBuilder().followRedirects(false).build()
             client.newCall(
                 Request.Builder()
@@ -128,7 +128,7 @@ object GnnuRequest {
     data class PublicData(val modulus: String, val exponent: String, val cookie: String)
 
     private suspend fun getPublicKey(): PublicData {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             val client = OkHttpClient()
             client.newCall(
                 Request.Builder()

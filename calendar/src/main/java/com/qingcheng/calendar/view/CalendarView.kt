@@ -72,7 +72,7 @@ class CalendarView(context: Context) :
                             if (it == "null") throwError()
                             SharedPreferencesUtil.put(
                                 context,
-                                CacheName.CACHE_CLD_VERSION.name,
+                                CacheName.CACHE_VERSION.name,
                                 it
                             )
                         }
@@ -129,7 +129,7 @@ class CalendarView(context: Context) :
     private fun throwError() {
         view.findViewById<WebView>(R.id.wv_cld).destroy()
         this@CalendarView.view.visibility = View.GONE
-        ToastUtil.showToast("网络异常，加载失败")
+        ToastUtil.showToast("加载失败")
         view.handler.postDelayed({ stopService() }, 1500)
     }
 

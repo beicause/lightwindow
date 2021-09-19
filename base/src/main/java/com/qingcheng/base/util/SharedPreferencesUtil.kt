@@ -10,7 +10,7 @@ import org.json.JSONObject
  * */
 object SharedPreferencesUtil {
     //默认的sp文件名
-    private val defaultName:String= SpName.SP_NAME_CACHE.name
+    private val defaultName: String = SpName.CACHE.name
     /**
      * sharedPreference存入键值对
      * @param context
@@ -35,19 +35,20 @@ object SharedPreferencesUtil {
         return context.getSharedPreferences(name, Context.MODE_PRIVATE).getString(key, "null")!!
     }
 
-    fun getInt(context: Context, key: String,name: String=defaultName): Int {
+    fun getInt(context: Context, key: String, name: String = defaultName): Int {
         return context.getSharedPreferences(name, Context.MODE_PRIVATE).getInt(key, 0)
     }
 
-    fun getBoolean(context: Context, key: String,name: String=defaultName): Boolean {
+    fun getBoolean(context: Context, key: String, name: String = defaultName): Boolean {
         return context.getSharedPreferences(name, Context.MODE_PRIVATE).getBoolean(key, false)
     }
-    fun contains(context: Context,key: String,name: String=defaultName):Boolean{
-        return context.getSharedPreferences(name,Context.MODE_PRIVATE).contains(key)
+
+    fun contains(context: Context, key: String, name: String = defaultName): Boolean {
+        return context.getSharedPreferences(name, Context.MODE_PRIVATE).contains(key)
     }
 
-    fun getAllData(context: Context):String{
-        val cache=context.getSharedPreferences(SpName.SP_NAME_CACHE.name,Context.MODE_PRIVATE).all
-        return "{\"${SpName.SP_NAME_CACHE.name}\":${JSONObject(cache)}}"
+    fun getAllData(context: Context): String {
+        val cache = context.getSharedPreferences(SpName.CACHE.name, Context.MODE_PRIVATE).all
+        return "{\"${SpName.CACHE.name}\":${JSONObject(cache)}}"
     }
 }

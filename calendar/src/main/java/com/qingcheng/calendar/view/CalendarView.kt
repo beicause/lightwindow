@@ -2,6 +2,7 @@ package com.qingcheng.calendar.view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.webkit.JavascriptInterface
@@ -9,8 +10,8 @@ import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
 import com.qingcheng.base.cache.CacheName
-import com.qingcheng.base.cache.CacheName.CACHE_MAIN_HEIGHT
-import com.qingcheng.base.cache.CacheName.CACHE_MAIN_WIDTH
+import com.qingcheng.base.cache.CacheName.MAIN_HEIGHT
+import com.qingcheng.base.cache.CacheName.MAIN_WIDTH
 import com.qingcheng.base.util.ScreenUtil
 import com.qingcheng.base.util.SharedPreferencesUtil
 import com.qingcheng.base.util.ToastUtil
@@ -20,6 +21,7 @@ import com.qingcheng.calendar.database.Event
 import com.qingcheng.calendar.database.getTime
 import com.qingcheng.calendar.database.getTimeString
 import com.qingcheng.calendar.service.AlarmManagerUtil
+import com.qingcheng.calendar.service.CalendarWindowService
 import com.qingcheng.calendar.service.CalendarWindowService.Companion.dataBase
 import com.qingcheng.calendar.util.csust.CsustRequest
 import com.qingcheng.calendar.util.gnnu.GnnuRequest
@@ -41,24 +43,23 @@ import kotlin.collections.ArrayList
  * 日程表悬浮窗类
  * */
 @SuppressLint("SetJavaScriptEnabled")
-class CalendarView(context: Context) :
+class CalendarView(private val context: Context) :
     BaseFloatWindow<View>(context, View.inflate(context, R.layout.calendar, null)) {
     private val jsInterfaceName = "Android"
-    var stopService = {}
 
     init {
         applyParams {
             width =
                 if (SharedPreferencesUtil.getInt(
                         context,
-                        CACHE_MAIN_WIDTH.name
+                        MAIN_WIDTH.name
                     ) == 0
                 ) 350.toIntDip()
-                else SharedPreferencesUtil.getInt(context, CACHE_MAIN_WIDTH.name)
+                else SharedPreferencesUtil.getInt(context, MAIN_WIDTH.name)
             height =
-                if (SharedPreferencesUtil.getInt(context, CACHE_MAIN_HEIGHT.name) == 0)
+                if (SharedPreferencesUtil.getInt(context, MAIN_HEIGHT.name) == 0)
                     620.toIntDip()
-                else SharedPreferencesUtil.getInt(context, CACHE_MAIN_HEIGHT.name)
+                else SharedPreferencesUtil.getInt(context, MAIN_HEIGHT.name)
         }
         applyView {
             findViewById<WebView>(R.id.wv_cld).apply {
@@ -72,7 +73,7 @@ class CalendarView(context: Context) :
                             if (it == "null") throwError()
                             SharedPreferencesUtil.put(
                                 context,
-                                CacheName.CACHE_VERSION.name,
+                                CacheName.WEB_VERSION.name,
                                 it
                             )
                         }
@@ -96,8 +97,8 @@ class CalendarView(context: Context) :
                                 width = height
                                 height = t
                             }
-                            SharedPreferencesUtil.put(context, CACHE_MAIN_WIDTH.name, width)
-                            SharedPreferencesUtil.put(context, CACHE_MAIN_HEIGHT.name, height)
+                            SharedPreferencesUtil.put(context, MAIN_WIDTH.name, width)
+                            SharedPreferencesUtil.put(context, MAIN_HEIGHT.name, height)
                         }
                         rotateOut()
                     }
@@ -130,7 +131,14 @@ class CalendarView(context: Context) :
         view.findViewById<WebView>(R.id.wv_cld).destroy()
         this@CalendarView.view.visibility = View.GONE
         ToastUtil.showToast("加载失败")
-        view.handler.postDelayed({ stopService() }, 1500)
+        view.handler.postDelayed({
+            context.stopService(
+                Intent(
+                    context,
+                    CalendarWindowService::class.java
+                )
+            )
+        }, 1500)
     }
 
     fun rotateIn() {
@@ -154,7 +162,7 @@ class CalendarView(context: Context) :
                     visibility = View.INVISIBLE
                     this@CalendarView.removeFromWindow()
                     view.findViewById<WebView>(R.id.wv_cld).destroy()
-                    this@CalendarView.stopService()
+                    context.stopService(Intent(context, CalendarWindowService::class.java))
                 }
             }
         }

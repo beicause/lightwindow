@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.IBinder
 import android.os.Process
 import androidx.room.Room
-import com.qingcheng.base.checkVersion
 import com.qingcheng.base.util.*
+import com.qingcheng.base.util.VersionUtil.checkVersionUpdate
 import com.qingcheng.base.view.ViewManager
 import com.qingcheng.calendar.database.EventDataBase
 import com.qingcheng.calendar.view.*
@@ -20,6 +20,7 @@ class CalendarWindowService : Service() {
         var dataBase: EventDataBase? = null
     }
 
+    private lateinit var viewManager: ViewManager
     override fun onBind(intent: Intent): IBinder? {
         return null
     }
@@ -27,13 +28,13 @@ class CalendarWindowService : Service() {
     override fun onCreate() {
         ToastUtil.context = this
         ToastUtil.offsetBottom()
-
+        viewManager = ViewManager(this)
         dataBase = Room.databaseBuilder(applicationContext, EventDataBase::class.java, "events")
             .enableMultiInstanceInvalidation().build()
 
-        checkVersion(this)
+        checkVersionUpdate(this)
 
-        ViewManager.new(::CalendarView, this@CalendarWindowService).apply {
+        viewManager.new<CalendarView>(CalendarView(this)).apply {
             applyParams {
                 if (ScreenUtil.isLandscape(this@CalendarWindowService)) {
                     val t = width
@@ -42,13 +43,12 @@ class CalendarWindowService : Service() {
                 }
             }
             rotateIn()
-            stopService = { stopSelf() }
         }
     }
 
     override fun onDestroy() {
         dataBase?.close()
-        ViewManager.destroy(CalendarView::class)
+        viewManager.destroy(CalendarView::class)
         Process.killProcess(Process.myPid())
     }
 }

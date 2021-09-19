@@ -10,13 +10,15 @@ import android.util.Log
 import android.view.View
 import android.webkit.JavascriptInterface
 import com.qingcheng.base.cache.CacheName
-import com.qingcheng.base.runOnUI
+import com.qingcheng.base.service.VersionUpdateService
 import com.qingcheng.base.util.ScreenUtil
 import com.qingcheng.base.util.SharedPreferencesUtil
 import com.qingcheng.base.util.ToastUtil
+import com.qingcheng.base.util.runOnUI
 import com.qingcheng.base.view.BaseFloatWindow
 import com.qingcheng.base.view.ViewManager
 import com.qingcheng.calendar.service.CldCoreService
+import com.qingcheng.lightwindow.MainWindowService
 import com.qingcheng.lightwindow.R
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage
 import com.tencent.smtt.export.external.interfaces.WebResourceError
@@ -30,9 +32,8 @@ import com.tencent.smtt.sdk.WebViewClient
  * 主界面悬浮窗类
  * */
 @SuppressLint("SetJavaScriptEnabled")
-class MainView(context: Context) :
+class MainView(private val context: Context, viewManager: ViewManager) :
     BaseFloatWindow<View>(context, View.inflate(context, R.layout.main, null)) {
-    var stopService = {}
     private val jsInterfaceName = "Android"
 
     init {
@@ -40,14 +41,14 @@ class MainView(context: Context) :
             width =
                 if (SharedPreferencesUtil.getInt(
                         context,
-                        CacheName.CACHE_MAIN_WIDTH.name
+                        CacheName.MAIN_WIDTH.name
                     ) == 0
                 ) 350.toIntDip()
-                else SharedPreferencesUtil.getInt(context, CacheName.CACHE_MAIN_WIDTH.name)
+                else SharedPreferencesUtil.getInt(context, CacheName.MAIN_WIDTH.name)
             height =
-                if (SharedPreferencesUtil.getInt(context, CacheName.CACHE_MAIN_HEIGHT.name) == 0)
+                if (SharedPreferencesUtil.getInt(context, CacheName.MAIN_HEIGHT.name) == 0)
                     620.toIntDip()
-                else SharedPreferencesUtil.getInt(context, CacheName.CACHE_MAIN_HEIGHT.name)
+                else SharedPreferencesUtil.getInt(context, CacheName.MAIN_HEIGHT.name)
         }
         applyView {
             findViewById<WebView>(R.id.wv_main).apply {
@@ -60,7 +61,7 @@ class MainView(context: Context) :
                             if (it == "null") throwError()
                             SharedPreferencesUtil.put(
                                 context,
-                                CacheName.CACHE_VERSION.name,
+                                CacheName.WEB_VERSION.name,
                                 it
                             )
                         }
@@ -88,7 +89,7 @@ class MainView(context: Context) :
                 }
                 val zoom: () -> Unit = {
                     post {
-                        ViewManager.new(::ZoomView, context).apply {
+                        viewManager.new<ZoomView>(ZoomView(context, viewManager)).apply {
                             addToWindow()
                             view.visibility = View.VISIBLE
                             setPosition(0, 0)
@@ -119,7 +120,14 @@ class MainView(context: Context) :
         view.findViewById<WebView>(R.id.wv_main).destroy()
         this@MainView.view.visibility = View.GONE
         ToastUtil.showToast("加载失败")
-        view.handler.postDelayed({ stopService() }, 1500)
+        view.handler.postDelayed({
+            context.stopService(
+                Intent(
+                    context,
+                    MainWindowService::class.java
+                )
+            )
+        }, 1500)
     }
 
     fun zoomIn() {
@@ -134,7 +142,7 @@ class MainView(context: Context) :
             view.visibility = View.GONE
             view.findViewById<WebView>(R.id.wv_main).destroy()
             removeFromWindow()
-            stopService()
+            context.stopService(Intent(context, MainWindowService::class.java))
         }
     }
 
@@ -177,6 +185,11 @@ class MainView(context: Context) :
         fun getClipboardText(): String {
             val manager = context.getSystemService(Service.CLIPBOARD_SERVICE) as ClipboardManager
             return "" + manager.primaryClip?.getItemAt(0)?.text
+        }
+
+        @JavascriptInterface
+        fun startVersionService() {
+            context.stopService(Intent(context, VersionUpdateService::class.java))
         }
     }
 }

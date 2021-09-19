@@ -10,7 +10,7 @@ import android.util.Log
 import android.view.View
 import android.webkit.JavascriptInterface
 import com.qingcheng.base.cache.CacheName
-import com.qingcheng.base.service.VersionUpdateService
+import com.qingcheng.base.service.VersionService
 import com.qingcheng.base.util.ScreenUtil
 import com.qingcheng.base.util.SharedPreferencesUtil
 import com.qingcheng.base.util.ToastUtil
@@ -189,7 +189,7 @@ class MainView(private val context: Context, viewManager: ViewManager) :
 
         @JavascriptInterface
         fun startVersionService() {
-            context.stopService(Intent(context, VersionUpdateService::class.java))
+            context.stopService(Intent(context, VersionService::class.java))
         }
     }
 }

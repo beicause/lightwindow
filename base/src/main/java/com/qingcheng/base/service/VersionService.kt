@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.io.File
 
-class VersionUpdateService : Service() {
+class VersionService : Service() {
 
     private val apkUrl = "https://qingcheng.asia/app-release.apk"
 
@@ -40,8 +40,8 @@ class VersionUpdateService : Service() {
                 val json = JSONObject(responseBody)
                 val appVersion = json.getString("app_version")
                 val forceUpdate = json.getBoolean("force_update")
-                val message = json.getString("message")
-                viewManager.new<DialogView>(DialogView(this@VersionUpdateService)).apply {
+                val message = json.getString("version_info")
+                viewManager.new<DialogView>(DialogView(this@VersionService)).apply {
                     maskClickAble = false
                     title = "发现新版本"
                     content = message
@@ -49,11 +49,11 @@ class VersionUpdateService : Service() {
                     cancelText = if (!forceUpdate) "忽略" else ""
                     confirmClick = {
                         zoomOut()
-                        downloadApp(this@VersionUpdateService, appVersion)
+                        downloadApp(this@VersionService, appVersion)
                     }
                     cancelClick = {
                         if (!forceUpdate) SharedPreferencesUtil.put(
-                            this@VersionUpdateService,
+                            this@VersionService,
                             CacheName.IGNORE_VERSION.name,
                             appVersion
                         )

@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.qingcheng.base.cache.CacheName
-import com.qingcheng.base.service.VersionUpdateService
+import com.qingcheng.base.service.VersionService
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
@@ -35,7 +35,7 @@ object VersionUtil {
                             CacheName.IGNORE_VERSION.name
                         ) != appVersion
                     )
-                        context.startService(Intent(context, VersionUpdateService::class.java))
+                        context.startService(Intent(context, VersionService::class.java))
             }
         }
     }

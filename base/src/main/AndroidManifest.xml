@@ -18,7 +18,7 @@
 
     <application>
         <service
-            android:name=".service.VersionUpdateService"
+            android:name=".service.VersionService"
             android:enabled="true"
             android:exported="false"></service>
         <service

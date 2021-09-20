@@ -1,5 +1,6 @@
 package com.qingcheng.calendar
 
+import com.qingcheng.calendar.util.gnnu.GnnuRequest
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
@@ -11,8 +12,11 @@ import org.junit.Test
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        runBlocking {
-        }
+
     }
+}
+
+fun main() {
+    runBlocking { GnnuRequest.getGnnuSchedule("", "") }
 }
 

@@ -70,7 +70,7 @@ class CalendarView(private val context: Context) :
                     override fun onPageFinished(view: WebView?, url: String?) {
                         evaluateJavascript("javascript:getVersion()") {
                             Log.i("cld版本", it)
-                            if (it == "null") throwError()
+                            if (it == "null") throwError("页面异常")
                             SharedPreferencesUtil.put(
                                 context,
                                 CacheName.WEB_VERSION.name,
@@ -84,8 +84,7 @@ class CalendarView(private val context: Context) :
                         request: WebResourceRequest?,
                         error: WebResourceError?
                     ) {
-                        Log.e("webview error", error?.description.toString())
-                        throwError()
+                        throwError(error?.description.toString())
                         super.onReceivedError(view, request, error)
                     }
                 }
@@ -122,15 +121,15 @@ class CalendarView(private val context: Context) :
                         )
                     ), jsInterfaceName
                 )
-                loadUrl("https://qingcheng.asia/cld/")
+                loadUrl("https://qingcheng.asia/cld")
             }
         }
     }
 
-    private fun throwError() {
+    private fun throwError(message: String = "") {
         view.findViewById<WebView>(R.id.wv_cld).destroy()
         this@CalendarView.view.visibility = View.GONE
-        ToastUtil.showToast("加载失败")
+        ToastUtil.showToast("加载失败：$message")
         view.handler.postDelayed({
             context.stopService(
                 Intent(
@@ -300,10 +299,12 @@ class CalendarView(private val context: Context) :
 
         @JavascriptInterface
         fun requestGnnuEvents(username: String, password: String): String {
-            val el: List<Event>
-            runBlocking { el = GnnuRequest.getGnnuSchedule(username, password) }
+            var el: List<Event>? = null
+            runBlocking {
+                el = GnnuRequest.getGnnuSchedule(username, password)
+            }
             Log.i("gnnu", el.toString())
-            return listToString(el)
+            return listToString(el!!)
         }
     }
 }

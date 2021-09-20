@@ -1,12 +1,9 @@
 package com.qingcheng.base.util
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
-fun runOnUI(block: () -> Unit) {
-    MainScope().launch { withContext(Dispatchers.Main) { block() } }
+fun runOnUI(block: suspend CoroutineScope.() -> Unit) {
+    MainScope().launch { withContext(Dispatchers.Main) { this.block() } }
 }
 
 //fun killAllProcess(context: Context){

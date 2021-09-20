@@ -6,10 +6,11 @@ import android.os.IBinder
 import android.os.Process
 import androidx.room.Room
 import com.qingcheng.base.util.*
-import com.qingcheng.base.util.VersionUtil.checkVersionUpdate
 import com.qingcheng.base.view.ViewManager
 import com.qingcheng.calendar.database.EventDataBase
 import com.qingcheng.calendar.view.*
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 /**
  * 创建日程表悬浮窗的服务，运行于进程 :cld_window
@@ -32,8 +33,9 @@ class CalendarWindowService : Service() {
         dataBase = Room.databaseBuilder(applicationContext, EventDataBase::class.java, "events")
             .enableMultiInstanceInvalidation().build()
 
-        checkVersionUpdate(this)
-
+        MainScope().launch {
+            VersionUtil.checkAndShowUpdate(this@CalendarWindowService)
+        }
         viewManager.new<CalendarView>(CalendarView(this)).apply {
             applyParams {
                 if (ScreenUtil.isLandscape(this@CalendarWindowService)) {

@@ -7,6 +7,7 @@ import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
+
 import org.jsoup.Jsoup
 import java.math.BigInteger
 import java.security.KeyFactory
@@ -19,10 +20,11 @@ object GnnuRequest {
     private val dispatcher = Dispatchers.IO
     suspend fun getGnnuSchedule(username: String, password: String): List<Event> {
         val cookie = login(username, password)
+        println(cookie)
         val calendar = Calendar.getInstance()
         val xqm = if (calendar.get(Calendar.MONTH) >= 8) 3 else 12
         val json = withContext(dispatcher) {
-            val client = OkHttpClient()
+            val client = OkHttpClient().newBuilder().followRedirects(false).build()
             client.newCall(
                 Request.Builder()
                     .url("http://jwgl.gnnu.cn/jwglxt/kbcx/xskbcx_cxXsKb.html?gnmkdm=N2151&su=$username")
@@ -37,6 +39,7 @@ object GnnuRequest {
                     .build()
             ).execute().body?.string() ?: throw NullPointerException("schedule json is null")
         }
+        println(json)
         return parseJson(json, getTermDate(username, cookie))
     }
 
@@ -83,7 +86,7 @@ object GnnuRequest {
 
     private suspend fun getTermDate(username: String, cookie: String): Date {
         return withContext(dispatcher) {
-            val client = OkHttpClient()
+            val client = OkHttpClient().newBuilder().followRedirects(false).build()
             val html = client.newCall(
                 Request.Builder()
                     .url("http://jwgl.gnnu.cn/jwglxt/xtgl/index_cxAreaFive.html?localeKey=zh_CN&gnmkdm=index&su=$username")
@@ -93,16 +96,27 @@ object GnnuRequest {
             ).execute().body?.string() ?: throw NullPointerException("term date is null")
             val elements = Jsoup.parse(html)
                 .getElementsContainingText("" + Calendar.getInstance().get(Calendar.YEAR))
+            val date = elements[0].text().split("(")
             SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).parse(
-                elements[0].text().split("(")[1].split("至")[0]
+                date[1].split("至")[0]
             ) ?: throw NullPointerException("date parse error")
         }
     }
 
     private suspend fun login(username: String, password: String): String {
         val csrftoken = "e70b4137-6f70-425f-b9ce-ec7f4b572039,e70b41376f70425fb9ceec7f4b572039"
+        println("---------GET-KEY-----------")
         val data = getPublicKey()
+        println(data.modulus)
+        println(data.exponent)
+        println(data.cookie)
+        println("----------------------")
         val enPassword = encodePassword(data, password)
+        println("----------START LOGIN---------------")
+        println(data.cookie)
+        println(username)
+        println(enPassword)
+        println("----------------------")
         return withContext(dispatcher) {
             val client = OkHttpClient().newBuilder().followRedirects(false).build()
             client.newCall(
@@ -119,8 +133,12 @@ object GnnuRequest {
                             .build()
                     )
                     .build()
-            ).execute().let {
-                it.headers["Set-Cookie"]!!.split(";")[0] + ";" + data.cookie.split(";")[1]
+            ).execute().let { response ->
+                val setCookies = response.headers.values("Set-Cookie")
+                println(setCookies)
+                val cookie = setCookies.filter { !it.matches(Regex("""rememberMe(.*)""")) }
+                if (cookie.size != 1) throw java.lang.Exception("账号或密码错误")
+                cookie[0].split(";")[0] + ";" + data.cookie.split(";")[1]
             }
         }
     }
@@ -129,7 +147,7 @@ object GnnuRequest {
 
     private suspend fun getPublicKey(): PublicData {
         return withContext(dispatcher) {
-            val client = OkHttpClient()
+            val client = OkHttpClient().newBuilder().followRedirects(false).build()
             client.newCall(
                 Request.Builder()
                     .url("http://jwgl.gnnu.cn/jwglxt/xtgl/login_getPublicKey.html?time=${Date().time}&_=${Date().time}")
@@ -142,9 +160,6 @@ object GnnuRequest {
                 val e = arr[7]
                 val cs = it.headers.values("Set-Cookie")
                 val c = cs[0].split(";")[0] + "; " + cs[1].split(";")[0]
-                println(m)
-                println(e)
-                println(c)
                 PublicData(m, e, c)
             }
         }
@@ -152,7 +167,7 @@ object GnnuRequest {
 
 
     private fun encodePassword(data: PublicData, password: String): String {
-        val cipher = Cipher.getInstance("RSA")
+        val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
         cipher.init(
             Cipher.ENCRYPT_MODE, KeyFactory.getInstance("RSA")
                 .generatePublic(
@@ -162,9 +177,7 @@ object GnnuRequest {
                     )
                 )
         )
-        val enPassword = Base64.getEncoder().encodeToString(cipher.doFinal(password.toByteArray()))
-        println(enPassword)
-        return enPassword
+        return Base64.getEncoder().encodeToString(cipher.doFinal(password.toByteArray()))
     }
 
 //    private fun ByteArray.toHexString():String{

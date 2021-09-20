@@ -3,40 +3,57 @@ package com.qingcheng.base.util
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import com.qingcheng.base.cache.CacheName
 import com.qingcheng.base.service.VersionService
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 object VersionUtil {
-    fun checkVersionUpdate(context: Context) {
+    suspend fun checkVersion(context: Context): String {
+        var isAppUpdate = false
+        var isWebUpdate = false
         val localWebVersion =
             SharedPreferencesUtil.getString(context, CacheName.WEB_VERSION.name)
         val localAppVersion =
-            "" + context.packageManager.getPackageInfo(context.packageName, 0).let {
+            context.packageManager.getPackageInfo(context.packageName, 0).let {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) it.longVersionCode else it.versionCode
-            }
-        MainScope().launch {
-            try {
-                NetworkRequestUtil.getVersion().body?.string()
-            } catch (e: Exception) {
-                runOnUI { ToastUtil.showToast("网络异常") }
-                null
-            }?.let {
-                val json = JSONObject(it)
-                val webVersion = json.getString("web_version")
-                val appVersion = json.getString("app_version")
-                if (webVersion != localWebVersion)
-                    FileUtil.deleteDir(context.cacheDir)
-                if (appVersion != localAppVersion)
-                    if (SharedPreferencesUtil.getString(
-                            context,
-                            CacheName.IGNORE_VERSION.name
-                        ) != appVersion
-                    )
-                        context.startService(Intent(context, VersionService::class.java))
-            }
+            }.toString()
+
+        var json: JSONObject? = null
+        try {
+            val res = NetworkRequestUtil.getVersion().body?.string()
+            json = if (res != null) JSONObject(res) else null
+            json ?: throw NullPointerException("version json is null")
+        } catch (e: Exception) {
+            runOnUI { ToastUtil.showToast("网络异常") }
+            null
+        }?.let {
+            val webVersion = it.getString("web_version")
+            val appVersion = it.getString("app_version")
+            if (webVersion != localWebVersion)
+                isWebUpdate = true
+            if (appVersion != localAppVersion)
+                isAppUpdate = true
         }
+        Log.i("检查更新", json.toString())
+        return json!!.apply {
+            put("is_app_update", isAppUpdate)
+            put("is_web_update", isWebUpdate)
+            put("local_web_version", localWebVersion)
+            put("local_app_version", localAppVersion)
+        }.toString()
+    }
+
+    suspend fun checkAndShowUpdate(context: Context) {
+        val versions = JSONObject(checkVersion(context))
+        if (versions.getBoolean("is_app_update"))
+            if (SharedPreferencesUtil.getString(
+                    context,
+                    CacheName.IGNORE_VERSION.name
+                ) != versions.getString("app_version")
+            )
+                context.startService(Intent(context, VersionService::class.java))
+        if (versions.getBoolean("is_web_update"))
+            FileUtil.deleteDir(context.cacheDir)
     }
 }

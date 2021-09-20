@@ -11,10 +11,7 @@ import android.view.View
 import android.webkit.JavascriptInterface
 import com.qingcheng.base.cache.CacheName
 import com.qingcheng.base.service.VersionService
-import com.qingcheng.base.util.ScreenUtil
-import com.qingcheng.base.util.SharedPreferencesUtil
-import com.qingcheng.base.util.ToastUtil
-import com.qingcheng.base.util.runOnUI
+import com.qingcheng.base.util.*
 import com.qingcheng.base.view.BaseFloatWindow
 import com.qingcheng.base.view.ViewManager
 import com.qingcheng.calendar.service.CldCoreService
@@ -27,6 +24,7 @@ import com.tencent.smtt.sdk.WebChromeClient
 import com.tencent.smtt.sdk.WebSettings
 import com.tencent.smtt.sdk.WebView
 import com.tencent.smtt.sdk.WebViewClient
+import kotlinx.coroutines.runBlocking
 
 /**
  * 主界面悬浮窗类
@@ -58,7 +56,7 @@ class MainView(private val context: Context, viewManager: ViewManager) :
                     override fun onPageFinished(view: WebView?, url: String?) {
                         evaluateJavascript("javascript:getVersion()") {
                             Log.i("main版本", it)
-                            if (it == "null") throwError()
+                            if (it == "null") throwError("页面异常")
                             SharedPreferencesUtil.put(
                                 context,
                                 CacheName.WEB_VERSION.name,
@@ -72,7 +70,7 @@ class MainView(private val context: Context, viewManager: ViewManager) :
                         request: WebResourceRequest?,
                         error: WebResourceError?
                     ) {
-                        throwError()
+                        throwError(error?.description.toString())
                         super.onReceivedError(view, request, error)
                     }
                 }
@@ -111,15 +109,15 @@ class MainView(private val context: Context, viewManager: ViewManager) :
                         )
                     ), jsInterfaceName
                 )
-                loadUrl("https://qingcheng.asia/guide/")
+                loadUrl("https://qingcheng.asia/main")
             }
         }
     }
 
-    private fun throwError() {
+    private fun throwError(message: String = "") {
         view.findViewById<WebView>(R.id.wv_main).destroy()
         this@MainView.view.visibility = View.GONE
-        ToastUtil.showToast("加载失败")
+        ToastUtil.showToast("加载失败：$message")
         view.handler.postDelayed({
             context.stopService(
                 Intent(
@@ -188,8 +186,22 @@ class MainView(private val context: Context, viewManager: ViewManager) :
         }
 
         @JavascriptInterface
-        fun startVersionService() {
-            context.stopService(Intent(context, VersionService::class.java))
-        }
+        fun checkVersion(): String = runBlocking { VersionUtil.checkVersion(context) }
+
+        @JavascriptInterface
+        fun showVersionUpdate() = context.startService(Intent(context, VersionService::class.java))
+
+//        @JavascriptInterface
+//        fun getAndroidInfo(): String {
+//            val info = JSONObject()
+//            val androidId =
+//                Settings.Secure.getLong(context.contentResolver, Settings.Secure.ANDROID_ID)
+//            val appVersion = context.packageManager.getPackageInfo(context.packageName, 0).let {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) it.longVersionCode else it.versionCode
+//            }.toString()
+//            return info.apply {
+//                put("android_id", androidId.toString())
+//            }.toString()
+//        }
     }
 }

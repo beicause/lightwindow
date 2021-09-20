@@ -8,6 +8,8 @@ import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.base.util.VersionUtil
 import com.qingcheng.base.view.ViewManager
 import com.qingcheng.lightwindow.view.MainView
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 /**
  * 创建主界面悬浮窗的服务，运行于进程 :main_window
@@ -21,8 +23,9 @@ class MainWindowService : Service() {
         ToastUtil.context = this
         ToastUtil.offsetBottom()
         viewManager = ViewManager(this)
-        VersionUtil.checkVersionUpdate(this)
-
+        MainScope().launch {
+            VersionUtil.checkAndShowUpdate(this@MainWindowService)
+        }
         viewManager.new<MainView>(MainView(this, viewManager)).apply {
             zoomIn()
         }

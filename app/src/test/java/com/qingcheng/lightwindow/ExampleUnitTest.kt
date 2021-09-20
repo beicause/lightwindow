@@ -17,16 +17,16 @@ class ExampleUnitTest {
 //        .url("https://smile.huii.top/user/login")
 //        .post(
 //            FormBody.Builder()
-//            .add("username","2020218149")
-//            .add("password","Lzh20011205")
+//            .add("username","")
+//            .add("password","")
 //            .build()
 //        )
 //        .build()).execute().body?.string()
 //    print(res)
-        val m= mapOf("l" to "x","s" to "s")
-        val s= JSONObject(m)
+        val m = mapOf("l" to "x", "s" to "s")
+        val s = JSONObject(m)
         print(s)
-       // print(JSONArray(listOf(A("aaa","aa"),A("aaa","aa"))).toString())
+        // print(JSONArray(listOf(A("aaa","aa"),A("aaa","aa"))).toString())
 
     }
 }

@@ -7,6 +7,9 @@ import android.graphics.PixelFormat
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
+import androidx.dynamicanimation.animation.DynamicAnimation
+import androidx.dynamicanimation.animation.SpringAnimation
+import androidx.dynamicanimation.animation.SpringForce
 import com.qingcheng.base.util.ScreenUtil
 
 /**
@@ -108,6 +111,47 @@ open class BaseFloatWindow<T : View>(private val context: Context, val view: T) 
         if (!isAddToWindow) manager.addView(view, params)
         isAddToWindow = true
         callback()
+    }
+
+    fun zoomIn() {
+        view.scaleX = 0f
+        view.scaleY = 0f
+        addToWindow()
+        view.animate().scaleX(1f).scaleY(1f).start()
+    }
+
+    fun zoomOut(onEnded: () -> Unit = {}) {
+        view.animate().scaleX(0f).scaleY(0f).withEndAction {
+            view.visibility = View.GONE
+            removeFromWindow()
+            onEnded()
+        }
+    }
+
+    fun rotateIn() {
+        applyView {
+            visibility = View.VISIBLE
+            rotationY = 90f
+            addToWindow()
+            SpringAnimation(this, DynamicAnimation.ROTATION_Y, 0f).apply {
+                spring.stiffness = SpringForce.STIFFNESS_LOW
+                start()
+            }
+        }
+    }
+
+    fun rotateOut(onEnded: () -> Unit = {}) {
+        applyView {
+            SpringAnimation(this, DynamicAnimation.ROTATION_Y, 90f).apply {
+                spring.dampingRatio = SpringForce.DAMPING_RATIO_NO_BOUNCY
+                start()
+                addEndListener { _, _, _, _ ->
+                    visibility = View.INVISIBLE
+                    removeFromWindow()
+                    onEnded()
+                }
+            }
+        }
     }
 
     fun setPosition(x: Int, y: Int) {

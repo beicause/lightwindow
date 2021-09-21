@@ -79,21 +79,4 @@ class DialogView(context: Context) :
         confirmClick = { zoomOut() }
         maskClickAble = true
     }
-
-    fun zoomIn() {
-        with(view.findViewById<ConstraintLayout>(R.id.cl_dialog)) {
-            scaleX = 0f
-            scaleY = 0f
-            addToWindow()
-            animate().scaleX(1f).scaleY(1f).start()
-        }
-    }
-
-    fun zoomOut() {
-        view.findViewById<ConstraintLayout>(R.id.cl_dialog).animate().scaleX(0f).scaleY(0f)
-            .withEndAction {
-                view.visibility = View.GONE
-                removeFromWindow()
-            }
-    }
 }

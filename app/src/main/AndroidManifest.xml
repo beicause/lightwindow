@@ -22,9 +22,9 @@
             </intent-filter>
         </activity>
         <service
-            android:name=".MainWindowService"
+            android:name=".WebViewService"
             android:enabled="true"
             android:exported="false"
-            android:process=":main_window" />
+            android:process=":webview_window" />
     </application>
 </manifest>

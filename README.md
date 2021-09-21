@@ -13,7 +13,7 @@ Android系统，最低Android 8.0（API Level 26）
 ## 下载
 
 暂未创建发行版，您可以自行编译。  
-网页预览 <https://qingcheng.asia/#/guide/>（部分功能不支持）
+网页预览 <https://qingcheng.asia/main>（部分功能不支持）
 
 [//]:下载链接：请点击[这里](https://qingcheng.asia/app-release.apk)
 
@@ -28,7 +28,7 @@ Android系统，最低Android 8.0（API Level 26）
 目前已实现以下功能：
 > 日程表：随时打开，编辑事件，导入课表，添加提醒。  
 项目仓库[qc_app_calendar](https://gitee.com/beicause/qc_app_calendar)，
-网页预览 <https://qingcheng.asia/cld/>（部分功能不支持）
+网页预览 <https://qingcheng.asia/cld>（部分功能不支持）
 
 - 以日，周，月为单位，日程一览无余
 - 快捷添加，编辑日程，打上标记
@@ -40,7 +40,7 @@ Android系统，最低Android 8.0（API Level 26）
 ---
 >音乐谱  
 项目仓库[qc_app_main](https://gitee.com/beicause/qc_app_main)，
-网页预览 <https://qingcheng.asia/#/music/>
+网页预览 <https://qingcheng.asia/music>
 
 ## 项目结构
 
@@ -53,7 +53,7 @@ Android系统，最低Android 8.0（API Level 26）
 | qc_app_main||
 | ----  | ----  |
 |/  | 主页 |
-|/guide | 功能和说明页面 |
+|/main | 功能和说明页面 |
 |/cld|日程表页面|
 |/music| 音乐谱页面|
 

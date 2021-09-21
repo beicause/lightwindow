@@ -7,8 +7,10 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.room.Room
+import com.qingcheng.base.util.ACTION_START_CALENDAR
 import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.base.util.VibratorUtil
+import com.qingcheng.base.util.webViewServiceName
 import com.qingcheng.calendar.R
 import com.qingcheng.calendar.database.Event
 import com.qingcheng.calendar.database.EventDataBase
@@ -24,7 +26,7 @@ import java.util.*
 /**
  * 日程表核心服务，运行锁屏，传感器监听，设置并接收闹钟提醒，发送通知
  * */
-class CldCoreService : Service() {
+class CalendarNoticeService : Service() {
     companion object {
         const val NOTICE_ACTION = "com.qingcheng.lightwindow.NOTICE_ACTION"
     }
@@ -72,7 +74,7 @@ class CldCoreService : Service() {
                                 val nextNoticeEvent = updateNoticeBuilder(it)
                                 updateAlarm(nextNoticeEvent)
                                 Log.i("提醒完毕，更新下次事件", nextNoticeEvent.toString())
-                                NotificationManagerCompat.from(this@CldCoreService).notify(
+                                NotificationManagerCompat.from(this@CalendarNoticeService).notify(
                                     mainNoticeId,
                                     mainNotificationBuilder.build()
                                 )
@@ -118,7 +120,7 @@ class CldCoreService : Service() {
                     val newNotice = mainNotificationBuilder.toString()
                     updateAlarm(nextNoticeEvent)
                     //通知有变化才更新
-                    if (newNotice != lastNotice) NotificationManagerCompat.from(this@CldCoreService)
+                    if (newNotice != lastNotice) NotificationManagerCompat.from(this@CalendarNoticeService)
                         .notify(mainNoticeId, mainNotificationBuilder.build())
                 }
             }
@@ -212,12 +214,12 @@ class CldCoreService : Service() {
         if (nextNoticeEvent == null) return
         //事件发生时刻都会有闹钟，用来更新通知内容
         AlarmManagerUtil.set(
-            this@CldCoreService,
+            this@CalendarNoticeService,
             nextNoticeEvent.getEventTime(),
         )
         //设置提前提醒闹钟
         AlarmManagerUtil.set(
-            this@CldCoreService,
+            this@CalendarNoticeService,
             nextNoticeEvent.getNoticeTime(),
         )
     }
@@ -251,12 +253,12 @@ class CldCoreService : Service() {
                 it?.let {
                     if (!km.isKeyguardLocked) {
                         if (it.values[2] < -8 && f) {
-                            VibratorUtil.vibrate(this@CldCoreService, 100)
+                            VibratorUtil.vibrate(this@CalendarNoticeService, 100)
                             startService(
-                                Intent(
-                                    this@CldCoreService,
-                                    CalendarWindowService::class.java
-                                )
+                                Intent().apply {
+                                    setClassName(this@CalendarNoticeService, webViewServiceName)
+                                    action = ACTION_START_CALENDAR
+                                }
                             )
                             f = false
                         } else if (it.values[2] > 1) f = true
@@ -271,7 +273,9 @@ class CldCoreService : Service() {
             }
             onScreenOff = {
                 SensorListener.disable()
-                stopService(Intent(this@CldCoreService, CalendarWindowService::class.java))
+                stopService(Intent().apply {
+                    setClassName(this@CalendarNoticeService, webViewServiceName)
+                })
             }
             enable()
         }

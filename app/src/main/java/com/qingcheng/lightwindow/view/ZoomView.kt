@@ -8,6 +8,7 @@ import android.widget.ImageView
 import com.qingcheng.base.util.ScreenUtil
 import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.base.view.BaseDragView
+import com.qingcheng.base.view.FloatWebView
 import com.qingcheng.base.view.ViewManager
 import com.qingcheng.lightwindow.R
 import com.tencent.smtt.sdk.WebView
@@ -30,7 +31,7 @@ class ZoomView(context: Context, viewManager: ViewManager) :
             findViewById<ImageView>(R.id.iv_zoom_drag).setOnTouchListener { _, _ ->
                 ToastUtil.showToast("长按2秒可恢复默认大小")
                 val runnable = Runnable {
-                    viewManager.get(MainView::class)!!.apply {
+                    viewManager.get(FloatWebView::class)!!.apply {
                         applyParams {
                             width = 350f.toIntDip()
                             height = (350 / 0.618f).toIntDip()
@@ -46,7 +47,7 @@ class ZoomView(context: Context, viewManager: ViewManager) :
                 handler.postDelayed(runnable, 2000)
                 onActionUp = {
                     handler.removeCallbacks(runnable)
-                    viewManager.get(MainView::class)!!.view.findViewById<WebView>(R.id.wv_main)
+                    viewManager.get(FloatWebView::class)!!.view.findViewById<WebView>(R.id.webview)
                         .evaluateJavascript(
                             "javascript:showZoom()", null
                         )
@@ -61,7 +62,7 @@ class ZoomView(context: Context, viewManager: ViewManager) :
             }
             //水平放大
             findViewById<ImageView>(R.id.iv_up_h).setOnTouchListener { _, _ ->
-                viewManager.get(MainView::class)!!.apply {
+                viewManager.get(FloatWebView::class)!!.apply {
                     animator =
                         ValueAnimator.ofInt(view.height, ScreenUtil.getHeight(context))
                             .apply {
@@ -79,7 +80,7 @@ class ZoomView(context: Context, viewManager: ViewManager) :
             }
             //水平缩小
             findViewById<ImageView>(R.id.iv_down_h).setOnTouchListener { _, _ ->
-                viewManager.get(MainView::class)!!.apply {
+                viewManager.get(FloatWebView::class)!!.apply {
                     animator = ValueAnimator.ofInt(view.height, 200f.toDip().toInt()).apply {
                         addUpdateListener {
                             applyParams { height = it.animatedValue as Int }
@@ -95,7 +96,7 @@ class ZoomView(context: Context, viewManager: ViewManager) :
             }
             //垂直放大
             findViewById<ImageView>(R.id.iv_up_v).setOnTouchListener { _, _ ->
-                viewManager.get(MainView::class)!!.apply {
+                viewManager.get(FloatWebView::class)!!.apply {
                     animator =
                         ValueAnimator.ofInt(view.width, ScreenUtil.getWidth(context)).apply {
                             addUpdateListener {
@@ -112,7 +113,7 @@ class ZoomView(context: Context, viewManager: ViewManager) :
             }
             //垂直缩小
             findViewById<ImageView>(R.id.iv_down_v).setOnTouchListener { _, _ ->
-                viewManager.get(MainView::class)!!.apply {
+                viewManager.get(FloatWebView::class)!!.apply {
                     animator = ValueAnimator.ofInt(view.width, 200f.toDip().toInt()).apply {
                         addUpdateListener {
                             applyParams { width = it.animatedValue as Int }

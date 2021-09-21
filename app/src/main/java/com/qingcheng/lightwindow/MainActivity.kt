@@ -3,6 +3,7 @@ package com.qingcheng.lightwindow
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.qingcheng.base.util.ACTION_START_MAIN
 import com.qingcheng.base.util.PermissionRequestUtil
 import com.qingcheng.base.util.ToastUtil
 import com.tencent.smtt.export.external.TbsCoreSettings
@@ -21,7 +22,9 @@ class MainActivity : AppCompatActivity() {
         else {
             ToastUtil.context = this
             ToastUtil.offsetBottom()
-            startService(Intent(this, MainWindowService::class.java))
+            startService(Intent(this, WebViewService::class.java).apply {
+                action = ACTION_START_MAIN
+            })
             finish()
         }
     }

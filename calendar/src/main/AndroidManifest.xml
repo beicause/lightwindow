@@ -20,14 +20,9 @@
         </receiver>
 
         <service
-            android:name="com.qingcheng.calendar.service.CldCoreService"
+            android:name="com.qingcheng.calendar.service.CalendarNoticeService"
             android:enabled="true"
             android:exported="false" />
-        <service
-            android:name="com.qingcheng.calendar.service.CalendarWindowService"
-            android:enabled="true"
-            android:exported="false"
-            android:process=":cld_window" />
 
     </application>
 </manifest>

@@ -8,7 +8,7 @@ import android.content.Intent
 import android.provider.AlarmClock
 import android.util.Log
 import com.qingcheng.calendar.database.getTimeString
-import com.qingcheng.calendar.service.CldCoreService.Companion.NOTICE_ACTION
+import com.qingcheng.calendar.service.CalendarNoticeService.Companion.NOTICE_ACTION
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -18,7 +18,7 @@ import kotlin.collections.ArrayList
 object AlarmManagerUtil {
     /**
      * 设置闹钟，以时间秒数为requestCode，发送Intent至CoreService
-     * @see CldCoreService.NOTICE_ACTION
+     * @see CalendarNoticeService.NOTICE_ACTION
      * @param context
      * @param triggerTime 闹钟触发的时间戳
      * */
@@ -27,7 +27,7 @@ object AlarmManagerUtil {
         manager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             triggerTime,
-            Intent(context, CldCoreService::class.java).apply {
+            Intent(context, CalendarNoticeService::class.java).apply {
                 action = NOTICE_ACTION
             }.let { intent ->
                 PendingIntent.getService(
@@ -49,11 +49,11 @@ object AlarmManagerUtil {
      * @param triggerTime 闹钟触发的时间戳
      * */
     fun cancel(context: Context, triggerTime: Long) {
-        val pi= Intent(context, CldCoreService::class.java).apply {
+        val pi = Intent(context, CalendarNoticeService::class.java).apply {
             action = NOTICE_ACTION
         }.let { i ->
             PendingIntent.getService(
-                context, (triggerTime/1000).toInt(), i, PendingIntent.FLAG_NO_CREATE
+                context, (triggerTime / 1000).toInt(), i, PendingIntent.FLAG_NO_CREATE
             )
         } ?: return//这里空判断一下，若取消的闹钟不存在，会导致空指针
         val manager = context.getSystemService(Service.ALARM_SERVICE) as AlarmManager
@@ -75,7 +75,7 @@ object AlarmManagerUtil {
             AlarmManager.RTC,
             triggerTime,
             AlarmManager.INTERVAL_DAY,
-            Intent(context, CldCoreService::class.java).apply {
+            Intent(context, CalendarNoticeService::class.java).apply {
                 action = NOTICE_ACTION
             }.let { intent ->
                 PendingIntent.getService(

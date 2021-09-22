@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         if (!PermissionRequestUtil.isOverlays(this))
             PermissionRequestUtil.requestOverlaysPermissionDialog(this)
         else {
-            ToastUtil.context = this
+            ToastUtil.context = this.applicationContext
             ToastUtil.offsetBottom()
             startService(Intent(this, WebViewService::class.java).apply {
                 action = ACTION_START_MAIN

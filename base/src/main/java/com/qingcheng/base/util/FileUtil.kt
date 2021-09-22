@@ -12,6 +12,7 @@ object FileUtil {
      * @param file 文件或文件夹
      * */
     fun deleteDir(file: File):Boolean {
+        Log.i("删除目录", file.path)
         if (!file.exists()) return false
         if (file.isFile) return file.delete()
         if (file.isDirectory) {
@@ -26,7 +27,6 @@ object FileUtil {
                 return res
             }
         }
-        Log.i("删除目录","")
         return false
     }
 //    fun getFilesSize(file: File):Long{

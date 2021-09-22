@@ -41,12 +41,16 @@ class FloatWebView(val context: Context, val service: Class<out Service>) :
         applyView {
             findViewById<WebView>(R.id.webview).apply {
                 settings.javaScriptEnabled = true
+                settings.domStorageEnabled = true
                 settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
                 webViewClient = object : WebViewClient() {
                     override fun onPageFinished(view: WebView?, url: String?) {
                         evaluateJavascript("javascript:getVersion()") {
                             Log.i("web版本", it)
-                            if (it == "null") throwError("页面异常")
+                            if (it == "null") {
+                                FileUtil.deleteDir(context.cacheDir)
+                                throwError("页面异常")
+                            }
                             SharedPreferencesUtil.put(
                                 context,
                                 CacheName.WEB_VERSION.name,
@@ -60,7 +64,7 @@ class FloatWebView(val context: Context, val service: Class<out Service>) :
                         request: WebResourceRequest?,
                         error: WebResourceError?
                     ) {
-                        throwError(error?.description.toString())
+                        throwError("检查网络并解除省流量限制")
                         super.onReceivedError(view, request, error)
                     }
                 }
@@ -82,7 +86,7 @@ class FloatWebView(val context: Context, val service: Class<out Service>) :
     private fun throwError(message: String = "") {
         view.findViewById<WebView>(R.id.webview).destroy()
         this@FloatWebView.view.visibility = View.GONE
-        ToastUtil.showToast("加载失败：$message")
+        ToastUtil.showToast(message, isLong = true)
         view.handler.postDelayed({
             context.stopService(
                 Intent(
@@ -90,6 +94,6 @@ class FloatWebView(val context: Context, val service: Class<out Service>) :
                     service
                 )
             )
-        }, 1500)
+        }, 3500)
     }
 }

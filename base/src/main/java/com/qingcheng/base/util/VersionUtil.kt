@@ -25,7 +25,7 @@ object VersionUtil {
             json = if (res != null) JSONObject(res) else null
             json ?: throw NullPointerException("version json is null")
         } catch (e: Exception) {
-            runOnUI { ToastUtil.showToast("网络异常") }
+            runOnUI { ToastUtil.showToast("检查网络并解除省流量限制") }
             null
         }?.let {
             val webVersion = it.getString("web_version")
@@ -35,17 +35,21 @@ object VersionUtil {
             if (appVersion != localAppVersion)
                 isAppUpdate = true
         }
-        Log.i("检查更新", json.toString())
-        return json!!.apply {
+        return json?.apply {
             put("is_app_update", isAppUpdate)
             put("is_web_update", isWebUpdate)
             put("local_web_version", localWebVersion)
             put("local_app_version", localAppVersion)
-        }.toString()
+        }.toString().also { Log.i("检查更新", it) }
     }
 
     suspend fun checkAndShowUpdate(context: Context) {
-        val versions = JSONObject(checkVersion(context))
+        val json = checkVersion(context)
+        if (json == "null") {
+            Log.e(this::class.simpleName, "version json is null")
+            return
+        }
+        val versions = JSONObject(json)
         if (versions.getBoolean("is_app_update"))
             if (SharedPreferencesUtil.getString(
                     context,

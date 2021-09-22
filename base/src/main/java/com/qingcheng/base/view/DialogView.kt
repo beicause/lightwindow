@@ -10,15 +10,11 @@ import com.qingcheng.base.util.SharedPreferencesUtil
 
 class DialogView(context: Context) :
     BaseFloatWindow<View>(context, View.inflate(context, R.layout.dialog_layout, null)) {
-    var maskClickAble = true
+    var maskClick = {}
         set(value) {
             field = value
-            if (value)
-                view.findViewById<ConstraintLayout>(R.id.cl_dialog_container)
-                    .setOnClickListener { zoomOut() }
-            else view.findViewById<ConstraintLayout>(R.id.cl_dialog_container)
-                .setOnClickListener(null)
-
+            view.findViewById<ConstraintLayout>(R.id.cl_dialog_container)
+                .setOnClickListener { value() }
         }
     var title = ""
         set(value) {
@@ -77,6 +73,25 @@ class DialogView(context: Context) :
         confirmText = "确定"
         cancelClick = { zoomOut() }
         confirmClick = { zoomOut() }
-        maskClickAble = true
+        maskClick = { zoomOut() }
+    }
+
+    override fun zoomIn() {
+        view.findViewById<ConstraintLayout>(R.id.cl_dialog).apply {
+            scaleX = 0f
+            scaleY = 0f
+            addToWindow()
+            animate().scaleX(1f).scaleY(1f).start()
+        }
+    }
+
+    override fun zoomOut(onEnded: () -> Unit) {
+        view.findViewById<ConstraintLayout>(R.id.cl_dialog).apply {
+            animate().scaleX(0f).scaleY(0f).withEndAction {
+                visibility = View.GONE
+                removeFromWindow()
+                onEnded()
+            }
+        }
     }
 }

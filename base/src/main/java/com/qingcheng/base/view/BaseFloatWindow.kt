@@ -113,14 +113,14 @@ open class BaseFloatWindow<T : View>(private val context: Context, val view: T) 
         callback()
     }
 
-    fun zoomIn() {
+    open fun zoomIn() {
         view.scaleX = 0f
         view.scaleY = 0f
         addToWindow()
         view.animate().scaleX(1f).scaleY(1f).start()
     }
 
-    fun zoomOut(onEnded: () -> Unit = {}) {
+    open fun zoomOut(onEnded: () -> Unit = {}) {
         view.animate().scaleX(0f).scaleY(0f).withEndAction {
             view.visibility = View.GONE
             removeFromWindow()

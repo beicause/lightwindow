@@ -247,9 +247,7 @@ class CalendarNoticeService : Service() {
         var f = true
         val km = this.getSystemService(KEYGUARD_SERVICE) as KeyguardManager
         SensorListener.apply {
-            val copy= onTrigger
             onTrigger = {
-                copy(it)
                 it?.let {
                     if (!km.isKeyguardLocked) {
                         if (it.values[2] < -8 && f) {
@@ -273,9 +271,9 @@ class CalendarNoticeService : Service() {
             }
             onScreenOff = {
                 SensorListener.disable()
-                stopService(Intent().apply {
-                    setClassName(this@CalendarNoticeService, webViewServiceName)
-                })
+//                stopService(Intent().apply {
+//                    setClassName(this@CalendarNoticeService, webViewServiceName)
+//                })
             }
             enable()
         }

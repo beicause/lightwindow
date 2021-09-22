@@ -3,7 +3,6 @@ package com.qingcheng.lightwindow
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import android.os.Process
 import android.util.Log
 import androidx.room.Room
 import com.qingcheng.base.R
@@ -40,19 +39,18 @@ class WebViewService : Service() {
                     }
                 }
             }
-        MainScope().launch {
-            VersionUtil.checkAndShowUpdate(this@WebViewService)
-        }
+        dataBase =
+            Room.databaseBuilder(applicationContext, EventDataBase::class.java, "events")
+                .enableMultiInstanceInvalidation().build()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent == null || intent.action == null) throw Exception("未指定action")
-
+        MainScope().launch {
+            VersionUtil.checkAndShowUpdate(this@WebViewService)
+        }
         when (intent.action) {
             ACTION_START_CALENDAR -> {
-                dataBase =
-                    Room.databaseBuilder(applicationContext, EventDataBase::class.java, "events")
-                        .enableMultiInstanceInvalidation().build()
                 floatView.let {
                     it.view.findViewById<WebView>(R.id.webview).apply {
                         removeJavascriptInterface(JS_INTERFACE_NAME)
@@ -62,7 +60,7 @@ class WebViewService : Service() {
                         )
                         loadUrl(CALENDAR_URL)
                     }
-                    if (!it.isAddToWindow) it.rotateIn()
+                    it.rotateIn()
                 }
             }
             ACTION_START_MAIN -> {
@@ -75,7 +73,7 @@ class WebViewService : Service() {
                         )
                         loadUrl(MAIN_URL)
                     }
-                    if (!it.isAddToWindow) it.zoomIn()
+                    it.zoomIn()
                 }
             }
         }
@@ -87,6 +85,5 @@ class WebViewService : Service() {
         viewManager?.destroyAll()
         viewManager = null
         Log.i(this::class.simpleName, "webview 服务 关闭")
-        Process.killProcess(Process.myPid())
     }
 }

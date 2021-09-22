@@ -34,7 +34,7 @@ class VersionService : Service() {
             try {
                 NetworkRequestUtil.getVersion().body?.string()
             } catch (e: Exception) {
-                ToastUtil.showToast("网络异常")
+                ToastUtil.showToast("检查网络并解除省流量限制")
                 null
             }?.let { responseBody ->
                 val json = JSONObject(responseBody)
@@ -42,11 +42,14 @@ class VersionService : Service() {
                 val forceUpdate = json.getBoolean("force_update")
                 val message = json.getString("version_info")
                 viewManager.new<DialogView>(DialogView(this@VersionService)).apply {
-                    maskClickAble = false
+                    maskClick = {
+                        zoomOut()
+                        stopSelf()
+                    }
                     title = "发现新版本"
                     content = message
                     confirmText = if (!forceUpdate) "更新" else "强制性更新"
-                    cancelText = if (!forceUpdate) "忽略" else ""
+                    cancelText = if (!forceUpdate) "忽略" else "退出"
                     confirmClick = {
                         zoomOut()
                         downloadApp(this@VersionService, appVersion)
@@ -136,7 +139,6 @@ class VersionService : Service() {
         val installReceiver = object : BroadcastReceiver() {
             override fun onReceive(mContext: Context?, intent: Intent?) {
                 Log.i("install receiver", intent?.action ?: "null")
-
                 when (intent?.action) {
                     Intent.ACTION_PACKAGE_REPLACED, Intent.ACTION_PACKAGE_ADDED -> {
                         FileUtil.deleteDir(

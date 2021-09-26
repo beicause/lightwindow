@@ -4,8 +4,10 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.app.ComponentActivity
 import com.qingcheng.base.ACTION_START_MAIN
 import com.qingcheng.base.util.PermissionRequestUtil
 import com.qingcheng.base.util.ToastUtil
@@ -22,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         if (!PermissionRequestUtil.isOverlays(this)) {
             MobclickAgent.onPause(this)
             setTheme(R.style.Theme_LightWindow)
-            PermissionRequestUtil.requestOverlaysPermissionDialog(this)
+            requestOverlaysPermissionDialog(this)
         } else if (!PermissionRequestUtil.isReadPhoneState(this)) {
             MobclickAgent.onPause(this)
             ActivityCompat.requestPermissions(
@@ -60,5 +62,22 @@ class MainActivity : AppCompatActivity() {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 start()
             else finish()
+    }
+
+    /**
+     * 打开对话框申请悬浮窗权限
+     * @param activity
+     * */
+    private fun requestOverlaysPermissionDialog(activity: ComponentActivity) {
+        val alertDialogBuild = AlertDialog.Builder(activity)
+        alertDialogBuild.setTitle("注意")
+            .setMessage("运行本应用前，请进行如下配置：\n1.请授予悬浮窗权限。\n2.若开启省流量模式，请将本应用加入白名单或关闭省流量模式")
+            .setPositiveButton("设置") { _, _ ->
+                PermissionRequestUtil.requestOverlaysPermission(activity)
+                activity.finish()
+            }
+            .setNegativeButton("退出") { _, _ -> activity.finish() }
+            .setOnCancelListener { activity.finish() }
+            .create().show()
     }
 }

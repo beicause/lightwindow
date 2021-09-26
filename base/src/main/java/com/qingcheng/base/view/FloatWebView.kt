@@ -85,7 +85,7 @@ class FloatWebView(val context: Context, val service: Class<out Service>) :
                         request: WebResourceRequest?,
                         error: WebResourceError?
                     ) {
-                        ToastUtil.showToast("检查网络并解除省流量限制", isLong = true)
+                        ToastUtil.showToast("网络异常或省流量模式限制", isLong = true)
                         isError = true
                         super.onReceivedError(view, request, error)
                     }

@@ -6,8 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
-import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ComponentActivity
 import androidx.core.content.ContextCompat
 
 /**
@@ -32,23 +30,6 @@ object PermissionRequestUtil {
 //            context.packageName
 //        )
 //    }
-
-    /**
-     * 打开对话框申请悬浮窗权限
-     * @param activity
-     * */
-    fun requestOverlaysPermissionDialog(activity: ComponentActivity) {
-        val alertDialogBuild = AlertDialog.Builder(activity)
-        alertDialogBuild.setTitle("提示")
-            .setMessage("缺少悬浮窗权限。\n使用本应用必须开启悬浮窗权限，点击确定前往开启。")
-            .setPositiveButton("确定") { _, _ ->
-                requestOverlaysPermission(activity)
-                activity.finish()
-            }
-            .setNegativeButton("取消") { _, _ -> activity.finish() }
-            .setOnCancelListener { activity.finish() }
-            .create().show()
-    }
 
     fun requestOverlaysPermission(context: Context) {
         context.startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION).apply {

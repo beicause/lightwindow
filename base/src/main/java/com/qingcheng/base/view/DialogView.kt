@@ -4,8 +4,9 @@ import android.content.Context
 import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.qingcheng.base.MAIN_HEIGHT
+import com.qingcheng.base.MAIN_WIDTH
 import com.qingcheng.base.R
-import com.qingcheng.base.cache.CacheName
 import com.qingcheng.base.util.SharedPreferencesUtil
 
 class DialogView(context: Context) :
@@ -58,14 +59,14 @@ class DialogView(context: Context) :
             width =
                 if (SharedPreferencesUtil.getInt(
                         context,
-                        CacheName.MAIN_WIDTH.name
+                        MAIN_WIDTH
                     ) == 0
                 ) 350.toIntDip()
-                else SharedPreferencesUtil.getInt(context, CacheName.MAIN_WIDTH.name)
+                else SharedPreferencesUtil.getInt(context, MAIN_WIDTH)
             height =
-                if (SharedPreferencesUtil.getInt(context, CacheName.MAIN_HEIGHT.name) == 0)
+                if (SharedPreferencesUtil.getInt(context, MAIN_HEIGHT) == 0)
                     620.toIntDip()
-                else SharedPreferencesUtil.getInt(context, CacheName.MAIN_HEIGHT.name)
+                else SharedPreferencesUtil.getInt(context, MAIN_HEIGHT)
         }
         title = ""
         content = ""

@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
-import com.qingcheng.base.cache.CacheName
+import com.qingcheng.base.IGNORE_VERSION
+import com.qingcheng.base.WEB_VERSION
+import com.qingcheng.base.runOnUI
 import com.qingcheng.base.service.VersionService
 import org.json.JSONObject
 
@@ -13,7 +15,7 @@ object VersionUtil {
         var isAppUpdate = false
         var isWebUpdate = false
         val localWebVersion =
-            SharedPreferencesUtil.getString(context, CacheName.WEB_VERSION.name)
+            SharedPreferencesUtil.getString(context, WEB_VERSION)
         val localAppVersion =
             context.packageManager.getPackageInfo(context.packageName, 0).let {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) it.longVersionCode else it.versionCode
@@ -53,7 +55,7 @@ object VersionUtil {
         if (versions.getBoolean("is_app_update"))
             if (SharedPreferencesUtil.getString(
                     context,
-                    CacheName.IGNORE_VERSION.name
+                    IGNORE_VERSION
                 ) != versions.getString("app_version")
             )
                 context.startService(Intent(context, VersionService::class.java))

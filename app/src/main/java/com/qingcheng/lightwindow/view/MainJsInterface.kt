@@ -7,11 +7,17 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import android.webkit.JavascriptInterface
+import com.qingcheng.base.*
 import com.qingcheng.base.service.VersionService
-import com.qingcheng.base.util.*
+import com.qingcheng.base.util.ScreenUtil
+import com.qingcheng.base.util.SharedPreferencesUtil
+import com.qingcheng.base.util.ToastUtil
+import com.qingcheng.base.util.VersionUtil
 import com.qingcheng.base.view.BaseFloatWindow
 import com.qingcheng.base.view.ViewManager
 import com.qingcheng.calendar.service.CalendarNoticeService
+import com.qingcheng.lightwindow.WebViewService
+import com.umeng.commonsdk.UMConfigure
 import kotlinx.coroutines.runBlocking
 
 class MainJsInterface(
@@ -22,16 +28,14 @@ class MainJsInterface(
 
     @JavascriptInterface
     fun redirectToMain() {
-        context.startService(Intent().apply {
-            setClassName(context, webViewServiceName)
+        context.startService(Intent(context, WebViewService::class.java).apply {
             action = ACTION_START_MAIN
         })
     }
 
     @JavascriptInterface
     fun redirectToCalendar() {
-        context.startService(Intent().apply {
-            setClassName(context, webViewServiceName)
+        context.startService(Intent(context, WebViewService::class.java).apply {
             action = ACTION_START_CALENDAR
         })
     }
@@ -40,9 +44,7 @@ class MainJsInterface(
     fun close() {
         floatWindow.view.post {
             floatWindow.zoomOut {
-                context.stopService(Intent().apply {
-                    setClassName(context, webViewServiceName)
-                })
+                context.stopService(Intent(context, WebViewService::class.java))
             }
         }
     }
@@ -97,4 +99,18 @@ class MainJsInterface(
     @JavascriptInterface
     fun showVersionUpdate() = context.startService(Intent(context, VersionService::class.java))
 
+    @JavascriptInterface
+    fun getPolicy(): String = SharedPreferencesUtil.getString(context, POLICY)
+
+    @JavascriptInterface
+    fun setPolicy(value: String) {
+        SharedPreferencesUtil.put(context, POLICY, value)
+        if (value != "null") {
+            if (!UMConfigure.isInit)
+                UMConfigure.init(context, appKey, channel, UMConfigure.DEVICE_TYPE_PHONE, "")
+        } else {
+            close()
+            context.stopService(Intent(context, CalendarNoticeService::class.java))
+        }
+    }
 }

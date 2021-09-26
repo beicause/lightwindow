@@ -7,10 +7,10 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.room.Room
-import com.qingcheng.base.util.ACTION_START_CALENDAR
+import com.qingcheng.base.ACTION_START_CALENDAR
 import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.base.util.VibratorUtil
-import com.qingcheng.base.util.webViewServiceName
+import com.qingcheng.base.webViewServiceName
 import com.qingcheng.calendar.R
 import com.qingcheng.calendar.database.Event
 import com.qingcheng.calendar.database.EventDataBase
@@ -230,7 +230,7 @@ class CalendarNoticeService : Service() {
     private fun initNotice() {
         mainNotificationBuilder = NotificationBuilder(this, mainChannelId)
         mainNotificationBuilder.builder
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.logo_notice)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setShowWhen(false)
             .setContentIntent(null)

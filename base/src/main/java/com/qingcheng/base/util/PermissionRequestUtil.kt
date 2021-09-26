@@ -1,11 +1,14 @@
 package com.qingcheng.base.util
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ComponentActivity
+import androidx.core.content.ContextCompat
 
 /**
  * 请求权限
@@ -19,6 +22,10 @@ object PermissionRequestUtil {
     fun isOverlays(context: Context): Boolean {
         return Settings.canDrawOverlays(context)
     }
+
+    fun isReadPhoneState(context: Context): Boolean = ContextCompat.checkSelfPermission(
+        context, Manifest.permission.READ_PHONE_STATE
+    ) == PackageManager.PERMISSION_GRANTED
 
 //    fun isIgnoreBattery(context: Context): Boolean {
 //        return (context.getSystemService(Service.POWER_SERVICE) as PowerManager).isIgnoringBatteryOptimizations(
@@ -50,11 +57,12 @@ object PermissionRequestUtil {
         })
     }
 
-    fun requestUsage(context: Context){
-        context.startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS).apply {
-            flags=Intent.FLAG_ACTIVITY_NEW_TASK
-        })
-    }
+
+//    fun requestUsage(context: Context){
+//        context.startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS).apply {
+//            flags=Intent.FLAG_ACTIVITY_NEW_TASK
+//        })
+//    }
 //    @SuppressLint("BatteryLife")
 //    fun requestIgnoreBatteryPermission(context: Context) {
 //        context.startActivity(Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {

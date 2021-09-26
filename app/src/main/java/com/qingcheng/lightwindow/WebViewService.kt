@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import androidx.room.Room
+import com.qingcheng.base.*
 import com.qingcheng.base.R
 import com.qingcheng.base.util.*
 import com.qingcheng.base.view.FloatWebView
@@ -13,6 +14,7 @@ import com.qingcheng.calendar.database.EventDataBase
 import com.qingcheng.calendar.view.CalendarJsInterface
 import com.qingcheng.lightwindow.view.MainJsInterface
 import com.tencent.smtt.sdk.WebView
+import com.umeng.analytics.MobclickAgent
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
@@ -51,6 +53,7 @@ class WebViewService : Service() {
         }
         when (intent.action) {
             ACTION_START_CALENDAR -> {
+                MobclickAgent.onEvent(this, "ACTION_START_CALENDAR")
                 floatView.let {
                     it.view.findViewById<WebView>(R.id.webview).apply {
                         removeJavascriptInterface(JS_INTERFACE_NAME)
@@ -58,12 +61,13 @@ class WebViewService : Service() {
                             CalendarJsInterface(context, it, dataBase!!),
                             JS_INTERFACE_NAME
                         )
-                        loadUrl(CALENDAR_URL)
+                        it.loadUrl(CALENDAR_URL)
                     }
                     it.rotateIn()
                 }
             }
             ACTION_START_MAIN -> {
+                MobclickAgent.onEvent(this, "ACTION_START_MAIN")
                 floatView.let {
                     it.view.findViewById<WebView>(R.id.webview).apply {
                         removeJavascriptInterface(JS_INTERFACE_NAME)
@@ -71,7 +75,7 @@ class WebViewService : Service() {
                             MainJsInterface(context, it, viewManager!!),
                             JS_INTERFACE_NAME
                         )
-                        loadUrl(MAIN_URL)
+                        it.loadUrl(MAIN_URL)
                     }
                     it.zoomIn()
                 }
@@ -81,6 +85,8 @@ class WebViewService : Service() {
     }
 
     override fun onDestroy() {
+        MobclickAgent.onEvent(this, "WEBVIEW_SERVICE_END")
+        MobclickAgent.onKillProcess(this)
         dataBase?.close()
         viewManager?.destroyAll()
         viewManager = null

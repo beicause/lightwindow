@@ -1,37 +1,8 @@
 <resources>
-    <string name="app_name">轻程</string>
-    <string name="shortcuts_label">设置</string>
-    <string name="foreground">通知栏显示运行状态</string>
     <string name="close">关闭</string>
-    <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
-
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
-
-    <string name="accessibility_description">轻程的核心服务，包括了应用所有的后台服务功能，若要使用或停用【轻程】，请开启或关闭此项</string>
-    <string name="school">学校</string>
-    <string name="username">账号</string>
-    <string name="password">密码</string>
-    <string name="settings">基本设置</string>
-    <string name="service_close">服务已关闭</string>
-    <string name="guide">使用说明</string>
-    <string name="email">邮箱</string>
-    <string name="icode">验证码</string>
-    <string name="get">获取</string>
-
-    <string-array name="spinner_list">
-        <item>请选择</item>
-        <item>合肥工业大学</item>
-    </string-array>
+    <string name="dot">dot</string>
+    <string name="title">标题</string>
+    <string name="content">内容</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
 </resources>

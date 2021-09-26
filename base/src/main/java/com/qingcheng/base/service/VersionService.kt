@@ -11,7 +11,7 @@ import android.os.Environment
 import android.os.IBinder
 import android.util.Log
 import androidx.core.content.FileProvider
-import com.qingcheng.base.cache.CacheName
+import com.qingcheng.base.IGNORE_VERSION
 import com.qingcheng.base.util.*
 import com.qingcheng.base.view.DialogView
 import com.qingcheng.base.view.ViewManager
@@ -57,7 +57,7 @@ class VersionService : Service() {
                     cancelClick = {
                         if (!forceUpdate) SharedPreferencesUtil.put(
                             this@VersionService,
-                            CacheName.IGNORE_VERSION.name,
+                            IGNORE_VERSION,
                             appVersion
                         )
                         zoomOut()

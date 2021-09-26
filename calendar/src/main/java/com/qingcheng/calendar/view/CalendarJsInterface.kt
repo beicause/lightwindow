@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.webkit.JavascriptInterface
-import com.qingcheng.base.cache.CacheName
-import com.qingcheng.base.util.*
+import com.qingcheng.base.*
+import com.qingcheng.base.util.ScreenUtil
+import com.qingcheng.base.util.SharedPreferencesUtil
+import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.base.view.BaseFloatWindow
 import com.qingcheng.calendar.database.Event
 import com.qingcheng.calendar.database.EventDataBase
@@ -14,6 +16,7 @@ import com.qingcheng.calendar.database.getTimeString
 import com.qingcheng.calendar.service.AlarmManagerUtil
 import com.qingcheng.calendar.util.csust.CsustRequest
 import com.qingcheng.calendar.util.gnnu.GnnuRequest
+import com.umeng.commonsdk.UMConfigure
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
 import org.json.JSONArray
@@ -52,8 +55,8 @@ class CalendarJsInterface(
                         width = height
                         height = t
                     }
-                    SharedPreferencesUtil.put(context, CacheName.MAIN_WIDTH.name, width)
-                    SharedPreferencesUtil.put(context, CacheName.MAIN_HEIGHT.name, height)
+                    SharedPreferencesUtil.put(context, MAIN_WIDTH, width)
+                    SharedPreferencesUtil.put(context, MAIN_HEIGHT, height)
                 }
                 rotateOut {
                     context.stopService(Intent().apply {
@@ -158,6 +161,17 @@ class CalendarJsInterface(
         }
         Log.i("gnnu", el.toString())
         return listToString(el!!)
+    }
+
+    @JavascriptInterface
+    fun getPolicy(): String = SharedPreferencesUtil.getString(context, POLICY)
+
+    @JavascriptInterface
+    fun setPolicy(value: String) {
+        SharedPreferencesUtil.put(context, POLICY, value)
+        if (value != "null")
+            if (!UMConfigure.isInit)
+                UMConfigure.init(context, appKey, channel, UMConfigure.DEVICE_TYPE_PHONE, "")
     }
 
     private fun stringToList(events: String): List<Event> {

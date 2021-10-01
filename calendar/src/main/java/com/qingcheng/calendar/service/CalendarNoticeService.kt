@@ -8,9 +8,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.room.Room
 import com.qingcheng.base.ACTION_START_CALENDAR
+import com.qingcheng.base.uiWebViewServiceName
 import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.base.util.VibratorUtil
-import com.qingcheng.base.webViewServiceName
 import com.qingcheng.calendar.R
 import com.qingcheng.calendar.database.Event
 import com.qingcheng.calendar.database.EventDataBase
@@ -254,7 +254,7 @@ class CalendarNoticeService : Service() {
                             VibratorUtil.vibrate(this@CalendarNoticeService, 100)
                             startService(
                                 Intent().apply {
-                                    setClassName(this@CalendarNoticeService, webViewServiceName)
+                                    setClassName(this@CalendarNoticeService, uiWebViewServiceName)
                                     action = ACTION_START_CALENDAR
                                 }
                             )

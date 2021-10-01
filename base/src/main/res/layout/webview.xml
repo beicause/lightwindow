@@ -7,14 +7,145 @@
     app:cardCornerRadius="5dp"
     app:contentPadding="1dp">
 
-    <LinearLayout
-        android:id="@+id/ll_mask"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_mask"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
-    </LinearLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_loads"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/dot"
+                android:src="@drawable/dot"
+                app:layout_constraintCircle="@id/center"
+                app:layout_constraintCircleAngle="45"
+                app:layout_constraintCircleRadius="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/dot"
+                android:src="@drawable/dot"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintCircle="@id/center"
+                app:layout_constraintCircleAngle="90"
+                app:layout_constraintCircleRadius="10dp"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/dot"
+                android:src="@drawable/dot"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintCircle="@id/center"
+                app:layout_constraintCircleAngle="135"
+                app:layout_constraintCircleRadius="10dp"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/dot"
+                android:src="@drawable/dot"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintCircle="@id/center"
+                app:layout_constraintCircleAngle="180"
+                app:layout_constraintCircleRadius="10dp"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/dot"
+                android:src="@drawable/dot"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintCircle="@id/center"
+                app:layout_constraintCircleAngle="225"
+                app:layout_constraintCircleRadius="10dp"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/dot"
+                android:src="@drawable/dot"
+                app:layout_constraintCircle="@id/center"
+                app:layout_constraintCircleAngle="270"
+                app:layout_constraintCircleRadius="10dp"
+                app:layout_constraintEnd_toStartOf="@+id/imageView1"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/dot"
+                android:src="@drawable/dot"
+                app:layout_constraintCircle="@id/center"
+                app:layout_constraintCircleAngle="315"
+                app:layout_constraintCircleRadius="10dp"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/center"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/iv_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@string/close"
+            android:src="@drawable/close_circle_outline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_reload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="点击重新加载"
+            android:textColor="@color/primary_blue"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cl_loads" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tencent.smtt.sdk.WebView
         android:id="@+id/webview"
@@ -23,129 +154,5 @@
 
     </com.tencent.smtt.sdk.WebView>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_loads"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@color/white"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
-            android:src="@drawable/dot"
-            app:layout_constraintCircle="@id/center"
-            app:layout_constraintCircleAngle="45"
-            app:layout_constraintCircleRadius="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/dot" />
-
-        <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/dot"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintCircle="@id/center"
-            app:layout_constraintCircleAngle="90"
-            app:layout_constraintCircleRadius="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:contentDescription="@string/dot" />
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/dot"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintCircle="@id/center"
-            app:layout_constraintCircleAngle="135"
-            app:layout_constraintCircleRadius="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:contentDescription="@string/dot" />
-
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="352dp"
-            android:src="@drawable/dot"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintCircle="@id/center"
-            app:layout_constraintCircleAngle="180"
-            app:layout_constraintCircleRadius="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:contentDescription="@string/dot" />
-
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="1dp"
-            android:src="@drawable/dot"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintCircle="@id/center"
-            app:layout_constraintCircleAngle="225"
-            app:layout_constraintCircleRadius="10dp"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            android:contentDescription="@string/dot" />
-
-        <ImageView
-            android:id="@+id/imageView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="1dp"
-            android:layout_marginEnd="14dp"
-            android:src="@drawable/dot"
-            app:layout_constraintCircle="@id/center"
-            app:layout_constraintCircleAngle="270"
-            app:layout_constraintCircleRadius="10dp"
-            app:layout_constraintEnd_toStartOf="@+id/imageView1"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/dot" />
-
-        <ImageView
-            android:id="@+id/imageView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="1dp"
-            android:layout_marginTop="1dp"
-            android:src="@drawable/dot"
-            app:layout_constraintCircle="@id/center"
-            app:layout_constraintCircleAngle="315"
-            app:layout_constraintCircleRadius="10dp"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/dot" />
-
-        <View
-            android:id="@+id/center"
-            android:layout_width="1dp"
-            android:layout_height="1dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <ImageView
-        android:id="@+id/iv_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="16dp"
-        android:src="@drawable/close_circle_outline"
-        android:visibility="gone"
-        android:contentDescription="@string/close" />
 </androidx.cardview.widget.CardView>
 

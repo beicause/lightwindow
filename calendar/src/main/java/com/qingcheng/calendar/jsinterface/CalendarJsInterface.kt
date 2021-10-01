@@ -1,11 +1,13 @@
-package com.qingcheng.calendar.view
+package com.qingcheng.calendar.jsinterface
 
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.webkit.JavascriptInterface
+import androidx.core.os.postDelayed
 import com.qingcheng.base.*
-import com.qingcheng.base.util.ScreenUtil
 import com.qingcheng.base.util.SharedPreferencesUtil
 import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.base.view.BaseFloatWindow
@@ -32,7 +34,7 @@ class CalendarJsInterface(
     @JavascriptInterface
     fun redirectToMain() {
         context.startService(Intent().apply {
-            setClassName(context, webViewServiceName)
+            setClassName(context, uiWebViewServiceName)
             action = ACTION_START_MAIN
         })
     }
@@ -40,30 +42,30 @@ class CalendarJsInterface(
     @JavascriptInterface
     fun redirectToCalendar() {
         context.startService(Intent().apply {
-            setClassName(context, webViewServiceName)
+            setClassName(context, uiWebViewServiceName)
             action = ACTION_START_CALENDAR
         })
     }
 
     @JavascriptInterface
     fun close() {
-        floatWindow.apply {
-            view.post {
-                applyParams {
-                    if (ScreenUtil.isLandscape(context)) {
-                        val t = width
-                        width = height
-                        height = t
-                    }
-                    SharedPreferencesUtil.put(context, MAIN_WIDTH, width)
-                    SharedPreferencesUtil.put(context, MAIN_HEIGHT, height)
-                }
-                rotateOut {
-                    context.stopService(Intent().apply {
-                        setClassName(context, webViewServiceName)
-                    })
-                }
+        floatWindow.view.post {
+            floatWindow.rotateOut {
+                context.stopService(Intent().apply {
+                    setClassName(context, uiWebViewServiceName)
+                })
             }
+        }
+    }
+
+    @JavascriptInterface
+    fun exception(s: String) {
+        runOnUI { ToastUtil.showToast(s, isLong = true) }
+        floatWindow.rotateOut()
+        Handler(Looper.getMainLooper()).postDelayed(3000) {
+            context.stopService(Intent().apply {
+                setClassName(context, uiWebViewServiceName)
+            })
         }
     }
 

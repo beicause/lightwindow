@@ -5,7 +5,7 @@ import kotlinx.coroutines.*
 const val packageName = "com.qingcheng.lightwindow"
 const val ACTION_START_CALENDAR = "$packageName.ACTION_START_CALENDAR"
 const val ACTION_START_MAIN = "$packageName.ACTION_START_MAIN"
-const val webViewServiceName = "$packageName.WebViewService"
+const val uiWebViewServiceName = "$packageName.UIWebViewService"
 const val CALENDAR_URL = "https://qingcheng.asia/calendar"
 const val MAIN_URL = "https://qingcheng.asia/main"
 const val JS_INTERFACE_NAME = "Android"

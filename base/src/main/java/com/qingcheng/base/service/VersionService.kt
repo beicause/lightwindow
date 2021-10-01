@@ -12,6 +12,7 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.content.FileProvider
 import com.qingcheng.base.IGNORE_VERSION
+import com.qingcheng.base.uiWebViewServiceName
 import com.qingcheng.base.util.*
 import com.qingcheng.base.view.DialogView
 import com.qingcheng.base.view.ViewManager
@@ -34,7 +35,7 @@ class VersionService : Service() {
             try {
                 NetworkRequestUtil.getVersion().body?.string()
             } catch (e: Exception) {
-                ToastUtil.showToast("检查网络并解除省流量限制")
+                ToastUtil.showToast("网络异常或省流量模式限制")
                 null
             }?.let { responseBody ->
                 val json = JSONObject(responseBody)
@@ -76,6 +77,7 @@ class VersionService : Service() {
         val apk = File(
             service.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)!!.path + "/apk/$apkName"
         )
+        //如果已经下载
         if (apk.exists()) {
             Log.i(apkName, "exist")
             service.startActivity(Intent().apply {
@@ -90,8 +92,13 @@ class VersionService : Service() {
                     "application/vnd.android.package-archive"
                 )
             })
+            stopService(Intent().apply {
+                setClassName(service, uiWebViewServiceName)
+            })
             service.stopSelf()
         } else {
+            //开始下载
+
             val manager =
                 service.getSystemService(DOWNLOAD_SERVICE) as DownloadManager
             ToastUtil.showToast("开始下载")
@@ -108,6 +115,7 @@ class VersionService : Service() {
             val filter = IntentFilter().apply {
                 addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
             }
+            //监听下载完成
             val downloadReceiver = object : BroadcastReceiver() {
                 override fun onReceive(mContext: Context?, intent: Intent?) {
                     Log.i("download receiver", intent?.action ?: "null")
@@ -121,6 +129,9 @@ class VersionService : Service() {
                                     manager.getUriForDownloadedFile(id),
                                     "application/vnd.android.package-archive"
                                 )
+                            })
+                            stopService(Intent().apply {
+                                setClassName(service, uiWebViewServiceName)
                             })
                             service.unregisterReceiver(this)
                             service.stopSelf()
@@ -136,6 +147,7 @@ class VersionService : Service() {
             addAction(Intent.ACTION_PACKAGE_REPLACED)
             addDataScheme("package")
         }
+        //监听安装
         val installReceiver = object : BroadcastReceiver() {
             override fun onReceive(mContext: Context?, intent: Intent?) {
                 Log.i("install receiver", intent?.action ?: "null")

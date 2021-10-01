@@ -8,7 +8,7 @@
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
 # class:
--keepclassmembers class com.qingcheng.lightwindow.view.MainJsInterface {
+-keepclassmembers class com.qingcheng.lightwindow.jsinterface.MainJsInterface {
    public *;
 }
 

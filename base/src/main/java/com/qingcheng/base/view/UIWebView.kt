@@ -4,13 +4,16 @@ import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
-import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.postDelayed
 import com.qingcheng.base.MAIN_HEIGHT
 import com.qingcheng.base.MAIN_WIDTH
 import com.qingcheng.base.R
@@ -28,7 +31,7 @@ import com.tencent.smtt.sdk.WebViewClient
  * 主界面悬浮窗类
  * */
 @SuppressLint("SetJavaScriptEnabled")
-class FloatWebView(val context: Context, val service: Class<out Service>) :
+class UIWebView(val context: Context, val service: Class<out Service>) :
     BaseFloatWindow<View>(context, View.inflate(context, R.layout.webview, null)) {
     private var isError = false
     private var url: String? = null
@@ -58,7 +61,7 @@ class FloatWebView(val context: Context, val service: Class<out Service>) :
                     )
                 }
             }
-            findViewById<LinearLayout>(R.id.ll_mask).setOnClickListener {
+            findViewById<ConstraintLayout>(R.id.cl_mask).setOnClickListener {
                 isError = false
                 if (url == null) isError = true
                 else loadUrl(url!!)
@@ -71,12 +74,14 @@ class FloatWebView(val context: Context, val service: Class<out Service>) :
                     override fun onPageFinished(view: WebView?, url: String?) {
                         evaluateJavascript("javascript:getVersion()") {
                             Log.i("web版本", it)
-                            SharedPreferencesUtil.put(
+                            if (it == "null") isError = true
+                            else SharedPreferencesUtil.put(
                                 context,
                                 WEB_VERSION,
                                 it
                             )
                             if (!isError) hideLoad()
+                            else url?.let { it1 -> this@UIWebView.loadUrl(it1) }
                         }
                     }
 
@@ -85,6 +90,10 @@ class FloatWebView(val context: Context, val service: Class<out Service>) :
                         request: WebResourceRequest?,
                         error: WebResourceError?
                     ) {
+                        Log.e(
+                            this@UIWebView::class.qualifiedName,
+                            "error " + error?.errorCode + error?.description
+                        )
                         ToastUtil.showToast("网络异常或省流量模式限制", isLong = true)
                         isError = true
                         super.onReceivedError(view, request, error)
@@ -94,7 +103,7 @@ class FloatWebView(val context: Context, val service: Class<out Service>) :
                     override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
                         consoleMessage?.apply {
                             Log.i(
-                                this@FloatWebView::class.qualifiedName,
+                                this@UIWebView::class.qualifiedName,
                                 "${message()} -- From line ${lineNumber()} of ${sourceId()}"
                             )
                         }
@@ -112,8 +121,9 @@ class FloatWebView(val context: Context, val service: Class<out Service>) :
     }
 
     fun showLoad() {
+        view.findViewById<ConstraintLayout>(R.id.cl_mask).visibility = View.VISIBLE
         view.findViewById<WebView>(R.id.webview).visibility = View.GONE
-        view.findViewById<ImageView>(R.id.iv_close).visibility = View.VISIBLE
+        view.findViewById<TextView>(R.id.tv_reload).visibility = View.GONE
         val anim = AnimationUtils.loadAnimation(context, R.anim.rotate)
         anim.interpolator = LinearInterpolator()
         view.findViewById<ConstraintLayout>(R.id.cl_loads).apply {
@@ -121,14 +131,21 @@ class FloatWebView(val context: Context, val service: Class<out Service>) :
             animation = anim
         }
         anim.start()
+        Handler(Looper.getMainLooper()).postDelayed(2000) {
+            if (view.findViewById<ConstraintLayout>(R.id.cl_loads).animation != null)
+                view.findViewById<TextView>(
+                    R.id.tv_reload
+                ).visibility = View.VISIBLE
+        }
     }
 
     fun hideLoad() {
         view.findViewById<WebView>(R.id.webview).visibility = View.VISIBLE
-        view.findViewById<ImageView>(R.id.iv_close).visibility = View.GONE
+        view.findViewById<ConstraintLayout>(R.id.cl_mask).visibility = View.GONE
+        view.findViewById<TextView>(R.id.tv_reload).visibility = View.GONE
         view.findViewById<ConstraintLayout>(R.id.cl_loads).apply {
-            visibility = View.GONE
             if (animation != null) animation.cancel()
+            animation = null
         }
     }
 

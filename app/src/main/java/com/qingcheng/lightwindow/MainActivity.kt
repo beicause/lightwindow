@@ -11,6 +11,7 @@ import androidx.core.app.ComponentActivity
 import com.qingcheng.base.ACTION_START_MAIN
 import com.qingcheng.base.util.PermissionRequestUtil
 import com.qingcheng.base.util.ToastUtil
+import com.qingcheng.calendar.service.CalendarNoticeService
 import com.tencent.smtt.export.external.TbsCoreSettings
 import com.tencent.smtt.sdk.QbSdk
 import com.umeng.analytics.MobclickAgent
@@ -22,6 +23,8 @@ class MainActivity : AppCompatActivity() {
     private fun start() {
         MobclickAgent.onResume(this)
         if (!PermissionRequestUtil.isOverlays(this)) {
+            stopService(Intent(this, UIWebViewService::class.java))
+            stopService(Intent(this, CalendarNoticeService::class.java))
             MobclickAgent.onPause(this)
             setTheme(R.style.Theme_LightWindow)
             requestOverlaysPermissionDialog(this)
@@ -35,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             ToastUtil.context = this.applicationContext
             ToastUtil.offsetBottom()
-            startService(Intent(this, WebViewService::class.java).apply {
+            startService(Intent(this, UIWebViewService::class.java).apply {
                 action = ACTION_START_MAIN
             })
             MobclickAgent.onPause(this)

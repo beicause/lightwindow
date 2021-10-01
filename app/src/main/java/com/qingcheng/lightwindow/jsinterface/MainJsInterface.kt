@@ -1,12 +1,15 @@
-package com.qingcheng.lightwindow.view
+package com.qingcheng.lightwindow.jsinterface
 
 import android.app.ActivityManager
 import android.app.Service
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.webkit.JavascriptInterface
+import androidx.core.os.postDelayed
 import com.qingcheng.base.*
 import com.qingcheng.base.service.VersionService
 import com.qingcheng.base.util.ScreenUtil
@@ -16,7 +19,8 @@ import com.qingcheng.base.util.VersionUtil
 import com.qingcheng.base.view.BaseFloatWindow
 import com.qingcheng.base.view.ViewManager
 import com.qingcheng.calendar.service.CalendarNoticeService
-import com.qingcheng.lightwindow.WebViewService
+import com.qingcheng.lightwindow.UIWebViewService
+import com.qingcheng.lightwindow.view.ZoomView
 import com.umeng.commonsdk.UMConfigure
 import kotlinx.coroutines.runBlocking
 
@@ -28,14 +32,14 @@ class MainJsInterface(
 
     @JavascriptInterface
     fun redirectToMain() {
-        context.startService(Intent(context, WebViewService::class.java).apply {
+        context.startService(Intent(context, UIWebViewService::class.java).apply {
             action = ACTION_START_MAIN
         })
     }
 
     @JavascriptInterface
     fun redirectToCalendar() {
-        context.startService(Intent(context, WebViewService::class.java).apply {
+        context.startService(Intent(context, UIWebViewService::class.java).apply {
             action = ACTION_START_CALENDAR
         })
     }
@@ -43,9 +47,27 @@ class MainJsInterface(
     @JavascriptInterface
     fun close() {
         floatWindow.view.post {
-            floatWindow.zoomOut {
-                context.stopService(Intent(context, WebViewService::class.java))
+            floatWindow.applyParams {
+                if (ScreenUtil.isLandscape(context)) {
+                    val t = width
+                    width = height
+                    height = t
+                }
+                SharedPreferencesUtil.put(context, MAIN_WIDTH, width)
+                SharedPreferencesUtil.put(context, MAIN_HEIGHT, height)
             }
+            floatWindow.zoomOut {
+                context.stopService(Intent(context, UIWebViewService::class.java))
+            }
+        }
+    }
+
+    @JavascriptInterface
+    fun exception(s: String) {
+        runOnUI { ToastUtil.showToast(s, isLong = true) }
+        floatWindow.zoomOut()
+        Handler(Looper.getMainLooper()).postDelayed(3000) {
+            context.stopService(Intent(context, UIWebViewService::class.java))
         }
     }
 

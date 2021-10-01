@@ -1,8 +1,8 @@
 # 简介  
 
-![输入图片说明](https://images.github.com/uploads/images/2021/0926/194412_d5589465_8444007.png "绘图111o.png")
+![band](https://github.com/beicause/lightwindow/band.png)
 
-窗隙流光，轻量迅捷的多功能悬浮窗应用。包括Android项目和Vue项目，摒弃传统的Activity界面构建方式，
+窗隙流光，轻量迅捷的多功能悬浮窗应用。包括Android项目和Vue项目，与传统的Activity界面构建方式不同，
 基于WindowManager和WebView构建悬浮窗服务，通过JavaScriptInterface实现Android原生功能和前端Vue项目通信。子功能项目：
 
 - 主界面[lightwindow_main](https://github.com/beicause/lightwindow_main)  
@@ -26,7 +26,7 @@ Android系统，最低Android 8.0（API Level 26）
 ## 功能
 
 目前已实现以下功能：
-> 日程表：日程融入悬浮窗&通知栏  
+> 日程表：通知浮窗，便捷查看，支持导入教务课表  
 项目仓库[lightwindow_calendar](https://github.com/beicause/lightwindow_calendar)，
 网页预览 <https://qingcheng.asia/calendar>（部分功能不支持）
 
@@ -62,8 +62,8 @@ Android系统，最低Android 8.0（API Level 26）
 本项目出于兴趣爱好、学习交流、方便使用而开发，完全开源、免费。对于您的任何贡献，我们非常感激。  
 下面是我们努力的方向：  
 
-- 优化代码结构、逻辑，解决存在的bug，提高性能和体验
-- 日程表提供更多学校支持
+- 优化代码，解决存在的bug，提高性能和体验
+- 为日程表提供更多教务课表支持
 - 开发更多新功能
 
 如果您有任何想法或建议，或者做出任何改进，欢迎联系开发者。  

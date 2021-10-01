@@ -1,6 +1,6 @@
 # 简介  
 
-![band](https://github.com/beicause/lightwindow/band.png)
+![band](https://gitee.com/beicause/lightwindow/raw/master/band.png)
 
 窗隙流光，轻量迅捷的多功能悬浮窗应用。包括Android项目和Vue项目，与传统的Activity界面构建方式不同，
 基于WindowManager和WebView构建悬浮窗服务，通过JavaScriptInterface实现Android原生功能和前端Vue项目通信。子功能项目：

@@ -86,7 +86,6 @@ class UIWebViewService : Service() {
 
     override fun onDestroy() {
         MobclickAgent.onEvent(this, "WEBVIEW_SERVICE_END")
-        MobclickAgent.onKillProcess(this)
         dataBase?.close()
         viewManager?.destroyAll()
         viewManager = null

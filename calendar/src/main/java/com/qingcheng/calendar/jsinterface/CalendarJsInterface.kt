@@ -157,7 +157,7 @@ class CalendarJsInterface(
 
     @JavascriptInterface
     fun requestGnnuEvents(username: String, password: String): String {
-        var el: List<Event>? = null
+        var el: List<Event>?
         runBlocking {
             el = GnnuRequest.getGnnuSchedule(username, password)
         }
@@ -174,6 +174,11 @@ class CalendarJsInterface(
         if (value != "null")
             if (!UMConfigure.isInit)
                 UMConfigure.init(context, appKey, channel, UMConfigure.DEVICE_TYPE_PHONE, "")
+    }
+
+    @JavascriptInterface
+    fun setEnableSensor(isEnable: String) {
+        SharedPreferencesUtil.put(context, ENABLE_SENSOR, isEnable == "true")
     }
 
     private fun stringToList(events: String): List<Event> {

@@ -4,6 +4,7 @@ import com.qingcheng.calendar.util.gnnu.GnnuRequest
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
+
 /**
  * Example local unit test, which will execute on the development machine (host).
  *
@@ -12,7 +13,6 @@ import org.junit.Test
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-
     }
 }
 

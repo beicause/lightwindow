@@ -10,14 +10,14 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application>
-        <receiver
-            android:name="com.qingcheng.calendar.receiver.BootReceiver"
-            android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
+        <!--        <receiver-->
+        <!--            android:name="com.qingcheng.calendar.receiver.BootReceiver"-->
+        <!--            android:enabled="true"-->
+        <!--            android:exported="false">-->
+        <!--            <intent-filter>-->
+        <!--                <action android:name="android.intent.action.BOOT_COMPLETED" />-->
+        <!--            </intent-filter>-->
+        <!--        </receiver>-->
 
         <service
             android:name="com.qingcheng.calendar.service.CalendarNoticeService"

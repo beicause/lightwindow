@@ -74,14 +74,19 @@ class UIWebView(val context: Context, val service: Class<out Service>) :
                     override fun onPageFinished(view: WebView?, url: String?) {
                         evaluateJavascript("javascript:getVersion()") {
                             Log.i("web版本", it)
-                            if (it == "null") isError = true
-                            else SharedPreferencesUtil.put(
-                                context,
-                                WEB_VERSION,
-                                it
-                            )
-                            if (!isError) hideLoad()
-                            else url?.let { it1 -> this@UIWebView.loadUrl(it1) }
+                            if (it != "null") {
+                                val version = it.replace("\"", "")
+                                if (SharedPreferencesUtil.getString(context, WEB_VERSION) == "null"
+                                    || SharedPreferencesUtil.getString(context, WEB_VERSION)
+                                        .toInt() < version.toInt()
+                                )
+                                    SharedPreferencesUtil.put(
+                                        context,
+                                        WEB_VERSION,
+                                        version
+                                    )
+                                hideLoad()
+                            }
                         }
                     }
 

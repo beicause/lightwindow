@@ -8,7 +8,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.room.Room
 import com.qingcheng.base.ACTION_START_CALENDAR
+import com.qingcheng.base.ENABLE_SENSOR
 import com.qingcheng.base.uiWebViewServiceName
+import com.qingcheng.base.util.SharedPreferencesUtil
 import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.base.util.VibratorUtil
 import com.qingcheng.calendar.R
@@ -36,7 +38,7 @@ class CalendarNoticeService : Service() {
     private val mainChannelName = "事件通知"
     private lateinit var mainNotificationBuilder: NotificationBuilder
 
-    private lateinit var screenStateReceiver: ScreenStateReceiver
+    private var screenStateReceiver: ScreenStateReceiver? = null
     private lateinit var dataBase: EventDataBase
 
     private var lastNoticeEvent: Event? = null
@@ -46,21 +48,24 @@ class CalendarNoticeService : Service() {
     }
 
     override fun onCreate() {
-        SensorListener.init(this)
-        if (!SensorListener.isAvailable()){
-            ToastUtil.showToast("您的手机不支持重力传感器，无法运行日程表")
-            stopSelf()
-            return
-        }
+
         ScreenStateReceiver.init(this)
         initNotice()
         startForeground(mainNoticeId, mainNotificationBuilder.build())
-        startListener()
         setAlarmAndMainNotice()
+        if (SharedPreferencesUtil.getBoolean(this, ENABLE_SENSOR)) {
+            SensorListener.init(this)
+            if (!SensorListener.isAvailable()) {
+                ToastUtil.showToast("您的手机不支持重力传感器")
+                stopSelf()
+                return
+            }
+            startListener()
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.i("coreService", intent?.action ?: "null")
+        Log.i(this::class.qualifiedName, intent?.action ?: "null")
         when (intent?.action) {
             NOTICE_ACTION -> {
                 Log.i("提醒", lastNoticeEvent.toString())
@@ -88,11 +93,13 @@ class CalendarNoticeService : Service() {
 
     override fun onDestroy() {
         ToastUtil.context = null
-        if (!SensorListener.isAvailable()) return
         dataBase.close()
-        SensorListener.disable()
-        screenStateReceiver.disable()
         stopForeground(true)
+        if (SharedPreferencesUtil.getBoolean(this, ENABLE_SENSOR) && SensorListener.isEnable) {
+            SensorListener.disable()
+            screenStateReceiver?.disable()
+            screenStateReceiver = null
+        }
     }
 
     /**
@@ -108,7 +115,7 @@ class CalendarNoticeService : Service() {
             calendar.set(Calendar.MINUTE, 0)
             calendar.set(Calendar.SECOND, 0)
             calendar.set(Calendar.MILLISECOND, 0)
-            calendar.time.time+24*3600*1000
+            calendar.time.time + 24 * 3600 * 1000
         })
         dataBase = Room.databaseBuilder(applicationContext, EventDataBase::class.java, "events")
             .enableMultiInstanceInvalidation().build()
@@ -244,22 +251,36 @@ class CalendarNoticeService : Service() {
      * 开启锁屏监听和重力传感器监听
      * */
     private fun startListener() {
-        var f = true
+        var openable = true
         val km = this.getSystemService(KEYGUARD_SERVICE) as KeyguardManager
+        var time: Long = 0
+        var isRunning = false
         SensorListener.apply {
             onTrigger = {
                 it?.let {
                     if (!km.isKeyguardLocked) {
-                        if (it.values[2] < -8 && f) {
-                            VibratorUtil.vibrate(this@CalendarNoticeService, 100)
-                            startService(
-                                Intent().apply {
+                        if (it.values[2] < -8) {
+                            if (openable) {
+                                VibratorUtil.vibrate(this@CalendarNoticeService, 100)
+                                time = Date().time
+                                startService(
+                                    Intent().apply {
+                                        setClassName(
+                                            this@CalendarNoticeService,
+                                            uiWebViewServiceName
+                                        )
+                                        action = ACTION_START_CALENDAR
+                                    }
+                                )
+                                isRunning = true
+                                openable = false
+                            } else if (isRunning && Date().time - time > 500) {
+                                isRunning = false
+                                stopService(Intent().apply {
                                     setClassName(this@CalendarNoticeService, uiWebViewServiceName)
-                                    action = ACTION_START_CALENDAR
-                                }
-                            )
-                            f = false
-                        } else if (it.values[2] > 1) f = true
+                                })
+                            }
+                        } else if (it.values[2] > 1) openable = true
                     }
                 }
             }
@@ -271,9 +292,9 @@ class CalendarNoticeService : Service() {
             }
             onScreenOff = {
                 SensorListener.disable()
-//                stopService(Intent().apply {
-//                    setClassName(this@CalendarNoticeService, webViewServiceName)
-//                })
+                stopService(Intent().apply {
+                    setClassName(this@CalendarNoticeService, uiWebViewServiceName)
+                })
             }
             enable()
         }

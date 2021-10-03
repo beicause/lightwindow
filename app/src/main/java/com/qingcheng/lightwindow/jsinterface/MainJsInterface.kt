@@ -5,6 +5,7 @@ import android.app.Service
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.view.View
@@ -15,14 +16,12 @@ import com.qingcheng.base.service.VersionService
 import com.qingcheng.base.util.ScreenUtil
 import com.qingcheng.base.util.SharedPreferencesUtil
 import com.qingcheng.base.util.ToastUtil
-import com.qingcheng.base.util.VersionUtil
 import com.qingcheng.base.view.BaseFloatWindow
 import com.qingcheng.base.view.ViewManager
 import com.qingcheng.calendar.service.CalendarNoticeService
 import com.qingcheng.lightwindow.UIWebViewService
 import com.qingcheng.lightwindow.view.ZoomView
 import com.umeng.commonsdk.UMConfigure
-import kotlinx.coroutines.runBlocking
 
 class MainJsInterface(
     private val context: Context,
@@ -116,7 +115,10 @@ class MainJsInterface(
     }
 
     @JavascriptInterface
-    fun checkVersion(): String = runBlocking { VersionUtil.checkVersion(context) }
+    fun getAppVersion(): String =
+        context.packageManager.getPackageInfo(context.packageName, 0).let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) it.longVersionCode else it.versionCode
+        }.toString()
 
     @JavascriptInterface
     fun showVersionUpdate() = context.startService(Intent(context, VersionService::class.java))

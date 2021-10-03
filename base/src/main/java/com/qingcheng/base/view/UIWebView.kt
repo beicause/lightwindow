@@ -13,7 +13,6 @@ import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.os.postDelayed
 import com.qingcheng.base.MAIN_HEIGHT
 import com.qingcheng.base.MAIN_WIDTH
 import com.qingcheng.base.R
@@ -125,7 +124,16 @@ class UIWebView(val context: Context, val service: Class<out Service>) :
         showLoad()
     }
 
+    private val runnable = {
+        if (view.findViewById<ConstraintLayout>(R.id.cl_loads).animation != null)
+            view.findViewById<TextView>(
+                R.id.tv_reload
+            ).visibility = View.VISIBLE
+    }
+
     fun showLoad() {
+        val h = Handler(Looper.getMainLooper())
+        h.removeCallbacks(runnable)
         view.findViewById<ConstraintLayout>(R.id.cl_mask).visibility = View.VISIBLE
         view.findViewById<WebView>(R.id.webview).visibility = View.GONE
         view.findViewById<TextView>(R.id.tv_reload).visibility = View.GONE
@@ -136,12 +144,7 @@ class UIWebView(val context: Context, val service: Class<out Service>) :
             animation = anim
         }
         anim.start()
-        Handler(Looper.getMainLooper()).postDelayed(2000) {
-            if (view.findViewById<ConstraintLayout>(R.id.cl_loads).animation != null)
-                view.findViewById<TextView>(
-                    R.id.tv_reload
-                ).visibility = View.VISIBLE
-        }
+        h.postDelayed(runnable, 4000)
     }
 
     fun hideLoad() {

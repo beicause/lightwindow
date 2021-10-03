@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import com.qingcheng.base.IGNORE_VERSION
+import com.qingcheng.base.SP_CACHE_NAME
 import com.qingcheng.base.WEB_VERSION
 import com.qingcheng.base.runOnUI
 import com.qingcheng.base.service.VersionService
@@ -52,13 +53,23 @@ object VersionUtil {
             return
         }
         val versions = JSONObject(json)
+        // TODO
+        Log.i(
+            "isIgnore",
+            "." + context.getSharedPreferences(SP_CACHE_NAME, Context.MODE_MULTI_PROCESS)
+                .getString(
+                    IGNORE_VERSION, "null"
+                )
+        )
         if (versions.getBoolean("is_app_update"))
-            if (SharedPreferencesUtil.getString(
-                    context,
-                    IGNORE_VERSION
-                ) != versions.getString("app_version")
-            )
+            if (context.getSharedPreferences(SP_CACHE_NAME, Context.MODE_MULTI_PROCESS)
+                    .getString(
+                        IGNORE_VERSION, "null"
+                    ) != versions.getString("app_version")
+            ) {
+                context.stopService(Intent(context, VersionService::class.java))
                 context.startService(Intent(context, VersionService::class.java))
+            }
         if (versions.getBoolean("is_web_update"))
             FileUtil.deleteDir(context.cacheDir)
     }

@@ -48,6 +48,7 @@ class UIWebViewService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent == null || intent.action == null) throw Exception("未指定action")
+        Log.i("uiWebview-action", "." + intent.action)
         MainScope().launch {
             VersionUtil.checkAndShowUpdate(this@UIWebViewService)
         }

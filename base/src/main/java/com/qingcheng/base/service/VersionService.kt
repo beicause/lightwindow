@@ -11,8 +11,7 @@ import android.os.Environment
 import android.os.IBinder
 import android.util.Log
 import androidx.core.content.FileProvider
-import com.qingcheng.base.IGNORE_VERSION
-import com.qingcheng.base.uiWebViewServiceName
+import com.qingcheng.base.*
 import com.qingcheng.base.util.*
 import com.qingcheng.base.view.DialogView
 import com.qingcheng.base.view.ViewManager
@@ -22,8 +21,6 @@ import org.json.JSONObject
 import java.io.File
 
 class VersionService : Service() {
-
-    private val apkUrl = "https://qingcheng.asia/app-release.apk"
 
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -44,33 +41,52 @@ class VersionService : Service() {
                 val message = json.getString("version_info")
                 viewManager.new<DialogView>(DialogView(this@VersionService)).apply {
                     maskClick = {
+                        if (forceUpdate) {
+                            stopService(Intent().apply {
+                                setClassName(this@VersionService, uiWebViewServiceName)
+                            })
+                            stopService(Intent().apply {
+                                setClassName(this@VersionService, calendarNoticeService)
+                            })
+                        }
                         zoomOut()
                         stopSelf()
                     }
-                    title = "发现新版本"
+                    title = if (forceUpdate) "发现新版本，该版本必须更新" else "发现新版本"
                     content = message
-                    confirmText = if (!forceUpdate) "更新" else "强制性更新"
+                    confirmText = if (!forceUpdate) "更新" else "必要更新"
                     cancelText = if (!forceUpdate) "忽略" else "退出"
                     confirmClick = {
                         zoomOut()
                         downloadApp(this@VersionService, appVersion)
                     }
                     cancelClick = {
-                        if (!forceUpdate) SharedPreferencesUtil.put(
-                            this@VersionService,
-                            IGNORE_VERSION,
-                            appVersion
-                        )
+
+                        if (!forceUpdate) this@VersionService
+                            .getSharedPreferences(SP_CACHE_NAME, Context.MODE_MULTI_PROCESS).edit()
+                            .putString(
+                                IGNORE_VERSION, appVersion
+                            ).apply() else {
+                            stopService(Intent().apply {
+                                setClassName(this@VersionService, uiWebViewServiceName)
+                            })
+                            stopService(Intent().apply {
+                                setClassName(this@VersionService, calendarNoticeService)
+                            })
+                        }
                         Log.i(
                             this::class.qualifiedName, "ignore this version: ${
-                                SharedPreferencesUtil.getString(
-                                    this@VersionService,
-                                    IGNORE_VERSION
+                                this@VersionService.getSharedPreferences(
+                                    SP_CACHE_NAME,
+                                    Context.MODE_MULTI_PROCESS
+                                ).getString(
+                                    IGNORE_VERSION, "null"
                                 )
                             }"
                         )
                         zoomOut()
                         stopSelf()
+
                     }
                     zoomIn()
                 }
@@ -112,7 +128,7 @@ class VersionService : Service() {
             ToastUtil.showToast("开始下载")
             val id = manager.enqueue(
                 DownloadManager.Request(
-                    Uri.parse(apkUrl)
+                    Uri.parse("$INDEX_URL/$apkName")
                 ).apply {
                     setMimeType("application/vnd.android.package-archive")
                     setDestinationInExternalFilesDir(

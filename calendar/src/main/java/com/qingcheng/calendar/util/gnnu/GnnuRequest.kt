@@ -174,10 +174,10 @@ object GnnuRequest {
                 endWeek = it[1].substring(0, it[1].indexOf('周')).toInt()
                 isStep = it[1][it[1].length - 2] == '单'
             }
-            val calendar = Calendar.getInstance()
+            val calendar = Calendar.getInstance(Locale.CHINA)
             for (w in startWeek..endWeek step if (isStep) 2 else 1) {
                 calendar.time = start
-                calendar.set(Calendar.DAY_OF_WEEK, if (xqj == 7) 0 else xqj)
+                calendar.set(Calendar.DAY_OF_WEEK, xqj % 7 + 1)
                 calendar.add(Calendar.WEEK_OF_YEAR, w - 1)
                 val day = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).format(calendar.time)
                 list.add(Event(title, time, detail, day))

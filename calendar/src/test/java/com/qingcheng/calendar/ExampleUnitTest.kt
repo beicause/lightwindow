@@ -1,8 +1,8 @@
 package com.qingcheng.calendar
 
-import com.qingcheng.calendar.util.gnnu.GnnuRequest
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
+import java.util.*
 
 
 /**
@@ -17,6 +17,9 @@ class ExampleUnitTest {
 }
 
 fun main() {
-    runBlocking { GnnuRequest.getGnnuSchedule("", "") }
+    runBlocking {
+        val cld = Calendar.getInstance(Locale.CHINA)
+        println(cld.get(Calendar.DAY_OF_WEEK))
+    }
 }
 

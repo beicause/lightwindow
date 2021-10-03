@@ -33,3 +33,11 @@
 -keep public class com.qingcheng.lightwindow.R$*{
 public static final int *;
 }
+
+-assumenosideeffects class android.util.Log{
+    public static int d(...);
+    public static int v(...);
+    public static int i(...);
+    public static int e(...);
+    public static int w(...);
+}

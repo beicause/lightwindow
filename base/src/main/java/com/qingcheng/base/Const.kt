@@ -2,13 +2,15 @@ package com.qingcheng.base
 
 import kotlinx.coroutines.*
 
+const val isTest = false
 const val packageName = "com.qingcheng.lightwindow"
 const val ACTION_START_CALENDAR = "$packageName.ACTION_START_CALENDAR"
 const val ACTION_START_MAIN = "$packageName.ACTION_START_MAIN"
 const val uiWebViewServiceName = "$packageName.UIWebViewService"
 
-const val CALENDAR_URL = "https://qingcheng.asia/calendar"
-const val MAIN_URL = "https://qingcheng.asia/main"
+val CALENDAR_URL = "https://${if (isTest) "www." else ""}qingcheng.asia/calendar"
+val MAIN_URL = "https://${if (isTest) "www." else ""}qingcheng.asia/main"
+
 const val JS_INTERFACE_NAME = "Android"
 
 //缓存

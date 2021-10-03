@@ -61,6 +61,14 @@ class VersionService : Service() {
                             IGNORE_VERSION,
                             appVersion
                         )
+                        Log.i(
+                            this::class.qualifiedName, "ignore this version: ${
+                                SharedPreferencesUtil.getString(
+                                    this@VersionService,
+                                    IGNORE_VERSION
+                                )
+                            }"
+                        )
                         zoomOut()
                         stopSelf()
                     }

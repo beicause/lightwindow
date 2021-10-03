@@ -7,10 +7,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.room.Room
-import com.qingcheng.base.ACTION_START_CALENDAR
-import com.qingcheng.base.ENABLE_SENSOR
-import com.qingcheng.base.uiWebViewServiceName
-import com.qingcheng.base.util.SharedPreferencesUtil
+import com.qingcheng.base.*
 import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.base.util.VibratorUtil
 import com.qingcheng.calendar.R
@@ -30,7 +27,8 @@ import java.util.*
  * */
 class CalendarNoticeService : Service() {
     companion object {
-        const val NOTICE_ACTION = "com.qingcheng.lightwindow.NOTICE_ACTION"
+        const val NOTICE_ACTION = "$packageName.NOTICE_ACTION"
+        const val SENSOR_CHANGE_ACTION = "$packageName.SENSOR_CHANGE_ACTION"
     }
 
     private val mainNoticeId = 1
@@ -38,7 +36,6 @@ class CalendarNoticeService : Service() {
     private val mainChannelName = "事件通知"
     private lateinit var mainNotificationBuilder: NotificationBuilder
 
-    private var screenStateReceiver: ScreenStateReceiver? = null
     private lateinit var dataBase: EventDataBase
 
     private var lastNoticeEvent: Event? = null
@@ -48,25 +45,51 @@ class CalendarNoticeService : Service() {
     }
 
     override fun onCreate() {
-
-        ScreenStateReceiver.init(this)
         initNotice()
         startForeground(mainNoticeId, mainNotificationBuilder.build())
         setAlarmAndMainNotice()
-        if (SharedPreferencesUtil.getBoolean(this, ENABLE_SENSOR)) {
+        // TODO shared prefs 多进程不可靠
+        Log.i(
+            "传感器",
+            getSharedPreferences(SP_CACHE_NAME, MODE_MULTI_PROCESS).getBoolean(ENABLE_SENSOR, false)
+                .toString()
+        )
+        if (getSharedPreferences(SP_CACHE_NAME, MODE_MULTI_PROCESS).getBoolean(
+                ENABLE_SENSOR,
+                false
+            )
+        ) {
+            ScreenStateReceiver.init(this)
             SensorListener.init(this)
             if (!SensorListener.isAvailable()) {
                 ToastUtil.showToast("您的手机不支持重力传感器")
                 stopSelf()
-                return
-            }
-            startListener()
+            } else startListener()
         }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.i(this::class.qualifiedName, intent?.action ?: "null")
         when (intent?.action) {
+            SENSOR_CHANGE_ACTION -> {
+                Log.i(
+                    "传感器",
+                    intent.getBooleanExtra("sensor", false).toString()
+                )
+                if (intent.getBooleanExtra("sensor", false)) {
+                    ScreenStateReceiver.init(this)
+                    SensorListener.init(this)
+                    if (!SensorListener.isAvailable()) {
+                        ToastUtil.showToast("您的手机不支持重力传感器")
+                        stopSelf()
+                    } else startListener()
+                } else {
+                    if (SensorListener.isEnable)
+                        SensorListener.disable()
+                    if (ScreenStateReceiver.isEnable)
+                        ScreenStateReceiver.disable()
+                }
+            }
             NOTICE_ACTION -> {
                 Log.i("提醒", lastNoticeEvent.toString())
                 NotificationManagerCompat.from(this)
@@ -95,11 +118,10 @@ class CalendarNoticeService : Service() {
         ToastUtil.context = null
         dataBase.close()
         stopForeground(true)
-        if (SharedPreferencesUtil.getBoolean(this, ENABLE_SENSOR) && SensorListener.isEnable) {
+        if (SensorListener.isEnable)
             SensorListener.disable()
-            screenStateReceiver?.disable()
-            screenStateReceiver = null
-        }
+        if (ScreenStateReceiver.isEnable)
+            ScreenStateReceiver.disable()
     }
 
     /**
@@ -286,7 +308,7 @@ class CalendarNoticeService : Service() {
             }
             enable()
         }
-        screenStateReceiver = ScreenStateReceiver.apply {
+        ScreenStateReceiver.apply {
             onScreenOn = {
                 SensorListener.enable()
             }

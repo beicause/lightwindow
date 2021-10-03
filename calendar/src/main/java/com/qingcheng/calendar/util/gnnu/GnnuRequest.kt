@@ -19,7 +19,7 @@ object GnnuRequest {
     private val dispatcher = Dispatchers.IO
     suspend fun getGnnuSchedule(username: String, password: String): List<Event> {
         val cookie = login(username, password)
-        println(cookie)
+//        println(cookie)
         val calendar = Calendar.getInstance()
         val xqm = if (calendar.get(Calendar.MONTH) >= 8) 3 else 12
         val json = withContext(dispatcher) {

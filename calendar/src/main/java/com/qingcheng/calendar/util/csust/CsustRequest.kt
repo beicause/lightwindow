@@ -26,7 +26,7 @@ object CsustRequest {
                 val client = OkHttpClient().newBuilder().followRedirects(false).build()
                 val kc = mutableListOf<Deferred<Unit>>()
                 val cookie = getCookie(encoded, client)
-                println(cookie)
+//                println(cookie)
                 for (i in if (dayOfYear >= 235) 0 until 25 else -25..0) {
                     kc.add(async {
                         set(Calendar.DAY_OF_YEAR, 235 + i * 7)

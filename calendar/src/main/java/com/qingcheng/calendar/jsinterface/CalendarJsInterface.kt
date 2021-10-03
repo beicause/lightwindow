@@ -16,6 +16,7 @@ import com.qingcheng.calendar.database.EventDataBase
 import com.qingcheng.calendar.database.getTime
 import com.qingcheng.calendar.database.getTimeString
 import com.qingcheng.calendar.service.AlarmManagerUtil
+import com.qingcheng.calendar.service.CalendarNoticeService
 import com.qingcheng.calendar.util.csust.CsustRequest
 import com.qingcheng.calendar.util.gnnu.GnnuRequest
 import com.umeng.commonsdk.UMConfigure
@@ -178,7 +179,18 @@ class CalendarJsInterface(
 
     @JavascriptInterface
     fun setEnableSensor(isEnable: String) {
+//        Log.i("asdf","set $isEnable")
         SharedPreferencesUtil.put(context, ENABLE_SENSOR, isEnable == "true")
+        context.startService(Intent(context, CalendarNoticeService::class.java).apply {
+            action = CalendarNoticeService.SENSOR_CHANGE_ACTION
+            putExtra("sensor", isEnable == "true")
+        })
+    }
+
+    @JavascriptInterface
+    fun getEnableSensor(): String {
+//        Log.i("asdf","get "+SharedPreferencesUtil.getBoolean(context, ENABLE_SENSOR).toString())
+        return SharedPreferencesUtil.getBoolean(context, ENABLE_SENSOR).toString()
     }
 
     private fun stringToList(events: String): List<Event> {

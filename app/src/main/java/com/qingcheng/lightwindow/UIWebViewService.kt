@@ -16,10 +16,12 @@ import com.qingcheng.lightwindow.jsinterface.MainJsInterface
 import com.tencent.smtt.sdk.WebView
 import com.umeng.analytics.MobclickAgent
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class UIWebViewService : Service() {
 
+    private val scope = MainScope()
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
@@ -42,14 +44,18 @@ class UIWebViewService : Service() {
                 }
             }
         dataBase =
-            Room.databaseBuilder(applicationContext, EventDataBase::class.java, "events")
+            Room.databaseBuilder(
+                applicationContext,
+                EventDataBase::class.java,
+                EventDataBase.DATABASE_NAME
+            )
                 .enableMultiInstanceInvalidation().build()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent == null || intent.action == null) throw Exception("未指定action")
         Log.i("uiWebview-action", "." + intent.action)
-        MainScope().launch {
+        scope.launch {
             VersionUtil.checkAndShowUpdate(this@UIWebViewService)
         }
         when (intent.action) {
@@ -86,6 +92,7 @@ class UIWebViewService : Service() {
     }
 
     override fun onDestroy() {
+        scope.cancel()
         MobclickAgent.onEvent(this, "WEBVIEW_SERVICE_END")
         dataBase?.close()
         viewManager?.destroyAll()

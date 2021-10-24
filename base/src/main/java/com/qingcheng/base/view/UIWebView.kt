@@ -13,11 +13,9 @@ import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.qingcheng.base.MAIN_HEIGHT
-import com.qingcheng.base.MAIN_WIDTH
-import com.qingcheng.base.R
-import com.qingcheng.base.WEB_VERSION
+import com.qingcheng.base.*
 import com.qingcheng.base.util.*
+import com.qingcheng.base.util.PreferencesUtil.not
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage
 import com.tencent.smtt.export.external.interfaces.WebResourceError
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest
@@ -25,6 +23,7 @@ import com.tencent.smtt.sdk.WebChromeClient
 import com.tencent.smtt.sdk.WebSettings
 import com.tencent.smtt.sdk.WebView
 import com.tencent.smtt.sdk.WebViewClient
+import kotlinx.coroutines.*
 
 /**
  * 主界面悬浮窗类
@@ -34,20 +33,14 @@ class UIWebView(val context: Context, val service: Class<out Service>) :
     BaseFloatWindow<View>(context, View.inflate(context, R.layout.webview, null)) {
     private var isError = false
     private var url: String? = null
+    private val scope = MainScope()
 
     init {
         applyParams {
-            width =
-                if (SharedPreferencesUtil.getInt(
-                        context,
-                        MAIN_WIDTH
-                    ) == 0
-                ) 350.toIntDip()
-                else SharedPreferencesUtil.getInt(context, MAIN_WIDTH)
-            height =
-                if (SharedPreferencesUtil.getInt(context, MAIN_HEIGHT) == 0)
-                    620.toIntDip()
-                else SharedPreferencesUtil.getInt(context, MAIN_HEIGHT)
+            val w = PreferencesUtil.getString(context, MAIN_WIDTH)
+            val h = PreferencesUtil.getString(context, MAIN_HEIGHT)
+            width = w?.toInt() ?: 350.toIntDip()
+            height = h?.toInt() ?: 620.toIntDip()
         }
         applyView {
             findViewById<ImageView>(R.id.iv_close).setOnClickListener {
@@ -75,15 +68,22 @@ class UIWebView(val context: Context, val service: Class<out Service>) :
                             Log.i("web版本", it)
                             if (it != "null") {
                                 val version = it.replace("\"", "")
-                                if (SharedPreferencesUtil.getString(context, WEB_VERSION) == "null"
-                                    || SharedPreferencesUtil.getString(context, WEB_VERSION)
+                                val localVersion =
+                                    PreferencesUtil.getString(
+                                        context,
+                                        WEB_VERSION
+                                    )
+
+                                if (localVersion == null
+                                    || localVersion
                                         .toInt() < version.toInt()
-                                )
-                                    SharedPreferencesUtil.put(
+                                ) scope.launch {
+                                    PreferencesUtil.putString(
                                         context,
                                         WEB_VERSION,
                                         version
                                     )
+                                }
                                 hideLoad()
                             }
                         }
@@ -94,6 +94,7 @@ class UIWebView(val context: Context, val service: Class<out Service>) :
                         request: WebResourceRequest?,
                         error: WebResourceError?
                     ) {
+                        if (error?.errorCode == 404) return
                         Log.e(
                             this@UIWebView::class.qualifiedName,
                             "error " + error?.errorCode + error?.description
@@ -127,8 +128,11 @@ class UIWebView(val context: Context, val service: Class<out Service>) :
     private val runnable = {
         if (view.findViewById<ConstraintLayout>(R.id.cl_loads).animation != null)
             view.findViewById<TextView>(
-                R.id.tv_reload
-            ).visibility = View.VISIBLE
+                R.id.tv_load_tips
+            ).apply {
+                text = "长时间无响应请点击重试"
+                visibility = View.VISIBLE
+            }
     }
 
     fun showLoad() {
@@ -136,7 +140,12 @@ class UIWebView(val context: Context, val service: Class<out Service>) :
         h.removeCallbacks(runnable)
         view.findViewById<ConstraintLayout>(R.id.cl_mask).visibility = View.VISIBLE
         view.findViewById<WebView>(R.id.webview).visibility = View.GONE
-        view.findViewById<TextView>(R.id.tv_reload).visibility = View.GONE
+        view.findViewById<TextView>(R.id.tv_load_tips).apply {
+            if (!PreferencesUtil.getString(context, NOT_FIRST)) {
+                visibility = View.VISIBLE
+                text = "首次加载需要一定时间"
+            } else visibility = View.GONE
+        }
         val anim = AnimationUtils.loadAnimation(context, R.anim.rotate)
         anim.interpolator = LinearInterpolator()
         view.findViewById<ConstraintLayout>(R.id.cl_loads).apply {
@@ -148,9 +157,14 @@ class UIWebView(val context: Context, val service: Class<out Service>) :
     }
 
     fun hideLoad() {
+        if (!PreferencesUtil.getString(context, NOT_FIRST)) scope.launch {
+            PreferencesUtil.putString(
+                context, NOT_FIRST, true.toString()
+            )
+        }
         view.findViewById<WebView>(R.id.webview).visibility = View.VISIBLE
         view.findViewById<ConstraintLayout>(R.id.cl_mask).visibility = View.GONE
-        view.findViewById<TextView>(R.id.tv_reload).visibility = View.GONE
+        view.findViewById<TextView>(R.id.tv_load_tips).visibility = View.GONE
         view.findViewById<ConstraintLayout>(R.id.cl_loads).apply {
             if (animation != null) animation.cancel()
             animation = null

@@ -8,6 +8,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.room.Room
 import com.qingcheng.base.*
+import com.qingcheng.base.util.PreferencesUtil
+import com.qingcheng.base.util.PreferencesUtil.not
 import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.base.util.VibratorUtil
 import com.qingcheng.calendar.R
@@ -27,10 +29,11 @@ import java.util.*
  * */
 class CalendarNoticeService : Service() {
     companion object {
-        const val NOTICE_ACTION = "$packageName.NOTICE_ACTION"
-        const val SENSOR_CHANGE_ACTION = "$packageName.SENSOR_CHANGE_ACTION"
+        const val NOTICE_ACTION = "$PACKAGE_NAME.NOTICE_ACTION"
+        const val SENSOR_CHANGE_ACTION = "$PACKAGE_NAME.SENSOR_CHANGE_ACTION"
     }
 
+    private val scope = MainScope()
     private val mainNoticeId = 1
     private val mainChannelId = "1"
     private val mainChannelName = "事件通知"
@@ -48,17 +51,7 @@ class CalendarNoticeService : Service() {
         initNotice()
         startForeground(mainNoticeId, mainNotificationBuilder.build())
         setAlarmAndMainNotice()
-        // TODO shared prefs 多进程不可靠
-        Log.i(
-            "传感器",
-            getSharedPreferences(SP_CACHE_NAME, MODE_MULTI_PROCESS).getBoolean(ENABLE_SENSOR, false)
-                .toString()
-        )
-        if (getSharedPreferences(SP_CACHE_NAME, MODE_MULTI_PROCESS).getBoolean(
-                ENABLE_SENSOR,
-                false
-            )
-        ) {
+        if (!!PreferencesUtil.getString(this@CalendarNoticeService, ENABLE_SENSOR)) {
             ScreenStateReceiver.init(this)
             SensorListener.init(this)
             if (!SensorListener.isAvailable()) {
@@ -94,7 +87,7 @@ class CalendarNoticeService : Service() {
                 Log.i("提醒", lastNoticeEvent.toString())
                 NotificationManagerCompat.from(this)
                     .notify(mainNoticeId, mainNotificationBuilder.build())
-                MainScope().launch {
+                scope.launch {
                     delay(2000)
                     withContext(Dispatchers.IO) {
                         dataBase.eventDao().getEvents().first()
@@ -115,6 +108,7 @@ class CalendarNoticeService : Service() {
     }
 
     override fun onDestroy() {
+        scope.cancel()
         ToastUtil.context = null
         dataBase.close()
         stopForeground(true)
@@ -139,9 +133,13 @@ class CalendarNoticeService : Service() {
             calendar.set(Calendar.MILLISECOND, 0)
             calendar.time.time + 24 * 3600 * 1000
         })
-        dataBase = Room.databaseBuilder(applicationContext, EventDataBase::class.java, "events")
+        dataBase = Room.databaseBuilder(
+            applicationContext,
+            EventDataBase::class.java,
+            EventDataBase.DATABASE_NAME
+        )
             .enableMultiInstanceInvalidation().build()
-        MainScope().launch {
+        scope.launch {
             withContext(Dispatchers.IO) {
                 dataBase.eventDao().getEvents().collect { events ->
                     val lastNotice = mainNotificationBuilder.toString()

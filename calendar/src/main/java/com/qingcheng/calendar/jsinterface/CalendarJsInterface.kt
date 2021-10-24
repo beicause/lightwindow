@@ -8,7 +8,7 @@ import android.util.Log
 import android.webkit.JavascriptInterface
 import androidx.core.os.postDelayed
 import com.qingcheng.base.*
-import com.qingcheng.base.util.SharedPreferencesUtil
+import com.qingcheng.base.util.PreferencesUtil
 import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.base.view.BaseFloatWindow
 import com.qingcheng.calendar.database.Event
@@ -32,6 +32,7 @@ class CalendarJsInterface(
     private val floatWindow: BaseFloatWindow<*>,
     private val dataBase: EventDataBase,
 ) {
+
     @JavascriptInterface
     fun redirectToMain() {
         context.startService(Intent().apply {
@@ -167,11 +168,13 @@ class CalendarJsInterface(
     }
 
     @JavascriptInterface
-    fun getPolicy(): String = SharedPreferencesUtil.getString(context, POLICY)
+    fun getPolicy(): String =
+        PreferencesUtil.getString(context, POLICY) ?: "null"
+
 
     @JavascriptInterface
     fun setPolicy(value: String) {
-        SharedPreferencesUtil.put(context, POLICY, value)
+        PreferencesUtil.putString(context, POLICY, value)
         if (value != "null")
             if (!UMConfigure.isInit)
                 UMConfigure.init(context, appKey, channel, UMConfigure.DEVICE_TYPE_PHONE, "")
@@ -179,8 +182,7 @@ class CalendarJsInterface(
 
     @JavascriptInterface
     fun setEnableSensor(isEnable: String) {
-//        Log.i("asdf","set $isEnable")
-        SharedPreferencesUtil.put(context, ENABLE_SENSOR, isEnable == "true")
+        PreferencesUtil.putString(context, ENABLE_SENSOR, isEnable)
         context.startService(Intent(context, CalendarNoticeService::class.java).apply {
             action = CalendarNoticeService.SENSOR_CHANGE_ACTION
             putExtra("sensor", isEnable == "true")
@@ -188,10 +190,8 @@ class CalendarJsInterface(
     }
 
     @JavascriptInterface
-    fun getEnableSensor(): String {
-//        Log.i("asdf","get "+SharedPreferencesUtil.getBoolean(context, ENABLE_SENSOR).toString())
-        return SharedPreferencesUtil.getBoolean(context, ENABLE_SENSOR).toString()
-    }
+    fun getEnableSensor(): String =
+        PreferencesUtil.getString(context, ENABLE_SENSOR).toString()
 
     private fun stringToList(events: String): List<Event> {
         val eventsList: MutableList<Event> = mutableListOf()

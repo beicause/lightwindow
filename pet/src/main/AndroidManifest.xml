@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.qingcheng.pet">
-
-    <application>
-        <!--    <service android:name=".PetCoreService"-->
-        <!--        android:enabled="true"-->
-        <!--        android:exported="false"/>-->
-    </application>
-</manifest>

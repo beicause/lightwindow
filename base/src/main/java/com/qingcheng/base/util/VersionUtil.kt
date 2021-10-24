@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import com.qingcheng.base.IGNORE_VERSION
-import com.qingcheng.base.SP_CACHE_NAME
+import com.qingcheng.base.NOT_FIRST
 import com.qingcheng.base.WEB_VERSION
 import com.qingcheng.base.runOnUI
 import com.qingcheng.base.service.VersionService
@@ -16,7 +16,7 @@ object VersionUtil {
         var isAppUpdate = false
         var isWebUpdate = false
         val localWebVersion =
-            SharedPreferencesUtil.getString(context, WEB_VERSION)
+            PreferencesUtil.getString(context, WEB_VERSION)
         val localAppVersion =
             context.packageManager.getPackageInfo(context.packageName, 0).let {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) it.longVersionCode else it.versionCode
@@ -48,29 +48,20 @@ object VersionUtil {
 
     suspend fun checkAndShowUpdate(context: Context) {
         val json = checkVersion(context)
-        if (json == "null") {
-            Log.e(this::class.simpleName, "version json is null")
-            return
-        }
+        if (json == "null") return
         val versions = JSONObject(json)
-        // TODO
-        Log.i(
-            "isIgnore",
-            "." + context.getSharedPreferences(SP_CACHE_NAME, Context.MODE_MULTI_PROCESS)
-                .getString(
-                    IGNORE_VERSION, "null"
-                )
-        )
         if (versions.getBoolean("is_app_update"))
-            if (context.getSharedPreferences(SP_CACHE_NAME, Context.MODE_MULTI_PROCESS)
-                    .getString(
-                        IGNORE_VERSION, "null"
-                    ) != versions.getString("app_version")
+            if (PreferencesUtil.getString(
+                    context,
+                    IGNORE_VERSION
+                ) != versions.getString("app_version")
             ) {
                 context.stopService(Intent(context, VersionService::class.java))
                 context.startService(Intent(context, VersionService::class.java))
             }
-        if (versions.getBoolean("is_web_update"))
+        if (versions.getBoolean("is_web_update")) {
             FileUtil.deleteDir(context.cacheDir)
+            PreferencesUtil.putString(context, NOT_FIRST, false.toString())
+        }
     }
 }

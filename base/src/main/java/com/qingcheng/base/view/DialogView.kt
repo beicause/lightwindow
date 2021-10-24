@@ -7,10 +7,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.qingcheng.base.MAIN_HEIGHT
 import com.qingcheng.base.MAIN_WIDTH
 import com.qingcheng.base.R
-import com.qingcheng.base.util.SharedPreferencesUtil
+import com.qingcheng.base.util.PreferencesUtil
 
 class DialogView(context: Context) :
     BaseFloatWindow<View>(context, View.inflate(context, R.layout.dialog_layout, null)) {
+
     var maskClick = {}
         set(value) {
             field = value
@@ -56,17 +57,10 @@ class DialogView(context: Context) :
 
     init {
         applyParams {
-            width =
-                if (SharedPreferencesUtil.getInt(
-                        context,
-                        MAIN_WIDTH
-                    ) == 0
-                ) 350.toIntDip()
-                else SharedPreferencesUtil.getInt(context, MAIN_WIDTH)
-            height =
-                if (SharedPreferencesUtil.getInt(context, MAIN_HEIGHT) == 0)
-                    620.toIntDip()
-                else SharedPreferencesUtil.getInt(context, MAIN_HEIGHT)
+            val w = PreferencesUtil.getString(context, MAIN_WIDTH)
+            val h = PreferencesUtil.getString(context, MAIN_HEIGHT)
+            width = w?.toInt() ?: 350.toIntDip()
+            height = h?.toInt() ?: 620.toIntDip()
         }
         title = ""
         content = ""

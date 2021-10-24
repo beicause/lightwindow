@@ -4,7 +4,7 @@ import android.app.Application
 import com.qingcheng.base.POLICY
 import com.qingcheng.base.appKey
 import com.qingcheng.base.channel
-import com.qingcheng.base.util.SharedPreferencesUtil
+import com.qingcheng.base.util.PreferencesUtil
 import com.umeng.analytics.MobclickAgent
 import com.umeng.commonsdk.UMConfigure
 
@@ -20,7 +20,8 @@ class App : Application() {
 
         MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.MANUAL)
 
-        if (SharedPreferencesUtil.getString(this, POLICY) != "null")
-            UMConfigure.init(this, appKey, channel, UMConfigure.DEVICE_TYPE_PHONE, "")
+        if (PreferencesUtil.getString(this@App, POLICY) != "null")
+            UMConfigure.init(this@App, appKey, channel, UMConfigure.DEVICE_TYPE_PHONE, "")
+
     }
 }

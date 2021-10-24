@@ -3,10 +3,8 @@
 ![band](https://gitee.com/beicause/lightwindow/raw/master/band.png)
 
 窗隙流光，轻量迅捷的多功能悬浮窗应用。包括Android项目和Vue项目，与传统的Activity界面构建方式不同，
-基于WindowManager和WebView构建悬浮窗服务，通过JavaScriptInterface实现Android原生功能和前端Vue项目通信。子功能项目：
-
-- 主界面[lightwindow_main](https://github.com/beicause/lightwindow_main)  
-- 日程表[lightwindow_calendar](https://github.com/beicause/lightwindow_calendar)
+基于WindowManager和WebView构建悬浮窗服务，通过JavaScriptInterface实现Android原生功能和前端Vue项目通信。  
+web项目：[lightwindow_webapp](https://github.com/beicause/lightwindow_webapp)
 
 ## 运行要求
 
@@ -14,8 +12,7 @@ Android系统，最低Android 8.0（API Level 26）
 
 ## 下载
 
-下载链接：<https://qingcheng.asia/app-release.apk>  
-网页预览 <https://qingcheng.asia/main>（部分功能不支持）
+网页链接：<https://qingcheng.asia>
 
 ## 特性
 
@@ -27,8 +24,6 @@ Android系统，最低Android 8.0（API Level 26）
 
 目前已实现以下功能：
 > 日程表：通知浮窗，便捷查看，支持导入教务课表  
-项目仓库[lightwindow_calendar](https://github.com/beicause/lightwindow_calendar)，
-网页预览 <https://qingcheng.asia/calendar>（部分功能不支持）
 
 - 通过通知栏和悬浮窗展示日程
 - 便捷添加，编辑，标记，设置提醒
@@ -39,18 +34,16 @@ Android系统，最低Android 8.0（API Level 26）
 
 ---
 >音乐谱：以字符构建乐谱  
-项目仓库[lightwindow_main](https://github.com/beicause/lightwindow_main)，
-网页预览 <https://qingcheng.asia/music>
 
 ## 项目结构
 
 | lightwindow||
 | ----  | ----  |
-|\|--app  | 项目入口，连接主界面[lightwindow_main](https://github.com/beicause/lightwindow_main) |
+|\|--app  | 项目入口，连接主界面 |
 |\|--base  | 其他模块依赖的一些工具类和基类 |
-|\|--calendar|运行通知服务，连接日程表[lightwindow_calendar](https://github.com/beicause/lightwindow_calendar)|
+|\|--calendar| 运行通知服务，连接日程表 |
 
-| lightwindow_main||
+| lightwindow_webapp||
 | ----  | ----  |
 |/  | 主页 |
 |/main | 功能和说明页面 |

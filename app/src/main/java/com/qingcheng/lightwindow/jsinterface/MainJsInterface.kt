@@ -13,8 +13,8 @@ import android.webkit.JavascriptInterface
 import androidx.core.os.postDelayed
 import com.qingcheng.base.*
 import com.qingcheng.base.service.VersionService
+import com.qingcheng.base.util.PreferencesUtil
 import com.qingcheng.base.util.ScreenUtil
-import com.qingcheng.base.util.SharedPreferencesUtil
 import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.base.view.BaseFloatWindow
 import com.qingcheng.base.view.ViewManager
@@ -52,8 +52,9 @@ class MainJsInterface(
                     width = height
                     height = t
                 }
-                SharedPreferencesUtil.put(context, MAIN_WIDTH, width)
-                SharedPreferencesUtil.put(context, MAIN_HEIGHT, height)
+                PreferencesUtil.putString(context, MAIN_WIDTH, width.toString())
+                PreferencesUtil.putString(context, MAIN_HEIGHT, height.toString())
+
             }
             floatWindow.zoomOut {
                 context.stopService(Intent(context, UIWebViewService::class.java))
@@ -124,11 +125,13 @@ class MainJsInterface(
     fun showVersionUpdate() = context.startService(Intent(context, VersionService::class.java))
 
     @JavascriptInterface
-    fun getPolicy(): String = SharedPreferencesUtil.getString(context, POLICY)
+    fun getPolicy(): String =
+        PreferencesUtil.getString(context, POLICY) ?: "null"
 
     @JavascriptInterface
     fun setPolicy(value: String) {
-        SharedPreferencesUtil.put(context, POLICY, value)
+        PreferencesUtil.putString(context, POLICY, value)
+
         if (value != "null") {
             if (!UMConfigure.isInit)
                 UMConfigure.init(context, appKey, channel, UMConfigure.DEVICE_TYPE_PHONE, "")

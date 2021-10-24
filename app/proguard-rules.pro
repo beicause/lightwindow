@@ -41,3 +41,7 @@ public static final int *;
     public static int e(...);
     public static int w(...);
 }
+
+-keepclassmembers class * extends androidx.datastore.preferences.protobuf.GeneratedMessageLite {
+    <fields>;
+}

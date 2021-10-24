@@ -15,30 +15,25 @@ import com.qingcheng.base.*
 import com.qingcheng.base.util.*
 import com.qingcheng.base.view.DialogView
 import com.qingcheng.base.view.ViewManager
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.io.File
 
 class VersionService : Service() {
-
+    private val scope = MainScope()
     override fun onBind(intent: Intent): IBinder? {
         return null
     }
 
     override fun onCreate() {
         val viewManager = ViewManager(this)
-        MainScope().launch {
-            try {
-                NetworkRequestUtil.getVersion().body?.string()
-            } catch (e: Exception) {
-                ToastUtil.showToast("网络异常或省流量模式限制")
-                null
-            }?.let { responseBody ->
+        scope.launch {
+            VersionUtil.checkVersion(this@VersionService).let { responseBody ->
                 val json = JSONObject(responseBody)
                 val appVersion = json.getString("app_version")
                 val forceUpdate = json.getBoolean("force_update")
                 val message = json.getString("version_info")
+
                 viewManager.new<DialogView>(DialogView(this@VersionService)).apply {
                     maskClick = {
                         if (forceUpdate) {
@@ -50,7 +45,6 @@ class VersionService : Service() {
                             })
                         }
                         zoomOut()
-                        stopSelf()
                     }
                     title = if (forceUpdate) "发现新版本，该版本必须更新" else "发现新版本"
                     content = message
@@ -61,12 +55,13 @@ class VersionService : Service() {
                         downloadApp(this@VersionService, appVersion)
                     }
                     cancelClick = {
-
-                        if (!forceUpdate) this@VersionService
-                            .getSharedPreferences(SP_CACHE_NAME, Context.MODE_MULTI_PROCESS).edit()
-                            .putString(
-                                IGNORE_VERSION, appVersion
-                            ).apply() else {
+                        if (!forceUpdate) runBlocking {
+                            PreferencesUtil
+                                .putString(
+                                    this@VersionService,
+                                    IGNORE_VERSION, appVersion
+                                )
+                        } else {
                             stopService(Intent().apply {
                                 setClassName(this@VersionService, uiWebViewServiceName)
                             })
@@ -74,16 +69,6 @@ class VersionService : Service() {
                                 setClassName(this@VersionService, calendarNoticeService)
                             })
                         }
-                        Log.i(
-                            this::class.qualifiedName, "ignore this version: ${
-                                this@VersionService.getSharedPreferences(
-                                    SP_CACHE_NAME,
-                                    Context.MODE_MULTI_PROCESS
-                                ).getString(
-                                    IGNORE_VERSION, "null"
-                                )
-                            }"
-                        )
                         zoomOut()
                         stopSelf()
 

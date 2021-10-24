@@ -5,5 +5,9 @@ import androidx.room.RoomDatabase
 
 @Database(entities = [Event::class],version = 1)
 abstract class EventDataBase :RoomDatabase(){
-    abstract fun eventDao():EventDao
+    companion object {
+        const val DATABASE_NAME = "events"
+    }
+
+    abstract fun eventDao(): EventDao
 }

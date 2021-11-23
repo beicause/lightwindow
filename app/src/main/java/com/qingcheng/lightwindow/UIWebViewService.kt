@@ -10,9 +10,8 @@ import com.qingcheng.base.R
 import com.qingcheng.base.util.*
 import com.qingcheng.base.view.UIWebView
 import com.qingcheng.base.view.ViewManager
+import com.qingcheng.calendar.CalendarJsInterface
 import com.qingcheng.calendar.database.EventDataBase
-import com.qingcheng.calendar.jsinterface.CalendarJsInterface
-import com.qingcheng.lightwindow.jsinterface.MainJsInterface
 import com.tencent.smtt.sdk.WebView
 import com.umeng.analytics.MobclickAgent
 import kotlinx.coroutines.MainScope

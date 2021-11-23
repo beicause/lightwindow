@@ -11,9 +11,9 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 112,
-      "versionName": "1.1.2",
-      "outputFile": "lightwindow-v1.1.2.apk"
+      "versionCode": 114,
+      "versionName": "1.1.4",
+      "outputFile": "lightwindow-v1.1.4.apk"
     }
   ],
   "elementType": "File"

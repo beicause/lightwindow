@@ -1,14 +1,12 @@
-package com.qingcheng.calendar.jsinterface
+package com.qingcheng.calendar
 
 import android.content.Context
 import android.content.Intent
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.webkit.JavascriptInterface
-import androidx.core.os.postDelayed
 import com.qingcheng.base.*
 import com.qingcheng.base.util.PreferencesUtil
+import com.qingcheng.base.util.ScreenUtil
 import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.base.view.BaseFloatWindow
 import com.qingcheng.calendar.database.Event
@@ -52,6 +50,15 @@ class CalendarJsInterface(
     @JavascriptInterface
     fun close() {
         floatWindow.view.post {
+            floatWindow.applyParams {
+                if (ScreenUtil.isLandscape(context)) {
+                    val t = width
+                    width = height
+                    height = t
+                }
+                PreferencesUtil.putString(context, MAIN_WIDTH, width.toString())
+                PreferencesUtil.putString(context, MAIN_HEIGHT, height.toString())
+            }
             floatWindow.rotateOut {
                 context.stopService(Intent().apply {
                     setClassName(context, uiWebViewServiceName)
@@ -60,16 +67,16 @@ class CalendarJsInterface(
         }
     }
 
-    @JavascriptInterface
-    fun exception(s: String) {
-        runOnUI { ToastUtil.showToast(s, isLong = true) }
-        floatWindow.rotateOut()
-        Handler(Looper.getMainLooper()).postDelayed(3000) {
-            context.stopService(Intent().apply {
-                setClassName(context, uiWebViewServiceName)
-            })
-        }
-    }
+//    @JavascriptInterface
+//    fun exception(s: String) {
+//        runOnUI { ToastUtil.showToast(s, isLong = true) }
+//        floatWindow.rotateOut()
+//        Handler(Looper.getMainLooper()).postDelayed(3000) {
+//            context.stopService(Intent().apply {
+//                setClassName(context, uiWebViewServiceName)
+//            })
+//        }
+//    }
 
     @JavascriptInterface
     fun addEvents(events: String) {

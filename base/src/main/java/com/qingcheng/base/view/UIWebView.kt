@@ -4,18 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
-import android.view.animation.AnimationUtils
-import android.view.animation.LinearInterpolator
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.qingcheng.base.*
 import com.qingcheng.base.util.*
-import com.qingcheng.base.util.PreferencesUtil.not
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage
 import com.tencent.smtt.export.external.interfaces.WebResourceError
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest
@@ -28,11 +21,10 @@ import kotlinx.coroutines.*
 /**
  * 主界面悬浮窗类
  * */
-@SuppressLint("SetJavaScriptEnabled")
+@SuppressLint("SetJavaScriptEnabled", "ClickableViewAccessibility")
 class UIWebView(val context: Context, val service: Class<out Service>) :
     BaseFloatWindow<View>(context, View.inflate(context, R.layout.webview, null)) {
     private var isError = false
-    private var url: String? = null
     private val scope = MainScope()
 
     init {
@@ -43,25 +35,11 @@ class UIWebView(val context: Context, val service: Class<out Service>) :
             height = h?.toInt() ?: 620.toIntDip()
         }
         applyView {
-            findViewById<ImageView>(R.id.iv_close).setOnClickListener {
-                zoomOut {
-                    context.stopService(
-                        Intent(
-                            context,
-                            service
-                        )
-                    )
-                }
-            }
-            findViewById<ConstraintLayout>(R.id.cl_mask).setOnClickListener {
-                isError = false
-                if (url == null) isError = true
-                else loadUrl(url!!)
-            }
             findViewById<WebView>(R.id.webview).apply {
                 settings.javaScriptEnabled = true
                 settings.domStorageEnabled = true
                 settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+                addJavascriptInterface(BaseJsInterface(context), "${JS_INTERFACE_NAME}Base")
                 webViewClient = object : WebViewClient() {
                     override fun onPageFinished(view: WebView?, url: String?) {
                         evaluateJavascript("javascript:getVersion()") {
@@ -84,7 +62,6 @@ class UIWebView(val context: Context, val service: Class<out Service>) :
                                         version
                                     )
                                 }
-                                hideLoad()
                             }
                         }
                     }
@@ -115,72 +92,29 @@ class UIWebView(val context: Context, val service: Class<out Service>) :
                         return super.onConsoleMessage(consoleMessage)
                     }
                 }
+                isFocusableInTouchMode = true
+                requestFocusFromTouch()
+                setOnFocusChangeListener { v, _ ->
+                    v.requestFocus()
+                }
+                setOnKeyListener { _, keyCode, event ->
+                    Log.i("onKey", keyCode.toString() + "/" + event.action)
+                    if (event.action != KeyEvent.ACTION_UP) return@setOnKeyListener false
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        zoomOut { stop() }
+                        return@setOnKeyListener true
+                    }
+                    return@setOnKeyListener false
+                }
             }
         }
     }
 
     fun loadUrl(url: String) {
-        this.url = url
         view.findViewById<WebView>(R.id.webview).loadUrl(url)
-        showLoad()
     }
 
-    private val runnable = {
-        if (view.findViewById<ConstraintLayout>(R.id.cl_loads).animation != null)
-            view.findViewById<TextView>(
-                R.id.tv_load_tips
-            ).apply {
-                text = "长时间无响应请点击重试"
-                visibility = View.VISIBLE
-            }
+    private val stop = {
+        context.stopService(Intent().apply { setClassName(context, uiWebViewServiceName) })
     }
-
-    fun showLoad() {
-        val h = Handler(Looper.getMainLooper())
-        h.removeCallbacks(runnable)
-        view.findViewById<ConstraintLayout>(R.id.cl_mask).visibility = View.VISIBLE
-        view.findViewById<WebView>(R.id.webview).visibility = View.GONE
-        view.findViewById<TextView>(R.id.tv_load_tips).apply {
-            if (!PreferencesUtil.getString(context, NOT_FIRST)) {
-                visibility = View.VISIBLE
-                text = "首次加载需要一定时间"
-            } else visibility = View.GONE
-        }
-        val anim = AnimationUtils.loadAnimation(context, R.anim.rotate)
-        anim.interpolator = LinearInterpolator()
-        view.findViewById<ConstraintLayout>(R.id.cl_loads).apply {
-            visibility = View.VISIBLE
-            animation = anim
-        }
-        anim.start()
-        h.postDelayed(runnable, 4000)
-    }
-
-    fun hideLoad() {
-        if (!PreferencesUtil.getString(context, NOT_FIRST)) scope.launch {
-            PreferencesUtil.putString(
-                context, NOT_FIRST, true.toString()
-            )
-        }
-        view.findViewById<WebView>(R.id.webview).visibility = View.VISIBLE
-        view.findViewById<ConstraintLayout>(R.id.cl_mask).visibility = View.GONE
-        view.findViewById<TextView>(R.id.tv_load_tips).visibility = View.GONE
-        view.findViewById<ConstraintLayout>(R.id.cl_loads).apply {
-            if (animation != null) animation.cancel()
-            animation = null
-        }
-    }
-
-//    private fun throwError(message: String = "") {
-//        view.findViewById<WebView>(R.id.webview).destroy()
-//        this@FloatWebView.view.visibility = View.GONE
-//        view.handler.postDelayed({
-//            context.stopService(
-//                Intent(
-//                    context,
-//                    service
-//                )
-//            )
-//        }, 3500)
-//    }
 }

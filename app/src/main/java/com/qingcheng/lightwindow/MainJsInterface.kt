@@ -1,4 +1,4 @@
-package com.qingcheng.lightwindow.jsinterface
+package com.qingcheng.lightwindow
 
 import android.app.ActivityManager
 import android.app.Service
@@ -6,11 +6,8 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import android.webkit.JavascriptInterface
-import androidx.core.os.postDelayed
 import com.qingcheng.base.*
 import com.qingcheng.base.service.VersionService
 import com.qingcheng.base.util.PreferencesUtil
@@ -19,7 +16,6 @@ import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.base.view.BaseFloatWindow
 import com.qingcheng.base.view.ViewManager
 import com.qingcheng.calendar.service.CalendarNoticeService
-import com.qingcheng.lightwindow.UIWebViewService
 import com.qingcheng.lightwindow.view.ZoomView
 import com.umeng.commonsdk.UMConfigure
 
@@ -59,15 +55,6 @@ class MainJsInterface(
             floatWindow.zoomOut {
                 context.stopService(Intent(context, UIWebViewService::class.java))
             }
-        }
-    }
-
-    @JavascriptInterface
-    fun exception(s: String) {
-        runOnUI { ToastUtil.showToast(s, isLong = true) }
-        floatWindow.zoomOut()
-        Handler(Looper.getMainLooper()).postDelayed(3000) {
-            context.stopService(Intent(context, UIWebViewService::class.java))
         }
     }
 

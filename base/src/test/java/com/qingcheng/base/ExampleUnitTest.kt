@@ -1,6 +1,7 @@
 package com.qingcheng.base
 
-import org.junit.Assert.assertEquals
+import com.qingcheng.base.util.NetworkRequestUtil
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 /**
@@ -11,8 +12,10 @@ import org.junit.Test
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        val a: String? = null
-        assertEquals(a.toString(), "null")
+        runBlocking {
+            val a = NetworkRequestUtil.getVersion().body?.string()
+            println(a)
+        }
 
     }
 }

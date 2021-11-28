@@ -9,6 +9,8 @@ import com.qingcheng.base.NOT_FIRST
 import com.qingcheng.base.WEB_VERSION
 import com.qingcheng.base.runOnUI
 import com.qingcheng.base.service.VersionService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
 object VersionUtil {
@@ -24,10 +26,10 @@ object VersionUtil {
 
         var json: JSONObject? = null
         try {
-            val res = NetworkRequestUtil.getVersion().body?.string()
+            val res = withContext(Dispatchers.IO){NetworkRequestUtil.getVersion().body?.string()}
             json = if (res != null) JSONObject(res) else null
             json ?: throw NullPointerException("version json is null")
-        } catch (e: Exception) {
+        } catch (e: NullPointerException) {
             runOnUI { ToastUtil.showToast("检查网络并解除省流量限制") }
             null
         }?.let {

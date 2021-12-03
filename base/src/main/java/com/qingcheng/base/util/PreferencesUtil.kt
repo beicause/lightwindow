@@ -12,9 +12,9 @@ object PreferencesUtil {
      * */
     operator fun String?.not(): Boolean {
         return when (this) {
-            null, "", "false" -> false
-            "true" -> true
-            else -> true
+            null, "", "false" -> true
+            "true" -> false
+            else -> false
         }
     }
 

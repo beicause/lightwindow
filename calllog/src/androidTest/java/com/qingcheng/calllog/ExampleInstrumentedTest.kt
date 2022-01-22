@@ -1,9 +1,8 @@
-package com.qingcheng.lightwindow
+package com.qingcheng.calllog
 
+import android.util.Log
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.qingcheng.calllog.CallLogUtil
-import kotlinx.coroutines.InternalCoroutinesApi
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -14,9 +13,15 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
-    @InternalCoroutinesApi
     @Test
     fun useAppContext() {
-
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val res=CallLogUtil.getLog(appContext).toString()
+        var last=0
+        for (i in res.indices step 300){
+            Log.d("ttt",res.substring(last,i))
+            last=i
+        }
+        Log.d("ttt",res.substring(last))
     }
 }

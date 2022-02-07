@@ -11,11 +11,19 @@ import android.os.Environment
 import android.os.IBinder
 import android.util.Log
 import androidx.core.content.FileProvider
-import com.qingcheng.base.*
-import com.qingcheng.base.util.*
+import com.qingcheng.base.IGNORE_VERSION
+import com.qingcheng.base.INDEX_URL
+import com.qingcheng.base.calendarNoticeService
+import com.qingcheng.base.uiWebViewServiceName
+import com.qingcheng.base.util.FileUtil
+import com.qingcheng.base.util.PreferencesUtil
+import com.qingcheng.base.util.ToastUtil
+import com.qingcheng.base.util.VersionUtil
 import com.qingcheng.base.view.DialogView
 import com.qingcheng.base.view.ViewManager
-import kotlinx.coroutines.*
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import java.io.File
 
@@ -44,14 +52,14 @@ class VersionService : Service() {
                                 setClassName(this@VersionService, calendarNoticeService)
                             })
                         }
-                        zoomOut()
+                        zoomOut{stopSelf()}
                     }
                     title = if (forceUpdate) "发现新版本，该版本必须更新" else "发现新版本"
                     content = message
                     confirmText = if (!forceUpdate) "更新" else "必要更新"
                     cancelText = if (!forceUpdate) "忽略" else "退出"
                     confirmClick = {
-                        zoomOut()
+                        zoomOut{stopSelf()}
                         downloadApp(this@VersionService, appVersion)
                     }
                     cancelClick = {
@@ -69,7 +77,7 @@ class VersionService : Service() {
                                 setClassName(this@VersionService, calendarNoticeService)
                             })
                         }
-                        zoomOut()
+                        zoomOut{stopSelf()}
                         stopSelf()
 
                     }

@@ -1,0 +1,20 @@
+{
+  "name": "lightwindow-monorepo",
+  "private": true,
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beicause/lightwindow.git"
+  },
+  "scripts": {
+    "build": "cd web && pnpm build",
+    "build-main":"cd web && pnpm build-main && pnpm copy-dist",
+    "copy":"node scripts/copy.js"
+  },
+  "author": "Luo Zhihao",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/beicause/lightwindow/issues"
+  },
+  "homepage": "https://github.com/beicause/lightwindow#readme"
+}

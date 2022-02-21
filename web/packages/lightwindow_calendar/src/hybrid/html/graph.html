@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<style>
+    body {
+        width: 310px;
+        height: 360px;
+        margin: 0 auto;
+    }
+
+    #ec {
+        height: 100%;
+        width: 100%;
+    }
+</style>
+<body>
+<script src="echarts.min.js"></script>
+<div id="ec"></div>
+<script>
+    /**
+     * 图标页面，监听父组件传递的数据
+     * @see TheUserDataGraph
+     * */
+    let chart = null
+    window.addEventListener('message', e => {
+        if (!chart) chart = echarts.init(document.getElementById('ec'));
+        chart.setOption(JSON.parse(e.data))
+    })
+    window.parent.postMessage('ready', '*')
+
+</script>
+</body>
+</html>

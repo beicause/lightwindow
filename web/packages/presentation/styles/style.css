@@ -1,0 +1,12 @@
+h1 {
+    background-color: #2196f3;
+    background-image: linear-gradient(45deg, #6ebaf7 10%, #2196f3 20%);
+    background-size: 100%;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-text-fill-color: transparent;
+  }
+  img {
+    object-fit: contain;
+  }

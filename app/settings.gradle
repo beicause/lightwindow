@@ -1,0 +1,5 @@
+rootProject.name = "lightwindow"
+include ':app'
+include ':calendar'
+include ':base'
+include ':calllog'

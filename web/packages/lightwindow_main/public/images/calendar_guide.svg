@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+        width="300mm"
+        height="75.034058mm"
+        viewBox="0 0 300 75.034058"
+        version="1.1"
+        id="svg5"
+        xmlns="http://www.w3.org/2000/svg"
+>
+  <defs
+     id="defs2">
+    <rect
+       x="996.72009"
+       y="486.60953"
+       width="74.650322"
+       height="51.149296"
+       id="rect26356" />
+    <rect
+       x="43.230938"
+       y="475.08035"
+       width="71.509377"
+       height="40.55986"
+       id="rect23068" />
+    <rect
+       x="483.8447"
+       y="436.84265"
+       width="199.06754"
+       height="62.208603"
+       id="rect4185" />
+    <rect
+       x="367.72198"
+       y="247.452"
+       width="257.12888"
+       height="55.296535"
+       id="rect2899" />
+  </defs>
+  <g
+     id="layer1"
+     transform="translate(0,-57.768501)">
+    <rect
+       style="fill:none;stroke:#f44336;stroke-width:0.812336;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect959"
+       width="299.18765"
+       height="3.187664"
+       x="0.40616801"
+       y="98.406166" />
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text2897"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect2899);fill:#000000;fill-opacity:1;stroke:none" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.2509px;line-height:1.25;font-family:sans-serif;fill:#f44336;fill-opacity:1;stroke:none;stroke-width:0.256272"
+       x="141.42999"
+       y="93.542229"
+       id="text3279"
+       transform="scale(0.98904896,1.0110723)"><tspan
+         id="tspan3277"
+         style="fill:#f44336;fill-opacity:1;stroke-width:0.256272"
+         x="141.42999"
+         y="93.542229">标题</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text4183"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect4185);fill:#000000;fill-opacity:1;stroke:none" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.2177px;line-height:1.25;font-family:sans-serif;fill:#f44336;fill-opacity:1;stroke:none;stroke-width:0.255442"
+       x="141.43071"
+       y="111.33553"
+       id="text4631"
+       transform="scale(0.98883757,1.0112884)"><tspan
+         id="tspan4629"
+         style="fill:#f44336;fill-opacity:1;stroke-width:0.255442"
+         x="141.43071"
+         y="111.33553">其他</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.8799px;line-height:1.25;font-family:sans-serif;fill:#f44336;fill-opacity:1;stroke:none;stroke-width:0.271997"
+       x="31.300838"
+       y="94.92231"
+       id="text8045"
+       transform="scale(0.98877357,1.0113539)"><tspan
+         id="tspan8043"
+         style="fill:#f44336;fill-opacity:1;stroke-width:0.271997"
+         x="31.300838"
+         y="94.92231">HH:mm</tspan></text>
+    <rect
+       style="fill:none;stroke:#f44336;stroke-width:0.819891;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect8531"
+       width="259.18011"
+       height="3.1801093"
+       x="20.409946"
+       y="98.409943" />
+    <circle
+       style="fill:none;fill-opacity:1;stroke:#f44336;stroke-width:0.956978;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path8689"
+       cx="250.26331"
+       cy="93.000679"
+       r="4.0215111" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 245.42734,92.538176 v 0"
+       id="path8828" />
+    <path
+       style="fill:none;stroke:#f44336;stroke-width:0.46649;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 247.34973,93.292639 6.11118,-0.142858"
+       id="path9023" />
+    <path
+       style="fill:none;stroke:#f44336;stroke-width:0.424822;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 250.31712,90.163404 0.0637,5.908639"
+       id="path9025" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.235996px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 11.438186,121.02275 -0.04572,-18.19701 -3.1410609,7.4894 m 3.1410609,-7.4894 3.115719,6.98445"
+       id="path9617" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.230678px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 287.18319,120.82166 -0.0457,-17.38621 -3.14106,7.1557 m 3.14106,-7.1557 3.11572,6.67324"
+       id="path9617-9" />
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text23066"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect23068);fill:#000000;fill-opacity:1;stroke:none" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="1.4630527"
+       y="130.94334"
+       id="text24372"><tspan
+         id="tspan24370"
+         style="stroke-width:0.264583"
+         x="1.4630527"
+         y="130.94334">提醒</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text26354"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect26356);fill:#000000;fill-opacity:1;stroke:none" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="276.51727"
+       y="131.30911"
+       id="text26802"><tspan
+         id="tspan26800"
+         style="stroke-width:0.264583"
+         x="276.51727"
+         y="131.30911">颜色</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.225903px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 249.87524,69.829693 -0.0456,16.690057 -3.138,-6.86918 m 3.138,6.86918 3.11267,-6.406043"
+       id="path9617-5" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="238.8436"
+       y="66.934731"
+       id="text31133"><tspan
+         id="tspan31131"
+         style="stroke-width:0.264583"
+         x="238.8436"
+         y="66.934731">增删</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.217288px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 50.168333,71.073929 -0.04566,15.445309 -3.137226,-6.356876 m 3.137226,6.356876 3.111915,-5.928279"
+       id="path9617-6" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="39.868225"
+       y="66.56897"
+       id="text33566"><tspan
+         id="tspan33564"
+         style="stroke-width:0.264583"
+         x="39.868225"
+         y="66.56897">时间</tspan></text>
+  </g>
+</svg>

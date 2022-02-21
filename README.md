@@ -2,9 +2,8 @@
 
 ![band](https://gitee.com/beicause/lightwindow/raw/master/band.png)
 
-窗隙流光，轻量迅捷的多功能悬浮窗应用。包括Android项目和Vue项目，与传统的Activity界面构建方式不同，
-基于WindowManager和WebView构建悬浮窗服务，通过JavaScriptInterface实现Android原生功能和前端Vue项目通信。  
-web项目：[lightwindow_webapp](https://github.com/beicause/lightwindow_webapp)
+窗隙流光，轻量迅捷的多功能悬浮窗应用。 
+~~web项目：[lightwindow_webapp](https://github.com/beicause/lightwindow_webapp)~~ web项目已合并至本仓库
 
 ## 运行要求
 
@@ -52,5 +51,5 @@ Android系统，最低Android 8.0（API Level 26）
 
 ## 参与贡献
 
-如果您有任何想法或建议，或者做出任何改进，欢迎联系开发者。  
+联系开发者。  
 QQ：1494181792，邮箱：1494181792@qq.com  

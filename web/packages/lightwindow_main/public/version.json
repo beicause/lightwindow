@@ -1,5 +1,5 @@
 {
-    "app_version": 116,
+    "app_version": "117",
     "force_update": true,
-    "version_info": "优化启动速度"
+    "version_info": "修复检查更新问题"
 }

@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import android.view.View
 import android.webkit.JavascriptInterface
 import com.qingcheng.base.*
@@ -103,10 +104,13 @@ class MainJsInterface(
     }
 
     @JavascriptInterface
-    fun getAppVersion(): String =
-        context.packageManager.getPackageInfo(context.packageName, 0).let {
+    fun getAppVersion(): String {
+        val version = context.packageManager.getPackageInfo(context.packageName, 0).let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) it.longVersionCode else it.versionCode
         }.toString()
+        Log.i("jsinterface","web get appVersion: $version")
+        return version
+    }
 
     @JavascriptInterface
     fun showVersionUpdate() = context.startService(Intent(context, VersionService::class.java))

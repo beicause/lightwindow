@@ -1,4 +1,5 @@
 packages:
+- 'web'
 - 'web/packages/**'
 - '!**/lightwindow_calendar'
 - '!**/presentation'

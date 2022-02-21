@@ -48,7 +48,7 @@ class UIWebView(val context: Context, val service: Class<out Service>) :
                             if (it.url.host == DOMAIN)
                                 assetLoader.shouldInterceptRequest(
                                     when {
-                                        it.url.lastPathSegment?.contains(
+                                        it.url.lastPathSegment !=="version.json" && it.url.lastPathSegment?.contains(
                                             '.'
                                         ) == true -> it.url
                                         it.url.toString().contains("/calendar//") -> {

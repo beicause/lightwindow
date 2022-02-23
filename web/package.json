@@ -5,8 +5,8 @@
   "license": "Apache-2.0",
   "scripts": {
     "install-all": "pnpm i && cd packages/lightwindow_calendar && yarn && cd ../presentation && pnpm i ",
-    "build": "run-p build-main build-calendar && pnpm copy-dist",
-    "copy-dist": "node scripts/postBuild.js",
+    "build": "run-p build-main build-calendar && pnpm copy",
+    "copy": "node scripts/postBuild.js",
     "preview": "vite preview",
     "serve-main": "cd packages/lightwindow_main && pnpm serve",
     "serve-calendar": "cd packages/lightwindow_calendar && pnpm serve",

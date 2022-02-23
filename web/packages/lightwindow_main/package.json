@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vite serve",
+    "serve": "vite serve --open",
     "build": "vite build",
     "preview": "vite preview"
   },

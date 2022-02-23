@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "cd web && pnpm build",
-    "build-main":"cd web && pnpm build-main && pnpm copy-dist",
+    "build-main":"cd web && pnpm build-main",
     "copy":"cd web && pnpm copy && cd .. && node scripts/copy.js"
   },
   "author": "Luo Zhihao",

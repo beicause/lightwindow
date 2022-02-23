@@ -12,7 +12,8 @@ export default defineConfig({
     Vue2(),
     WindiCss(),
     AutoComponent({
-      resolvers: [VuetifyResolver()]
+      resolvers: [VuetifyResolver()],
+      dts: false
     }),
     ScriptSetup()
   ],

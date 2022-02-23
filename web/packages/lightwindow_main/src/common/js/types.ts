@@ -26,8 +26,8 @@ export interface Android {
 //   version_info: string
 //   /* eslint-enable camelcase */
 // }
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface AndroidBase{
-  clearPageCache():void
 }
 
 export type IsEqual<X, Y> = [X] extends [Y]?[Y] extends [X]? true:false:false

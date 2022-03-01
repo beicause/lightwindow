@@ -29,7 +29,7 @@ function yearClick (year: Year) {
   papers.value = []
   showPop('正在加载', 'info', 30000)
   disableYear.value = true
-  getPaperByYear(year.year, year.homeUrl).then(_paper => {
+  getPaperByYear(year.urls).then(_paper => {
     papers.value = _paper
     showPop('加载成功', 'success')
     disableYear.value = false

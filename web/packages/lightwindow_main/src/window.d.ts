@@ -6,7 +6,6 @@ declare global {
     aplus_queue?: { action: string|'aplus.sendPV', arguments: unknown[] }[],
     Android?: Android
     showZoom?: () => void
-    getVersion?: () => string,
-    AndroidBase?:AndroidBase
+    getVersion?: () => string
   }
 }

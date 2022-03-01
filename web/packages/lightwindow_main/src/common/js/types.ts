@@ -1,18 +1,22 @@
 
 export interface Android {
-  exception: (value: string) => void,
-  isNoticeRunning: () => boolean,
-  startNoticeService: () => void,
-  stopNoticeService: () => void,
-  close: () => void,
-  showZoom: () => void,
-  getClipboardText: () => string,
-  getAppVersion: () => string,
-  showVersionUpdate: () => void,
-  redirectToMain: () => void,
-  redirectToCalendar: () => void,
-  getPolicy: () => string,
-  setPolicy: (value: string) => void
+  exception(value: string): void
+  isNoticeRunning(): boolean
+  startNoticeService(): void
+  stopNoticeService(): void
+  close(): void
+  showZoom(): void
+  getClipboardText(): string
+  getAppVersion(): string
+  showVersionUpdate(): void
+  redirectToMain(): void
+  redirectToCalendar(): void
+  getPolicy(): string
+  setPolicy(value: string): void
+  fetch(url: string, options?: string): void
+  onNetFailure(msg: string): void
+  onNetResponse(body: string): void
+  writeClipboard(s: string): void
 }
 // export interface AppVersionInfo {
 //   /* eslint-disable camelcase */
@@ -26,8 +30,6 @@ export interface Android {
 //   version_info: string
 //   /* eslint-enable camelcase */
 // }
-export interface AndroidBase{
-  clearPageCache():void
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 
-export type IsEqual<X, Y> = [X] extends [Y]?[Y] extends [X]? true:false:false
+export type IsEqual<X, Y> = [X] extends [Y] ? [Y] extends [X] ? true : false : false

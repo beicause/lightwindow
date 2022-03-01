@@ -32,7 +32,6 @@
     <music-guide class="pt-0"></music-guide>
     <setting-picker ref="picker">
       <setting-clipboard
-        @copied="onCopied"
         @pasted="onPasted"
         :copy-value="activeSettingScore.inputValue"
       ></setting-clipboard>
@@ -285,13 +284,6 @@ export default Vue.extend({
       return {
         note: '' + note,
         duration
-      }
-    },
-    onCopied (isSuccess: boolean) {
-      if (isSuccess) {
-        showPop('内容复制成功', 'success')
-      } else {
-        showPop('内容为空')
       }
     },
     onPasted (clipValue: string) {

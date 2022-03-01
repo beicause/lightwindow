@@ -8,6 +8,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Android } from '@/common/js/const'
+import { copy } from '@/common/js/util'
 
 export default Vue.extend({
   name: 'SettingClipboard',
@@ -19,13 +20,7 @@ export default Vue.extend({
   },
   methods: {
     copy () {
-      const text = document.createElement('textarea')
-      text.value = this.copyValue
-      document.body.appendChild(text)
-      text.select()
-      const isSuccess = document.execCommand('Copy')
-      text.remove()
-      this.$emit('copied', isSuccess && this.copyValue)
+      copy(this.copyValue)
     },
     paste () {
       if (Android) {

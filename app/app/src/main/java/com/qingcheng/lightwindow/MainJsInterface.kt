@@ -24,7 +24,7 @@ class MainJsInterface(
     private val context: Context,
     private val floatWindow: BaseFloatWindow<*>,
     private val viewManager: ViewManager,
-) {
+):BaseJsInterface(context, floatWindow.view.findViewById(R.id.webview)) {
 
     @JavascriptInterface
     fun redirectToMain() {
@@ -100,7 +100,7 @@ class MainJsInterface(
     @JavascriptInterface
     fun getClipboardText(): String {
         val manager = context.getSystemService(Service.CLIPBOARD_SERVICE) as ClipboardManager
-        return "" + manager.primaryClip?.getItemAt(0)?.text
+        return manager.primaryClip?.getItemAt(0)?.text?.toString() ?: ""
     }
 
     @JavascriptInterface
@@ -108,7 +108,7 @@ class MainJsInterface(
         val version = context.packageManager.getPackageInfo(context.packageName, 0).let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) it.longVersionCode else it.versionCode
         }.toString()
-        Log.i("jsinterface","web get appVersion: $version")
+        Log.i("jsinterface", "web get appVersion: $version")
         return version
     }
 
@@ -122,7 +122,6 @@ class MainJsInterface(
     @JavascriptInterface
     fun setPolicy(value: String) {
         PreferencesUtil.putString(context, POLICY, value)
-
         if (value != "null") {
             if (!UMConfigure.isInit)
                 UMConfigure.init(context, appKey, channel, UMConfigure.DEVICE_TYPE_PHONE, "")

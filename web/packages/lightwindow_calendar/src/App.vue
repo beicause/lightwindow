@@ -1,14 +1,11 @@
 <script lang="ts">
 import Vue from 'vue'
-import store from './store';
+import store from './store'
 
 export default Vue.extend({
   mpType: 'app',
   onLaunch: function () {
-    store.commit('initAll');
-    uni.preloadPage({url: "/pages/day/day"})
-    uni.preloadPage({url: "/pages/week/week"})
-    uni.preloadPage({url: "/pages/mon/mon"})
+    store.commit('initAll')
   }
 })
 </script>

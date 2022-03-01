@@ -6,10 +6,11 @@ import { ref } from '@vue/composition-api'
 
 const refFeatures = ref(features)
 
-if (!localStorage.getItem('notice_server')) Android?.startNoticeService()
+if (!localStorage.getItem('notice_server')) {
+  refFeatures.value[0].runClick?.call(undefined)
+}
+
 isNoticeRunning.value = !!Android?.isNoticeRunning()
-
-
 </script>
 
 <template>

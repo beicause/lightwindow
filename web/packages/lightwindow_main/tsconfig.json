@@ -17,7 +17,9 @@
       ]
     },
     "types": [
-      "unplugin-vue2-script-setup/types"
+      "unplugin-vue2-script-setup/types",
+      "babylonjs",
+      "babylonjs-loaders"
     ],
     "lib": [
       "esnext",
@@ -31,8 +33,7 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",
-    "tests/**/*.tsx",
-    "components.d.ts"
+    "tests/**/*.tsx"
   ],
   "exclude": [
     "node_modules"

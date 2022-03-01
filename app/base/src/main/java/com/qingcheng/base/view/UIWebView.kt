@@ -13,6 +13,7 @@ import androidx.webkit.WebViewAssetLoader
 import com.qingcheng.base.*
 import com.qingcheng.base.util.*
 import kotlinx.coroutines.*
+import java.util.*
 
 /**
  * 主界面悬浮窗类
@@ -20,7 +21,7 @@ import kotlinx.coroutines.*
 @SuppressLint("SetJavaScriptEnabled", "ClickableViewAccessibility")
 class UIWebView(val context: Context, val service: Class<out Service>) :
     BaseFloatWindow<View>(context, View.inflate(context, R.layout.webview, null)) {
-    private val scope = MainScope()
+    private var lastTime = 0L
 
     init {
         applyParams {
@@ -38,28 +39,28 @@ class UIWebView(val context: Context, val service: Class<out Service>) :
             findViewById<WebView>(R.id.webview).apply {
                 settings.javaScriptEnabled = true
                 settings.domStorageEnabled = true
-//                addJavascriptInterface(BaseJsInterface(context), "${JS_INTERFACE_NAME}Base")
                 webViewClient = object : WebViewClient() {
                     override fun shouldInterceptRequest(
                         view: WebView?,
                         request: WebResourceRequest?
                     ): WebResourceResponse? {
                         return request?.let {
-                            if (it.url.host == DOMAIN)
-                                assetLoader.shouldInterceptRequest(
-                                    when {
-                                        it.url.lastPathSegment !=="version.json" && it.url.lastPathSegment?.contains(
-                                            '.'
-                                        ) == true -> it.url
-                                        it.url.toString().contains("/calendar//") -> {
-                                            Uri.parse(
+                            when {
+                                (it.url.lastPathSegment == "version.json") -> null
+                                (it.url.host == DOMAIN) ->
+                                    assetLoader.shouldInterceptRequest(
+                                        when {
+                                            it.url.lastPathSegment?.contains(".")==true -> it.url
+                                            it.url.toString().contains("/calendar//") -> Uri.parse(
                                                 "$CALENDAR_URL/index.html"
                                             )
+                                            else -> Uri.parse("$INDEX_URL/index.html")
                                         }
-                                        else -> Uri.parse("$INDEX_URL/index.html")
-                                    }
-                                )
-                            else null
+
+                                    )
+
+                                else -> null
+                            }
                         } ?: super.shouldInterceptRequest(view, request)
                     }
                 }
@@ -83,7 +84,15 @@ class UIWebView(val context: Context, val service: Class<out Service>) :
                     Log.i("onKey", keyCode.toString() + "/" + event.action)
                     if (event.action != KeyEvent.ACTION_UP) return@setOnKeyListener false
                     if (keyCode == KeyEvent.KEYCODE_BACK) {
-                        zoomOut { stop() }
+                        if (url?.matches(Regex(""".*(calendar|main).*""")) == false && canGoBack()) goBack()
+                        else {
+                            val time = Date().time
+                            if (time - lastTime < 2000) zoomOut { stop() }
+                            else {
+                                ToastUtil.showToast("再按一次退出")
+                                lastTime = time
+                            }
+                        }
                         return@setOnKeyListener true
                     }
                     return@setOnKeyListener false

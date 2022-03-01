@@ -22,7 +22,7 @@ import { popState } from '@/common/js/util'
   left: 0;
   right: 0;
   z-index: 8;
-  position: absolute;
+  position: fixed;
   background-color: white;
 }
 </style>

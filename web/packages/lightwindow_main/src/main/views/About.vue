@@ -68,8 +68,8 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
-import { getVersion, showPop } from '@/common/js/util'
-import { Android, AndroidBase, EMAIL, GITHUB_URL, INDEX_URL } from '@/common/js/const'
+import { copy, getVersion, showPop } from '@/common/js/util'
+import { Android, EMAIL, GITHUB_URL, INDEX_URL } from '@/common/js/const'
 
 export default Vue.extend({
   name: 'About',
@@ -81,8 +81,7 @@ export default Vue.extend({
       INDEX_URL,
       localAppVersion: '',
       appVersion: '',
-      isAppUpdate: false,
-      AndroidBase: AndroidBase
+      isAppUpdate: false
     }
   },
   mounted () {
@@ -98,7 +97,7 @@ export default Vue.extend({
     appVersionName (): string {
       if (!Android) return '---'
       return this.versionCodeToName(this.localAppVersion) +
-          (this.isAppUpdate ? '（发现新版本' + this.versionCodeToName(this.appVersion) + '）' : '')
+        (this.isAppUpdate ? '（发现新版本' + this.versionCodeToName(this.appVersion) + '）' : '')
     }
   },
   methods: {
@@ -107,22 +106,9 @@ export default Vue.extend({
     },
     copyOrNavigate (s: string, url?: string) {
       if (Android) {
-        this.copy(s)
+        copy(s)
       } else {
         window.open(url || s)
-      }
-    },
-    copy (value: string): void {
-      const text = document.createElement('textarea')
-      text.value = value
-      document.body.appendChild(text)
-      text.select()
-      const isSuccess = document.execCommand('Copy')
-      text.remove()
-      if (isSuccess) {
-        showPop('复制成功', 'success')
-      } else {
-        showPop('复制失败', 'error')
       }
     },
     update () {
@@ -136,5 +122,4 @@ export default Vue.extend({
 })
 </script>
 <style scoped>
-
 </style>

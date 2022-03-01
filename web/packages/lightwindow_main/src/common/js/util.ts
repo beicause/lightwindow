@@ -1,6 +1,7 @@
 import CompositionApi, { reactive } from '@vue/composition-api'
 import axios, { AxiosResponse } from 'axios'
 import Vue from 'vue'
+import { Android } from './const'
 Vue.use(CompositionApi)
 
 export const popState = reactive({
@@ -46,20 +47,20 @@ async function getVersion (): Promise<AxiosResponse<{
   version_info: string
   /* eslint-enable  camelcase */
 }>> {
-  return await axios.get('https://qingcheng.asia/version.json')
+  return axios.get('https://qingcheng.asia/version.json')
 }
 
-function isMobile ():boolean {
+function isMobile (): boolean {
   const agents = navigator.userAgent
   let f = false;
   ['Android', 'iPhone', 'iPad', 'iPod', 'Windows Phone', 'SymbianOS'].forEach(e => {
-    if (agents.indexOf(e) > 0)f = true
+    if (agents.indexOf(e) > 0) f = true
   })
   return f
 }
 export { showPop, closePop, getVersion, sendPV, isMobile }
 
-export function disableScroll ():void {
+export function disableScroll (): void {
   const body = document.body
   const html = document.documentElement
   html.style.maxHeight = '90vh'
@@ -67,11 +68,40 @@ export function disableScroll ():void {
   html.style.overflow = 'hidden'
   body.style.overflow = 'hidden'
 }
-export function resumeScroll ():void {
+export function resumeScroll (): void {
   const body = document.body
   const html = document.documentElement
   html.style.maxHeight = ''
   html.style.overflow = ''
   body.style.maxHeight = ''
   body.style.overflow = ''
+}
+
+export async function fetch (url: string, options?: RequestInit): Promise<string> {
+  if (!Android) return (await window.fetch(url, options)).text()
+
+  return new Promise((resolve, reject) => {
+    if (!Android) return
+    Android.onNetFailure = (msg: string) => reject(new Error(msg))
+    Android.onNetResponse = (res: string) => resolve(res)
+
+    Android.fetch(url, JSON.stringify(options))
+  })
+}
+
+export function copy (value:string, success?:() => void) {
+  new Promise((resolve, reject) => {
+    if (Android) {
+      Android.writeClipboard(value)
+      resolve(true)
+    } else {
+      navigator.clipboard.writeText(value).catch(() => {
+        showPop('复制失败', 'error')
+        reject(new Error())
+      }).then(() => resolve(true))
+    }
+  }).then(() => {
+    success && success()
+    showPop('复制成功', 'success')
+  })
 }

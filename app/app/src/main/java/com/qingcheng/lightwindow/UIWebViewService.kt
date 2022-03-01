@@ -81,7 +81,7 @@ class UIWebViewService : Service() {
                             MainJsInterface(context, it, viewManager!!),
                             JS_INTERFACE_NAME
                         )
-                        it.loadUrl(MAIN_URL)
+                        it.loadUrl(/*"http://192.168.43.223:3000/main"*/MAIN_URL)
                     }
                     it.zoomIn()
                 }

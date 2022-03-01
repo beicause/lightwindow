@@ -72,6 +72,10 @@ const routes: Array<RouteConfig> = [
   {
     path: '/log',
     component: () => import('../log/LogApp.vue')
+  },
+  {
+    path: '/paper',
+    component: () => import('../paper/PaperApp.vue')
   }
 ]
 

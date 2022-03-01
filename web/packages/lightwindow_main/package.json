@@ -8,12 +8,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@vue/composition-api": "^1.4.1",
+    "@vue/composition-api": "^1.4.9",
     "axios": "^0.21.4",
+    "babylonjs": "^4.2.1",
+    "babylonjs-loaders": "^4.2.1",
     "soundfont-player": "^0.12.0",
     "vue": "^2.6.14",
     "vue-router": "^3.5.3",
-    "vuetify": "^2.6.1"
+    "vuetify": "^2.6.3"
   },
   "devDependencies": {
     "@mdi/font": "^6.5.95",
@@ -21,21 +23,21 @@
     "@typescript-eslint/parser": "^4.33.0",
     "@vue/eslint-config-standard": "^5.1.2",
     "@vue/eslint-config-typescript": "^7.0.0",
-    "@vue/runtime-dom": "^3.2.23",
+    "@vue/runtime-dom": "^3.2.31",
     "eslint": "^6.8.0",
-    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.3.1",
     "eslint-plugin-standard": "^4.1.0",
     "eslint-plugin-vue": "^6.2.2",
     "sass": "~1.32.13",
-    "sass-loader": "^10.2.0",
-    "unplugin-vue-components": "^0.17.2",
+    "sass-loader": "^10.2.1",
+    "unplugin-vue-components": "^0.17.21",
     "unplugin-vue2-script-setup": "^0.7.3",
-    "vite": "^2.6.14",
-    "vite-plugin-vue2": "^1.9.0",
-    "vite-plugin-windicss": "^1.5.3",
+    "vite": "^2.8.4",
+    "vite-plugin-vue2": "^1.9.3",
+    "vite-plugin-windicss": "^1.8.1",
     "vue-template-compiler": "^2.6.14",
-    "windicss": "^3.2.1"
+    "windicss": "^3.5.0"
   }
 }

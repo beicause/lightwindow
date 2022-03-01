@@ -13,7 +13,7 @@ export const conferences = [
   { type: '计算机体系结构/并行与分布计算/存储系统', conf: [conf('PPoPP'), conf('FAST'), conf('DAC'), conf('HPCA'), conf('MICRO'), conf('SC'), conf('ASPLOS'), conf('ISCA'), conf('USENIX ATC', 'usenix')] },
   { type: '计算机网络', conf: [conf('SIGCOMM'), conf('MobiCom'), conf('INFOCOM'), conf('NSDI')] },
   { type: '网络与信息安全', conf: [conf('CCS'), conf('EUROCRYPT'), conf('S&P', 'sp'), conf('CRYPTO'), conf('USENIX Security', 'uss')] },
-  { type: '软件工程/系统软件/程序设计语音', conf: [conf('PLDI'), conf('POPL'), conf('FSE/ESEC', 'sigsoft'), conf('OOPSLA'), conf('ASE', 'kbse'), conf('ICSE'), conf('ISSTA'), conf('OSDI')] },
+  { type: '软件工程/系统软件/程序设计语言', conf: [conf('PLDI'), conf('POPL'), conf('FSE/ESEC', 'sigsoft'), conf('OOPSLA'), conf('ASE', 'kbse'), conf('ICSE'), conf('ISSTA'), conf('OSDI')] },
   { type: '数据库/数据挖掘/内容检索', conf: [conf('SIGMOD'), conf('SIGKDD', 'kdd'), conf('ICDE'), conf('SIGIR'), conf('VLDB')] },
   { type: '计算机科学理论', conf: [conf('STOC'), conf('SODA'), conf('CAV'), conf('FOCS'), conf('LICS')] },
   { type: '计算机图形学与多媒体', conf: [conf('ACM MM', 'mm'), conf('SIGGRAPH'), conf('VR'), conf('IEEE VIS', 'visualization')] },

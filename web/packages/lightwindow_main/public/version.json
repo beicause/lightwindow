@@ -1,5 +1,5 @@
 {
-    "app_version": "117",
+    "app_version": "118",
     "force_update": true,
-    "version_info": "修复检查更新问题"
+    "version_info": "新增计算机顶会功能"
 }

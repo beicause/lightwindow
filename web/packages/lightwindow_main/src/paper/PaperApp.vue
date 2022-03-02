@@ -16,9 +16,14 @@ function confNameClick (conf: Conf) {
   years.value = []
   showPop('正在加载', 'info', 30000)
   disableConf.value = true
-  getConfYear(conf.homeUrl).then(_years => {
+  new Promise<Year[]>((resolve, reject) => {
+    const cache = localStorage.getItem(conf.homeUrl)
+    if (cache) resolve(JSON.parse(cache))
+    else getConfYear(conf.homeUrl).then(y => resolve(y))
+  }).then(_years => {
     years.value = _years
     showYearList.value = true
+    localStorage.setItem(conf.homeUrl, JSON.stringify(_years))
     showPop('加载成功', 'success')
     disableConf.value = false
   })
@@ -29,8 +34,13 @@ function yearClick (year: Year) {
   papers.value = []
   showPop('正在加载', 'info', 30000)
   disableYear.value = true
-  getPaperByYear(year.urls).then(_paper => {
-    papers.value = _paper
+  new Promise<Paper[]>((resolve, reject) => {
+    const cache = localStorage.getItem(JSON.stringify(year.urls))
+    if (cache) resolve(JSON.parse(cache))
+    else getPaperByYear(year.urls).then(p => resolve(p))
+  }).then(_papers => {
+    papers.value = _papers
+    localStorage.setItem(JSON.stringify(year.urls), JSON.stringify(_papers))
     showPop('加载成功', 'success')
     disableYear.value = false
   })

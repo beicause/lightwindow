@@ -1,6 +1,6 @@
 <template>
     <v-app-bar app color="white" height="30">
-      <v-icon @click="$router.push({ name: 'feature' })" dense color="blue">fal fa-arrow-square-left</v-icon>
+      <v-icon @click="$router.back()" dense color="blue">fal fa-arrow-square-left</v-icon>
       <v-spacer></v-spacer>
       <slot></slot>
       <v-spacer></v-spacer>

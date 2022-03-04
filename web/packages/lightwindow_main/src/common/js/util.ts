@@ -11,7 +11,7 @@ export const popState = reactive({
   duration: 800,
   timerId: NaN
 })
-function showPop (text: string, type: 'info' | 'error' | 'success' | 'warning' = 'info', duration = 800): void {
+export function showPop(text: string, type: 'info' | 'error' | 'success' | 'warning' = 'info', duration = 800): void {
   closePop()
   popState.duration = duration
   popState.text = text
@@ -20,7 +20,7 @@ function showPop (text: string, type: 'info' | 'error' | 'success' | 'warning' =
   popState.timerId = setTimeout(() => closePop(), duration) as unknown as number
 }
 
-function closePop (): void {
+function closePop(): void {
   clearTimeout(popState.timerId)
   popState.showPop = false
   popState.text = ''
@@ -28,19 +28,7 @@ function closePop (): void {
   popState.type = 'info'
 }
 
-function sendPV (args: Record<string, string>): void {
-  if (window.aplus_queue) {
-    window.aplus_queue.push({
-      action: 'aplus.sendPV',
-      arguments: [
-        { is_auto: false },
-        args
-      ]
-    })
-  }
-}
-
-async function getVersion (): Promise<AxiosResponse<{
+export async function getVersion(): Promise<AxiosResponse<{
   /* eslint-disable  camelcase */
   app_version: string,
   force_update: boolean,
@@ -50,7 +38,7 @@ async function getVersion (): Promise<AxiosResponse<{
   return axios.get('https://qingcheng.asia/version.json')
 }
 
-function isMobile (): boolean {
+export function isMobile(): boolean {
   const agents = navigator.userAgent
   let f = false;
   ['Android', 'iPhone', 'iPad', 'iPod', 'Windows Phone', 'SymbianOS'].forEach(e => {
@@ -58,9 +46,8 @@ function isMobile (): boolean {
   })
   return f
 }
-export { showPop, closePop, getVersion, sendPV, isMobile }
 
-export function disableScroll (): void {
+export function disableScroll(): void {
   const body = document.body
   const html = document.documentElement
   html.style.maxHeight = '90vh'
@@ -68,7 +55,7 @@ export function disableScroll (): void {
   html.style.overflow = 'hidden'
   body.style.overflow = 'hidden'
 }
-export function resumeScroll (): void {
+export function resumeScroll(): void {
   const body = document.body
   const html = document.documentElement
   html.style.maxHeight = ''
@@ -77,7 +64,7 @@ export function resumeScroll (): void {
   body.style.overflow = ''
 }
 
-export async function fetch (url: string, options?: RequestInit): Promise<string> {
+export async function fetch(url: string, options?: RequestInit): Promise<string> {
   if (!Android) return (await window.fetch(url, options)).text()
 
   return new Promise((resolve, reject) => {
@@ -89,7 +76,7 @@ export async function fetch (url: string, options?: RequestInit): Promise<string
   })
 }
 
-export function copy (value:string, success?:() => void) {
+export function copy(value:string, success?:() => void) {
   new Promise((resolve, reject) => {
     if (Android) {
       Android.writeClipboard(value)

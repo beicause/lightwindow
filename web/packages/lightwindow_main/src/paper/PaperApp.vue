@@ -11,7 +11,7 @@ const disableYear = ref(false)
 const disableConf = ref(false)
 let reqYear = ''
 
-function confNameClick (conf: Conf) {
+function confNameClick(conf: Conf) {
   history.pushState(null, '')
   years.value = []
   showPop('正在加载', 'info', 30000)
@@ -28,7 +28,7 @@ function confNameClick (conf: Conf) {
     disableConf.value = false
   })
 }
-function yearClick (year: Year) {
+function yearClick(year: Year) {
   if (reqYear === year.name) return
   reqYear = year.name
   papers.value = []
@@ -46,7 +46,7 @@ function yearClick (year: Year) {
   })
 }
 
-function copyUrl (p: Paper) {
+function copyUrl(p: Paper) {
   copy(p.url)
 }
 

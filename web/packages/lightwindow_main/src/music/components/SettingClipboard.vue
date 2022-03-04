@@ -19,10 +19,10 @@ export default Vue.extend({
     }
   },
   methods: {
-    copy () {
+    copy() {
       copy(this.copyValue)
     },
-    paste () {
+    paste() {
       if (Android) {
         this.$emit('pasted', Android.getClipboardText())
       } else {

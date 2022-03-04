@@ -92,7 +92,7 @@ class Card {
   text: string
   icon: string
 
-  constructor (title: string, text: string, icon: string) {
+  constructor(title: string, text: string, icon: string) {
     this.title = title
     this.text = text
     this.icon = icon
@@ -101,7 +101,7 @@ class Card {
 
 export default Vue.extend({
   name: 'IndexApp',
-  data () {
+  data() {
     return {
       isZoom: false,
       isClose: true,
@@ -113,21 +113,21 @@ export default Vue.extend({
     }
   },
   computed: {
-    isMobile (): boolean {
+    isMobile(): boolean {
       return this.$vuetify.breakpoint.mobile
     }
   },
   watch: {
-    isClose (val: boolean) {
+    isClose(val: boolean) {
       if (val) resumeScroll()
       else if (this.isZoom) disableScroll()
     },
-    isZoom (val: boolean) {
+    isZoom(val: boolean) {
       if (val) disableScroll()
       else resumeScroll()
     }
   },
-  mounted () {
+  mounted() {
     window.addEventListener('message', e => {
       if (e.data === 'zoom') this.isZoom = !this.isZoom
       if (e.data === 'close') this.isClose = !this.isClose
@@ -139,10 +139,10 @@ export default Vue.extend({
     })
   },
   methods: {
-    download () {
+    download() {
       window.open(this.downloadUrl)
     },
-    toGithub () {
+    toGithub() {
       window.open(GITHUB_URL)
     }
   }

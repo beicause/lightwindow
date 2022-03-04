@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vite serve --open",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "format": "eslint --fix **/*.{ts,vue}"
   },
   "dependencies": {
     "@vue/composition-api": "^1.4.9",

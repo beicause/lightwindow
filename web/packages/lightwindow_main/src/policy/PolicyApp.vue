@@ -138,17 +138,17 @@ import { Android, POLICY_VERSION } from '@/common/js/const'
 
 export default Vue.extend({
   name: 'PolicyApp',
-  data () {
+  data() {
     return {
       Android: Android
     }
   },
   methods: {
-    accept () {
+    accept() {
       if (Android) Android.setPolicy(POLICY_VERSION)
       this.$router.push('/main')
     },
-    refuse () {
+    refuse() {
       if (Android) Android.setPolicy('null')
     }
   }

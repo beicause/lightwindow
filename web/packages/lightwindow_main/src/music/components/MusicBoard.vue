@@ -6,7 +6,7 @@ import { isMobile } from '@/common/js/util'
 import { player } from './soundPlayer'
 
 const ripples: Ref<boolean[]> = ref(new Array(84).fill(false))
-function show (key: number) {
+function show(key: number) {
   hide(key)
   const el = document.getElementById('__item' + key)
   if (!el) return
@@ -16,7 +16,7 @@ function show (key: number) {
   player.value.play((108 - key) + '', 0, { gain: 5, duration: 0.5 })
 }
 
-function hide (key: number) {
+function hide(key: number) {
   const el = document.getElementById('__item' + key)
   el && ripples.value[key] && hideRipple(el)
   ripples.value.splice(key, 1, false)

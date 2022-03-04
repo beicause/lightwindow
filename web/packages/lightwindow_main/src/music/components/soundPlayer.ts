@@ -5,7 +5,7 @@ import { Ref, ref } from '@vue/runtime-dom'
 export const player = ref({}) as Ref<SoundFont.Player>
 export let audio = null as AudioContext|null
 
-export function loadPlayer () {
+export function loadPlayer() {
   audio = new AudioContext()
   SoundFont.instrument(audio, './acoustic_grand_piano.js' as any)
     .then(p => {

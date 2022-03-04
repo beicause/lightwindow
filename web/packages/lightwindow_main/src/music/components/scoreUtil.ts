@@ -4,7 +4,7 @@ const SECOND_SCORE = 'SECOND_SCORE'
 const BEAT_DURATION = 'BEAT_DURATION'
 const SECTION_BEATS = 4
 
-function sectionBeat (r: string): number {
+function sectionBeat(r: string): number {
   let num = 0
   let isReduce = 0
   for (let i = 0; i < r.length; i++) {
@@ -20,7 +20,7 @@ function sectionBeat (r: string): number {
   return num
 }
 
-function formatScore (s: string): string {
+function formatScore(s: string): string {
   if (!s) return ''
   if (s[0] !== '/') s = '/' + s
   if (s[s.length - 1] !== '/') s += '/'

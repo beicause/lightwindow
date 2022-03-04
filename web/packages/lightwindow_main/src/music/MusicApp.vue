@@ -34,32 +34,32 @@ import AppBar from '@/common/AppBar.vue'
 export default Vue.extend({
   name: 'MusicApp',
   components: { MusicScore, MusicBoard, AppBar },
-  data () {
+  data() {
     return {
       Android,
       board: true,
       isStart: false
     }
   },
-  provide () {
+  provide() {
     return {
       audio, player
     }
   },
-  mounted () {
+  mounted() {
     loadPlayer()
     document.body.onclick = () => this.start()
   },
-  beforeDestroy () {
+  beforeDestroy() {
     player && player.value.stop()
     audio && audio.close()
   },
   methods: {
-    closeClick () {
+    closeClick() {
       if (Android) Android.close()
       else window.parent.postMessage('close', '*')
     },
-    start () {
+    start() {
       if (this.isStart) return
       player.value.play('0')
       this.isStart = true
@@ -68,7 +68,7 @@ export default Vue.extend({
   watch: {
     board: {
       immediate: true,
-      handler (val: boolean) {
+      handler(val: boolean) {
         if (val) disableScroll()
         else resumeScroll()
       }

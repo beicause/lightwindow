@@ -73,7 +73,7 @@ import { Android, EMAIL, GITHUB_URL, INDEX_URL } from '@/common/js/const'
 
 export default Vue.extend({
   name: 'About',
-  data () {
+  data() {
     return {
       Android,
       GITHUB_URL,
@@ -84,7 +84,7 @@ export default Vue.extend({
       isAppUpdate: false
     }
   },
-  mounted () {
+  mounted() {
     if (Android) {
       this.localAppVersion = Android.getAppVersion()
     }
@@ -94,24 +94,24 @@ export default Vue.extend({
     })
   },
   computed: {
-    appVersionName (): string {
+    appVersionName(): string {
       if (!Android) return '---'
       return this.versionCodeToName(this.localAppVersion) +
         (this.isAppUpdate ? '（发现新版本' + this.versionCodeToName(this.appVersion) + '）' : '')
     }
   },
   methods: {
-    versionCodeToName (code: string): string {
+    versionCodeToName(code: string): string {
       return 'Ｖ' + code.split('').join('.')
     },
-    copyOrNavigate (s: string, url?: string) {
+    copyOrNavigate(s: string, url?: string) {
       if (Android) {
         copy(s)
       } else {
         window.open(url || s)
       }
     },
-    update () {
+    update() {
       if (Android && this.isAppUpdate) {
         Android.showVersionUpdate()
       } else {

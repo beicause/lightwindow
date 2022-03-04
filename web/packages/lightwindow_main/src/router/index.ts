@@ -1,18 +1,13 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import { Android, INDEX_URL, POLICY_VERSION } from '@/common/js/const'
-import { sendPV } from '@/common/js/util'
 
 Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
   {
     path: '/',
-    component: () => import('@/index/IndexApp.vue'),
-    beforeEnter (to, from, next) {
-      sendPV({ to: '/' })
-      next()
-    }
+    component: () => import('@/index/IndexApp.vue')
   },
   {
     path: '/policy',
@@ -21,19 +16,9 @@ const routes: Array<RouteConfig> = [
   {
     path: '/main',
     component: () => import('@/main/MainApp.vue'),
-    beforeEnter (to, from, next) {
-      if (!Android) {
-        sendPV({
-          to: 'main',
-          isAndroid: 'false'
-        })
-        next()
-      } else if (Android.getPolicy() !== POLICY_VERSION) {
-        sendPV({ to: 'policy' })
+    beforeEnter(to, from, next) {
+      if (Android && Android.getPolicy() !== POLICY_VERSION) {
         next('/policy')
-      } else {
-        sendPV({ to: 'main' })
-        next()
       }
     },
     children: [
@@ -84,7 +69,7 @@ const router = new VueRouter({
   routes
 })
 
-function redirect (path: string) {
+function redirect(path: string) {
   window.location.href = INDEX_URL + path
 }
 export default router

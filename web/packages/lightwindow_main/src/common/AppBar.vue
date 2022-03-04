@@ -13,13 +13,13 @@ import Vue from 'vue'
 import { Android } from '@/common/js/const'
 
 export default Vue.extend({
-  data () {
+  data() {
     return {
       Android
     }
   },
   methods: {
-    closeClick () {
+    closeClick() {
       if (Android) Android.close()
       else window.parent.postMessage('close', '*')
     }

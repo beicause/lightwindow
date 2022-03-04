@@ -24,6 +24,12 @@ export default defineConfig({
   },
   build: {
     // for webview
-    cssTarget: 'chrome61'
+    cssTarget: 'chrome61',
+    rollupOptions: {
+      input: {
+        main: path.resolve('index.html'),
+        peg: path.resolve('peg/index.html')
+      }
+    }
   }
 })

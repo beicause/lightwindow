@@ -93,7 +93,7 @@ export default Vue.extend({
     MusicGuide
   },
   inject: ['player'],
-  data () {
+  data() {
     return {
       FIRST_SCORE,
       SECOND_SCORE,
@@ -120,19 +120,19 @@ export default Vue.extend({
     }
   },
   computed: {
-    activeSettingScore (): ScoreInfo {
+    activeSettingScore(): ScoreInfo {
       if (this.activeSettingPicker === 0) return this.firstScore
       if (this.activeSettingPicker === 1) return this.secondScore
       throw new Error()
     },
-    levelName (): Map<0 | 1 | -1, string> {
+    levelName(): Map<0 | 1 | -1, string> {
       const map = new Map<0 | 1 | -1, string>()
       map.set(1, '高音谱')
       map.set(0, '中音谱')
       map.set(-1, '低音谱')
       return map
     },
-    rules (): ((value: string) => boolean | string)[] {
+    rules(): ((value: string) => boolean | string)[] {
       return [
         // (value: string) => !(/uuuu/.test(value) && value[value.length - 1] !== '1') || 'uuuu后只能为1',
         // (value: string) => !(/[ud#]/.test(value) && !/\d/.test(value[value.length - 1])) || '变音记号后请接音符',
@@ -152,11 +152,11 @@ export default Vue.extend({
     }
   },
   methods: {
-    initMusic () {
+    initMusic() {
       this.onInput(this.firstScore)(this.firstScore.inputValue)
       this.onInput(this.secondScore)(this.secondScore.inputValue)
     },
-    onInput (score: ScoreInfo) {
+    onInput(score: ScoreInfo) {
       return (value: string) => {
         this.isPlaying = false
         this.player.value.stop()
@@ -183,7 +183,7 @@ export default Vue.extend({
       }
     },
 
-    onPlay () {
+    onPlay() {
       this.firstScore.inputValue = this.formatScore(this.firstScore.inputValue)
       this.secondScore.inputValue = this.formatScore(this.secondScore.inputValue)
       if (this.isPlaying) {
@@ -241,12 +241,12 @@ export default Vue.extend({
       }, step * 1000)
     },
 
-    sliderChange (value: number) {
+    sliderChange(value: number) {
       this.player.value.stop()
       this.isPlaying = false
       this.musicTime = value
     },
-    lastNoteInfo (s: string, level: 1 | 0 | -1): { note: string, duration: number } | null {
+    lastNoteInfo(s: string, level: 1 | 0 | -1): { note: string, duration: number } | null {
       const lastChar = s[s.length - 1]
       // 不是音符直接返回
       if (!['0', '1', '2', '3', '4', '5', '6', '7', '~'].includes(lastChar)) return null
@@ -286,7 +286,7 @@ export default Vue.extend({
         duration
       }
     },
-    onPasted (clipValue: string) {
+    onPasted(clipValue: string) {
       if (clipValue) {
         this.activeSettingScore.inputValue += clipValue
         showPop('剪切板粘贴成功', 'success')
@@ -294,7 +294,7 @@ export default Vue.extend({
         showPop('剪切板为空')
       }
     },
-    blur () {
+    blur() {
       for (const element of document.getElementsByTagName('textarea')) {
         element.blur()
       }
@@ -302,7 +302,7 @@ export default Vue.extend({
     sectionBeat,
     formatScore
   },
-  mounted () {
+  mounted() {
     const duration = Number.parseFloat(localStorage.getItem(this.BEAT_DURATION) || '0.50')
     const s1 = localStorage.getItem(this.FIRST_SCORE)
     const s2 = localStorage.getItem(this.SECOND_SCORE)
@@ -319,25 +319,25 @@ export default Vue.extend({
     }) as ScoreInfo
   },
   watch: {
-    beatDuration (val: number) {
+    beatDuration(val: number) {
       localStorage.setItem(this.BEAT_DURATION, '' + val)
     },
     firstScore: {
       deep: true,
-      handler (val: ScoreInfo) {
+      handler(val: ScoreInfo) {
         // console.log(val)
         localStorage.setItem(this.FIRST_SCORE, JSON.stringify(val))
       }
     },
     secondScore: {
       deep: true,
-      handler (val: ScoreInfo) {
+      handler(val: ScoreInfo) {
         // console.log(val)
         localStorage.setItem(this.SECOND_SCORE, JSON.stringify(val))
       }
     }
   },
-  beforeDestroy () {
+  beforeDestroy() {
     this.isPlaying = false
     this.player.value.stop()
   }

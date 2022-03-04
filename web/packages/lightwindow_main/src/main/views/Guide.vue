@@ -61,14 +61,14 @@ import MusicGuide from '@/music/components/MusicGuide.vue'
 export default Vue.extend({
   name: 'Guide',
   components: { MusicGuide },
-  data () {
+  data() {
     return {
       drawer: false,
       selectItem: 0
     }
   },
   methods: {
-    onItemClick (e: number | undefined) {
+    onItemClick(e: number | undefined) {
       if (e !== undefined) this.selectItem = e
       this.drawer = false
     }

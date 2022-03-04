@@ -22,7 +22,7 @@ export const conferences = [
   { type: '交叉/综合/新兴', conf: [conf('WWW'), conf('RTSS')] }
 ] as { type: string, conf: Conf[] }[]
 
-export async function getPaperByYear (urls:string[]): Promise<Paper[]> {
+export async function getPaperByYear(urls:string[]): Promise<Paper[]> {
   console.log(JSON.stringify(urls))
 
   const data = [] as Paper[]
@@ -44,7 +44,7 @@ export async function getPaperByYear (urls:string[]): Promise<Paper[]> {
   return data
 }
 
-export async function getConfYear (homeUrl: string): Promise<Year[]> {
+export async function getConfYear(homeUrl: string): Promise<Year[]> {
   const html = await fetch(homeUrl + '/index.html')
   const parser = new DOMParser()
   const headers = parser.parseFromString(html, 'text/html').getElementById('main')?.getElementsByTagName('header')

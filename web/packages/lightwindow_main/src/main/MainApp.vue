@@ -44,26 +44,26 @@ import { Android } from '@/common/js/const'
 
 export default Vue.extend({
   name: 'MainApp',
-  data () {
+  data() {
     return {
       zoom: true,
       Android
     }
   },
-  created () {
+  created() {
     window.showZoom = () => {
       this.zoom = true
     }
   },
   methods: {
-    closeClick () {
+    closeClick() {
       if (Android) {
         Android.close()
       } else {
         window.parent.postMessage('close', '*')
       }
     },
-    zoomClick () {
+    zoomClick() {
       if (Android) {
         this.zoom = false
         Android.showZoom()

@@ -34,7 +34,6 @@ class VersionService : Service() {
     }
 
     override fun onCreate() {
-        val viewManager = ViewManager(this)
         scope.launch {
             VersionUtil.checkVersion(this@VersionService).let { responseBody ->
                 val json = JSONObject(responseBody)
@@ -42,7 +41,7 @@ class VersionService : Service() {
                 val forceUpdate = json.getBoolean("force_update")
                 val message = json.getString("version_info")
 
-                viewManager.new<DialogView>(DialogView(this@VersionService)).apply {
+                ViewManager.new<DialogView>(DialogView(this@VersionService)).apply {
                     maskClick = {
                         if (forceUpdate) {
                             stopService(Intent().apply {

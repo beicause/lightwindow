@@ -10,6 +10,7 @@ const val calendarNoticeService = "com.qingcheng.calendar.service.CalendarNotice
 
 const val DOMAIN = "qingcheng.asia"
 const val INDEX_URL = "https://$DOMAIN"
+//const val INDEX_URL = "http://192.168.43.223:3000"
 const val CALENDAR_URL = "$INDEX_URL/calendar"
 const val MAIN_URL = "$INDEX_URL/main"
 

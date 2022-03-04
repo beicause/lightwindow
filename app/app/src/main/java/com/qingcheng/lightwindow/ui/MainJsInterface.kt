@@ -1,4 +1,4 @@
-package com.qingcheng.lightwindow
+package com.qingcheng.lightwindow.ui
 
 import android.app.ActivityManager
 import android.app.Service
@@ -9,22 +9,23 @@ import android.os.Build
 import android.util.Log
 import android.view.View
 import android.webkit.JavascriptInterface
+import android.webkit.WebView
 import com.qingcheng.base.*
 import com.qingcheng.base.service.VersionService
 import com.qingcheng.base.util.PreferencesUtil
 import com.qingcheng.base.util.ScreenUtil
 import com.qingcheng.base.util.ToastUtil
-import com.qingcheng.base.view.BaseFloatWindow
+import com.qingcheng.base.view.UIWebView
 import com.qingcheng.base.view.ViewManager
 import com.qingcheng.calendar.service.CalendarNoticeService
-import com.qingcheng.lightwindow.view.ZoomView
+import com.qingcheng.lightwindow.genshin.GenshinWebViewService
 import com.umeng.commonsdk.UMConfigure
 
 class MainJsInterface(
     private val context: Context,
-    private val floatWindow: BaseFloatWindow<*>,
-    private val viewManager: ViewManager,
-):BaseJsInterface(context, floatWindow.view.findViewById(R.id.webview)) {
+) : BaseJsInterface(context, ViewManager.get(UIWebView::class)!!.view.findViewById(R.id.webview)) {
+
+    private val uiWebView = ViewManager.get(UIWebView::class) as UIWebView
 
     @JavascriptInterface
     fun redirectToMain() {
@@ -42,8 +43,8 @@ class MainJsInterface(
 
     @JavascriptInterface
     fun close() {
-        floatWindow.view.post {
-            floatWindow.applyParams {
+        uiWebView.view.post {
+            uiWebView.applyParams {
                 if (ScreenUtil.isLandscape(context)) {
                     val t = width
                     width = height
@@ -53,7 +54,7 @@ class MainJsInterface(
                 PreferencesUtil.putString(context, MAIN_HEIGHT, height.toString())
 
             }
-            floatWindow.zoomOut {
+            uiWebView.zoomOut {
                 context.stopService(Intent(context, UIWebViewService::class.java))
             }
         }
@@ -61,11 +62,9 @@ class MainJsInterface(
 
     @JavascriptInterface
     fun showZoom() {
-        floatWindow.view.post {
-            viewManager.new<ZoomView>(ZoomView(context, viewManager)).apply {
+        uiWebView.view.post {
+            ViewManager.new<ZoomView>(ZoomView(context)).apply {
                 addToWindow()
-                view.visibility = View.VISIBLE
-                setPosition(0, 0)
                 view.post {
                     moveTo(
                         toX = (ScreenUtil.getWidth(context) - view.width) / 2,
@@ -88,11 +87,14 @@ class MainJsInterface(
     }
 
     @JavascriptInterface
-    fun isNoticeRunning(): Boolean {
+    fun isNoticeRunning(): Boolean = isServiceRunning(CalendarNoticeService::class.qualifiedName)
+
+
+    private fun isServiceRunning(className: String?): Boolean {
         val manager = context.getSystemService(Service.ACTIVITY_SERVICE) as ActivityManager
         val list = manager.getRunningServices(10)
         for (s in list) {
-            if (s.service.className == CalendarNoticeService::class.qualifiedName) return true
+            if (s.service.className == className) return true
         }
         return false
     }
@@ -130,4 +132,18 @@ class MainJsInterface(
             context.stopService(Intent(context, CalendarNoticeService::class.java))
         }
     }
+
+    @JavascriptInterface
+    fun showGenshin() {
+        context.startService(Intent(context, GenshinWebViewService::class.java))
+    }
+
+    @JavascriptInterface
+    fun closeGenshin() {
+        context.stopService(Intent(context, GenshinWebViewService::class.java))
+    }
+
+    @JavascriptInterface
+    fun isGenshinRunning() = isServiceRunning(GenshinWebViewService::class.qualifiedName)
+
 }

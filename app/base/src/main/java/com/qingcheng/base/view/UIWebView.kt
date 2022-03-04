@@ -19,8 +19,7 @@ import java.util.*
  * 主界面悬浮窗类
  * */
 @SuppressLint("SetJavaScriptEnabled", "ClickableViewAccessibility")
-class UIWebView(val context: Context, val service: Class<out Service>) :
-    BaseFloatWindow<View>(context, View.inflate(context, R.layout.webview, null)) {
+class UIWebView(context: Context) : BaseWebView(context) {
     private var lastTime = 0L
 
     init {
@@ -31,50 +30,7 @@ class UIWebView(val context: Context, val service: Class<out Service>) :
             height = h?.toInt() ?: 620.toIntDip()
         }
         applyView {
-            val assetLoader =
-                WebViewAssetLoader.Builder().setHttpAllowed(true).setDomain(DOMAIN).addPathHandler(
-                    "/",
-                    WebViewAssetLoader.AssetsPathHandler(context)
-                ).build()
             findViewById<WebView>(R.id.webview).apply {
-                settings.javaScriptEnabled = true
-                settings.domStorageEnabled = true
-                webViewClient = object : WebViewClient() {
-                    override fun shouldInterceptRequest(
-                        view: WebView?,
-                        request: WebResourceRequest?
-                    ): WebResourceResponse? {
-                        return request?.let {
-                            when {
-                                (it.url.lastPathSegment == "version.json") -> null
-                                (it.url.host == DOMAIN) ->
-                                    assetLoader.shouldInterceptRequest(
-                                        when {
-                                            it.url.lastPathSegment?.contains(".")==true -> it.url
-                                            it.url.toString().contains("/calendar//") -> Uri.parse(
-                                                "$CALENDAR_URL/index.html"
-                                            )
-                                            else -> Uri.parse("$INDEX_URL/index.html")
-                                        }
-
-                                    )
-
-                                else -> null
-                            }
-                        } ?: super.shouldInterceptRequest(view, request)
-                    }
-                }
-                webChromeClient = object : WebChromeClient() {
-                    override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
-                        consoleMessage?.apply {
-                            Log.i(
-                                this@UIWebView::class.qualifiedName,
-                                "${message()} -- From line ${lineNumber()} of ${sourceId()}"
-                            )
-                        }
-                        return super.onConsoleMessage(consoleMessage)
-                    }
-                }
                 isFocusableInTouchMode = true
                 requestFocusFromTouch()
                 setOnFocusChangeListener { v, _ ->
@@ -99,10 +55,6 @@ class UIWebView(val context: Context, val service: Class<out Service>) :
                 }
             }
         }
-    }
-
-    fun loadUrl(url: String) {
-        view.findViewById<WebView>(R.id.webview).loadUrl(url)
     }
 
     private val stop = {

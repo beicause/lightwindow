@@ -1,23 +1,23 @@
 package com.qingcheng.base.view
 
-import android.content.Context
 import kotlin.reflect.KClass
 
 /**
  * 悬浮窗管理类
  * */
-class ViewManager(val context: Context) {
+object ViewManager {
     val allView = mutableMapOf<String, Any>()
 
     /**
      * 创建悬浮窗实例，不会重复创建
      * @return 悬浮窗实例
      * */
-    inline fun <reified T> new(view: BaseFloatWindow<*>): T {
-        if (!allView.containsKey(T::class.simpleName)) {
-            allView[T::class.simpleName!!] = view
+    inline fun <reified T> new(view: BaseFloatWindow<*>,name:String?=null): T {
+        val n = name?:T::class.simpleName!!
+        if (!allView.containsKey(n)) {
+            allView[n] = view
         }
-        return allView[T::class.simpleName!!] as T
+        return allView[n] as T
     }
 
     /**
@@ -29,6 +29,9 @@ class ViewManager(val context: Context) {
         return  allView[clazz.simpleName] as BaseFloatWindow<*>?
     }
 
+    fun get(name:String): BaseFloatWindow<*>? {
+        return allView[name] as BaseFloatWindow<*>?
+    }
     /**
      * 删除悬浮窗实例
      * @param clazz 悬浮窗类
@@ -37,6 +40,13 @@ class ViewManager(val context: Context) {
         clazz.forEach {
             (allView[it.simpleName] as BaseFloatWindow<*>).removeFromWindow()
             allView.remove(it.simpleName)
+        }
+    }
+
+    fun destroy(vararg name: String){
+        name.forEach {
+            (allView[it] as BaseFloatWindow<*>).removeFromWindow()
+            allView.remove(it)
         }
     }
 

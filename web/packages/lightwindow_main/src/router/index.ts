@@ -19,7 +19,7 @@ const routes: Array<RouteConfig> = [
     beforeEnter(to, from, next) {
       if (Android && Android.getPolicy() !== POLICY_VERSION) {
         next('/policy')
-      }
+      } else next()
     },
     children: [
       {

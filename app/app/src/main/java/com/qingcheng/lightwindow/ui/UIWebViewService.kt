@@ -1,9 +1,10 @@
-package com.qingcheng.lightwindow
+package com.qingcheng.lightwindow.ui
 
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import android.view.View
 import android.webkit.WebView
 import androidx.room.Room
 import com.qingcheng.base.*
@@ -21,19 +22,15 @@ import kotlinx.coroutines.launch
 class UIWebViewService : Service() {
 
     private val scope = MainScope()
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
-
-    private var dataBase: EventDataBase? = null
-    private var viewManager: ViewManager? = null
+    private lateinit var dataBase: EventDataBase
     private lateinit var floatView: UIWebView
+    override fun onBind(intent: Intent?): IBinder? = null
+
     override fun onCreate() {
         ToastUtil.context = this
         ToastUtil.offsetBottom()
-        viewManager = ViewManager(this)
         floatView =
-            viewManager!!.new<UIWebView>(UIWebView(this, this::class.java)).apply {
+            ViewManager.new<UIWebView>(UIWebView(this)).apply {
                 applyParams {
                     if (ScreenUtil.isLandscape(this@UIWebViewService)) {
                         val t = width
@@ -64,7 +61,7 @@ class UIWebViewService : Service() {
                     it.view.findViewById<WebView>(R.id.webview).apply {
                         removeJavascriptInterface(JS_INTERFACE_NAME)
                         addJavascriptInterface(
-                            CalendarJsInterface(context, it, dataBase!!),
+                            CalendarJsInterface(context, it, dataBase),
                             JS_INTERFACE_NAME
                         )
                         it.loadUrl(CALENDAR_URL)
@@ -74,14 +71,15 @@ class UIWebViewService : Service() {
             }
             ACTION_START_MAIN -> {
                 MobclickAgent.onEvent(this, "ACTION_START_MAIN")
+                val url = MAIN_URL
                 floatView.let {
                     it.view.findViewById<WebView>(R.id.webview).apply {
                         removeJavascriptInterface(JS_INTERFACE_NAME)
                         addJavascriptInterface(
-                            MainJsInterface(context, it, viewManager!!),
+                            MainJsInterface(context),
                             JS_INTERFACE_NAME
                         )
-                        it.loadUrl(/*"http://192.168.43.223:3000/main"*/MAIN_URL)
+                        it.loadUrl(url)
                     }
                     it.zoomIn()
                 }
@@ -93,9 +91,8 @@ class UIWebViewService : Service() {
     override fun onDestroy() {
         scope.cancel()
         MobclickAgent.onEvent(this, "WEBVIEW_SERVICE_END")
-        dataBase?.close()
-        viewManager?.destroyAll()
-        viewManager = null
+        dataBase.close()
+        ViewManager.destroy(UIWebView::class)
         Log.i(this::class.simpleName, "webview 服务 关闭")
     }
 }

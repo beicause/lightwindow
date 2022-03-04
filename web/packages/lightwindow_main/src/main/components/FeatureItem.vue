@@ -1,22 +1,25 @@
 <script setup lang="ts">
 import { ref } from '@vue/composition-api'
-import { defineProps, withDefaults } from '@vue/runtime-dom'
 import { VBtn } from 'vuetify/lib'
-import { defaultProps } from '../feature'
 
-interface P {
-  showRun?: boolean, isRunning?: boolean, name: string, prependIcon: string
-}
+// eslint-disable-next-line no-undef
+withDefaults(defineProps<{
+  showRun?: boolean, isRunning?: boolean, name?: string, prependIcon?: any, showNav?: boolean
+}>(), {
+  isRunning: false, name: '', showRun: false, prependIcon: '', showNav: true
+})
 
-withDefaults(defineProps<P>(), defaultProps)
+const navBtn = ref<null | typeof VBtn>(null)
 
-const navBtn = ref<null|typeof VBtn>(null)
 </script>
 
 <template>
   <div>
-    <v-row no-gutters align="center" @click="e=>navBtn.click(e)">
-      <v-icon dense class="pr-1" color="blue">{{ prependIcon }}</v-icon>
+    <v-row no-gutters align="center" @click="e => navBtn.click(e)">
+      <div class="pr-1 w-5 h-5 blue--text">
+        <v-icon dense color="blue" v-if="typeof prependIcon === 'string'">{{ prependIcon }}</v-icon>
+        <component v-else :is="prependIcon"></component>
+      </div>
       <div class="blue--text">{{ name }}</div>
       <v-spacer></v-spacer>
       <v-btn
@@ -32,7 +35,7 @@ const navBtn = ref<null|typeof VBtn>(null)
           }}
         </v-icon>
       </v-btn>
-      <v-btn color="blue" icon ref="navBtn" @click.stop="$emit('nav-click')">
+      <v-btn v-if="showNav" color="blue" icon ref="navBtn" @click.stop="$emit('nav-click')">
         <v-icon>fal fa-location-arrow</v-icon>
       </v-btn>
     </v-row>

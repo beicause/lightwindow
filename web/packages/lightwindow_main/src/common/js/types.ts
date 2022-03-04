@@ -17,6 +17,9 @@ export interface Android {
   onNetFailure(msg: string): void
   onNetResponse(body: string): void
   writeClipboard(s: string): void
+  showGenshin(): void
+  closeGenshin(): void
+  isGenshinRunning(): boolean
 }
 // export interface AppVersionInfo {
 //   /* eslint-disable camelcase */

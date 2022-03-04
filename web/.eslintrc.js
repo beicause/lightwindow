@@ -22,6 +22,7 @@ module.exports = {
     '@typescript-eslint/no-non-null-assertion': 'off',
     'no-unused-expressions': 'off',
     '@typescript-eslint/no-empty-function':'off',
+    '@typescript-eslint/ban-ts-comment': 'off',
     "space-before-function-paren": ["error", "never"]
   },
 

@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { features, Features, isNoticeRunning } from '../feature'
+import { features, Features, isGenshinRunning, isNoticeRunning, NOTICE_SERVICE_FIRST, GENSHIN_SERVICE_FIRST } from '../feature'
 import FeatureItem from '../components/FeatureItem.vue'
 import { Android } from '@/common/js/const'
 import { ref } from '@vue/composition-api'
 
 const refFeatures = ref(features)
 
-if (!localStorage.getItem('notice_server')) {
-  refFeatures.value[0].runClick?.call(undefined)
-}
+if (localStorage.getItem(NOTICE_SERVICE_FIRST) !== '') refFeatures.value[0].runClick?.call(undefined)
+if (localStorage.getItem(GENSHIN_SERVICE_FIRST) !== '') refFeatures.value[3].runClick?.call(undefined)
 
 isNoticeRunning.value = !!Android?.isNoticeRunning()
+isGenshinRunning.value = !!Android?.isGenshinRunning()
 </script>
 
 <template>
@@ -24,6 +24,7 @@ isNoticeRunning.value = !!Android?.isNoticeRunning()
       @run-click="item.runClick ? item.runClick() : undefined"
       :isRunning="item.isRunning ? item.isRunning.value : undefined"
       :prependIcon="item.prependIcon"
+      :showNav="item.showNav"
     ></FeatureItem>
     <!-- 上面我手动对isRunning 解包ref,否则出错 -->
   </v-container>

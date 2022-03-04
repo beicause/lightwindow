@@ -1,4 +1,4 @@
-package com.qingcheng.lightwindow.view
+package com.qingcheng.lightwindow.ui
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
@@ -8,9 +8,7 @@ import android.webkit.WebView
 import android.widget.ImageView
 import com.qingcheng.base.util.ScreenUtil
 import com.qingcheng.base.util.ToastUtil
-import com.qingcheng.base.view.BaseDragView
-import com.qingcheng.base.view.UIWebView
-import com.qingcheng.base.view.ViewManager
+import com.qingcheng.base.view.*
 import com.qingcheng.lightwindow.R
 
 
@@ -18,9 +16,14 @@ import com.qingcheng.lightwindow.R
  * 点击缩放后打开的悬浮窗，具有调整日程表大小的功能
  * */
 @SuppressLint("ClickableViewAccessibility")
-class ZoomView(context: Context, viewManager: ViewManager) :
-    BaseDragView<View>(context, View.inflate(context, R.layout.zoom, null)) {
+class ZoomView(context: Context) :
+    BaseFloatWindow<View>(context, View.inflate(context, R.layout.zoom, null)), DragCallback {
+
+    override var onActionUp = {}
+    override var onActionMove = {}
+
     init {
+        DragAbility.enable(this,this)
         var animator: ValueAnimator
         applyParams {
             width = 100f.toDip().toInt()
@@ -31,7 +34,7 @@ class ZoomView(context: Context, viewManager: ViewManager) :
             findViewById<ImageView>(R.id.iv_zoom_drag).setOnTouchListener { _, _ ->
                 ToastUtil.showToast("长按2秒可恢复默认大小")
                 val runnable = Runnable {
-                    viewManager.get(UIWebView::class)!!.apply {
+                    ViewManager.get(UIWebView::class)!!.apply {
                         applyParams {
                             width = 350f.toIntDip()
                             height = (350 / 0.618f).toIntDip()
@@ -47,7 +50,7 @@ class ZoomView(context: Context, viewManager: ViewManager) :
                 handler.postDelayed(runnable, 2000)
                 onActionUp = {
                     handler.removeCallbacks(runnable)
-                    viewManager.get(UIWebView::class)!!.view.findViewById<WebView>(R.id.webview)
+                    ViewManager.get(UIWebView::class)!!.view.findViewById<WebView>(R.id.webview)
                         .evaluateJavascript(
                             "javascript:showZoom()", null
                         )
@@ -62,7 +65,7 @@ class ZoomView(context: Context, viewManager: ViewManager) :
             }
             //水平放大
             findViewById<ImageView>(R.id.iv_up_h).setOnTouchListener { _, _ ->
-                viewManager.get(UIWebView::class)!!.apply {
+                ViewManager.get(UIWebView::class)!!.apply {
                     animator =
                         ValueAnimator.ofInt(view.height, ScreenUtil.getHeight(context))
                             .apply {
@@ -80,7 +83,7 @@ class ZoomView(context: Context, viewManager: ViewManager) :
             }
             //水平缩小
             findViewById<ImageView>(R.id.iv_down_h).setOnTouchListener { _, _ ->
-                viewManager.get(UIWebView::class)!!.apply {
+                ViewManager.get(UIWebView::class)!!.apply {
                     animator = ValueAnimator.ofInt(view.height, 200f.toDip().toInt()).apply {
                         addUpdateListener {
                             applyParams { height = it.animatedValue as Int }
@@ -96,7 +99,7 @@ class ZoomView(context: Context, viewManager: ViewManager) :
             }
             //垂直放大
             findViewById<ImageView>(R.id.iv_up_v).setOnTouchListener { _, _ ->
-                viewManager.get(UIWebView::class)!!.apply {
+                ViewManager.get(UIWebView::class)!!.apply {
                     animator =
                         ValueAnimator.ofInt(view.width, ScreenUtil.getWidth(context)).apply {
                             addUpdateListener {
@@ -113,7 +116,7 @@ class ZoomView(context: Context, viewManager: ViewManager) :
             }
             //垂直缩小
             findViewById<ImageView>(R.id.iv_down_v).setOnTouchListener { _, _ ->
-                viewManager.get(UIWebView::class)!!.apply {
+                ViewManager.get(UIWebView::class)!!.apply {
                     animator = ValueAnimator.ofInt(view.width, 200f.toDip().toInt()).apply {
                         addUpdateListener {
                             applyParams { width = it.animatedValue as Int }

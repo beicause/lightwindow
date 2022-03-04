@@ -34,7 +34,7 @@ object AlarmManagerUtil {
                     context,
                     (triggerTime/1000).toInt(),
                     intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
+                    PendingIntent.FLAG_IMMUTABLE
                 )
             })
         Log.i(
@@ -53,7 +53,7 @@ object AlarmManagerUtil {
             action = NOTICE_ACTION
         }.let { i ->
             PendingIntent.getService(
-                context, (triggerTime / 1000).toInt(), i, PendingIntent.FLAG_NO_CREATE
+                context, (triggerTime / 1000).toInt(), i, PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
             )
         } ?: return//这里空判断一下，若取消的闹钟不存在，会导致空指针
         val manager = context.getSystemService(Service.ALARM_SERVICE) as AlarmManager
@@ -82,7 +82,7 @@ object AlarmManagerUtil {
                     context,
                     0,
                     intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
+                    PendingIntent.FLAG_IMMUTABLE
                 )
             })
         Log.i(
@@ -109,7 +109,7 @@ object AlarmManagerUtil {
         val t = time.split(":")
         context.startActivity(Intent(AlarmClock.ACTION_SET_ALARM).apply {
             Log.i("设置系统闹钟", "$message $time $days")
-            putExtra(AlarmClock.EXTRA_MESSAGE, "$message(set by qingcheng)")
+            putExtra(AlarmClock.EXTRA_MESSAGE, "$message(窗隙流光设置)")
             putExtra(AlarmClock.EXTRA_HOUR, t[0].toInt())
             putExtra(AlarmClock.EXTRA_MINUTES, t[1].substring(0, 2).toInt())
             if (days.size != 0) putExtra(AlarmClock.EXTRA_DAYS, days)

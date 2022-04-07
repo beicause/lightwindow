@@ -17,7 +17,6 @@ import com.qingcheng.calendar.service.AlarmManagerUtil
 import com.qingcheng.calendar.service.CalendarNoticeService
 import com.qingcheng.calendar.util.csust.CsustRequest
 import com.qingcheng.calendar.util.gnnu.GnnuRequest
-import com.umeng.commonsdk.UMConfigure
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
 import org.json.JSONArray
@@ -182,9 +181,6 @@ class CalendarJsInterface(
     @JavascriptInterface
     fun setPolicy(value: String) {
         PreferencesUtil.putString(context, POLICY, value)
-        if (value != "null")
-            if (!UMConfigure.isInit)
-                UMConfigure.init(context, appKey, channel, UMConfigure.DEVICE_TYPE_PHONE, "")
     }
 
     @JavascriptInterface

@@ -7,9 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
-import android.view.View
 import android.webkit.JavascriptInterface
-import android.webkit.WebView
 import com.qingcheng.base.*
 import com.qingcheng.base.service.VersionService
 import com.qingcheng.base.util.PreferencesUtil
@@ -19,7 +17,6 @@ import com.qingcheng.base.view.UIWebView
 import com.qingcheng.base.view.ViewManager
 import com.qingcheng.calendar.service.CalendarNoticeService
 import com.qingcheng.lightwindow.genshin.GenshinWebViewService
-import com.umeng.commonsdk.UMConfigure
 
 class MainJsInterface(
     private val context: Context,
@@ -89,16 +86,6 @@ class MainJsInterface(
     @JavascriptInterface
     fun isNoticeRunning(): Boolean = isServiceRunning(CalendarNoticeService::class.qualifiedName)
 
-
-    private fun isServiceRunning(className: String?): Boolean {
-        val manager = context.getSystemService(Service.ACTIVITY_SERVICE) as ActivityManager
-        val list = manager.getRunningServices(10)
-        for (s in list) {
-            if (s.service.className == className) return true
-        }
-        return false
-    }
-
     @JavascriptInterface
     fun getClipboardText(): String {
         val manager = context.getSystemService(Service.CLIPBOARD_SERVICE) as ClipboardManager
@@ -125,8 +112,8 @@ class MainJsInterface(
     fun setPolicy(value: String) {
         PreferencesUtil.putString(context, POLICY, value)
         if (value != "null") {
-            if (!UMConfigure.isInit)
-                UMConfigure.init(context, appKey, channel, UMConfigure.DEVICE_TYPE_PHONE, "")
+//            if (!UMConfigure.isInit)
+//                UMConfigure.init(context, appKey, channel, UMConfigure.DEVICE_TYPE_PHONE, "")
         } else {
             close()
             context.stopService(Intent(context, CalendarNoticeService::class.java))
@@ -146,4 +133,29 @@ class MainJsInterface(
     @JavascriptInterface
     fun isGenshinRunning() = isServiceRunning(GenshinWebViewService::class.qualifiedName)
 
+    @JavascriptInterface
+    fun showSnow() {
+        context.startService(Intent(context, UIService::class.java).apply {
+            action = UIService.ACTION_SHOW_SNOW
+        })
+    }
+
+    @JavascriptInterface
+    fun isSnowRunning() = PreferencesUtil.getString(context,UIService.IS_SNOW_RUNNING)=="1"
+
+    @JavascriptInterface
+    fun closeSnow() {
+        context.startService(Intent(context, UIService::class.java).apply {
+            action = UIService.ACTION_CLOSE_SNOW
+        })
+    }
+
+    private fun isServiceRunning(className: String?): Boolean {
+        val manager = context.getSystemService(Service.ACTIVITY_SERVICE) as ActivityManager
+        val list = manager.getRunningServices(10)
+        for (s in list) {
+            if (s.service.className == className) return true
+        }
+        return false
+    }
 }

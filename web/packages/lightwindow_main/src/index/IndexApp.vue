@@ -83,7 +83,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import '@/common/css/font.css'
 import { GITHUB_URL, INDEX_URL } from '@/common/js/const'
 import { disableScroll, getVersion, resumeScroll } from '@/common/js/util'
 
@@ -150,6 +149,7 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+@import '../../public/css/font.css';
 .iframe-hide {
   width: 0 !important;
   height: 0 !important;

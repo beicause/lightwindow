@@ -20,6 +20,9 @@ export interface Android {
   showGenshin(): void
   closeGenshin(): void
   isGenshinRunning(): boolean
+  showSnow():void
+  isSnowRunning():boolean
+  closeSnow():void
 }
 // export interface AppVersionInfo {
 //   /* eslint-disable camelcase */

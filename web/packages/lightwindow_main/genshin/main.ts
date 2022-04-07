@@ -12,21 +12,19 @@ async function createScene() {
   scene.createDefaultLight(true)
   const camera = scene.cameras[0] as ArcRotateCamera
   const light = scene.lights[0] as HemisphericLight
-  // disable moving
-  // camera.panningSensibility = 0
-  // disable zooming
-  // camera.lowerRadiusLimit = 1
-  // camera.upperRadiusLimit = 1
-
+  light.intensity = 2
   scene.clearColor.set(0, 0, 0, 0)
-  camera.setPosition(new Vector3(0, 0.4, 1))
-  camera.setTarget(new Vector3(0, 0.4, 0))
+  const y = 0.35
+  camera.setPosition(new Vector3(0, y, 1.2))
+  camera.setTarget(new Vector3(0, y, 0))
   await SceneLoader.AppendAsync('/model/', 'paimeng.glb', scene)
   scene.freezeMaterials()
   return scene
 }
 
 createScene().then(scene => {
+  console.log(scene)
+
   engine.runRenderLoop(() => scene.render())
 })
 

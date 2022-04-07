@@ -4,18 +4,13 @@
     package="com.qingcheng.lightwindow">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
 
     <application
-        android:name=".App"
+        android:allowBackup="true"
         android:icon="@drawable/ic_logo"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/ic_logo"
-        android:allowBackup="true"
         android:usesCleartextTraffic="true"
         tools:replace="allowBackup">
         <activity
@@ -47,5 +42,9 @@
             android:enabled="true"
             android:exported="false"
             android:process=":webview_window" />
+        <service
+            android:name=".ui.UIService"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 </manifest>

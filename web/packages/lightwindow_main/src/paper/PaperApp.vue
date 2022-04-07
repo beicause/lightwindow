@@ -12,19 +12,19 @@ const disableConf = ref(false)
 let reqYear = ''
 
 function confNameClick(conf: Conf) {
+  const cache = localStorage.getItem(conf.homeUrl)
   history.pushState(null, '')
   years.value = []
-  showPop('正在加载', 'info', 30000)
+  if (!cache)showPop('正在加载', 'info', 30000)
   disableConf.value = true
   new Promise<Year[]>((resolve, reject) => {
-    const cache = localStorage.getItem(conf.homeUrl)
     if (cache) resolve(JSON.parse(cache))
     else getConfYear(conf.homeUrl).then(y => resolve(y))
   }).then(_years => {
     years.value = _years
     showYearList.value = true
+    if (!cache) showPop('加载成功', 'success')
     localStorage.setItem(conf.homeUrl, JSON.stringify(_years))
-    showPop('加载成功', 'success')
     disableConf.value = false
   })
 }
@@ -32,16 +32,16 @@ function yearClick(year: Year) {
   if (reqYear === year.name) return
   reqYear = year.name
   papers.value = []
-  showPop('正在加载', 'info', 30000)
+  const cache = localStorage.getItem(JSON.stringify(year.urls))
+  if (!cache)showPop('正在加载', 'info', 30000)
   disableYear.value = true
   new Promise<Paper[]>((resolve, reject) => {
-    const cache = localStorage.getItem(JSON.stringify(year.urls))
     if (cache) resolve(JSON.parse(cache))
     else getPaperByYear(year.urls).then(p => resolve(p))
   }).then(_papers => {
     papers.value = _papers
+    if (!cache)showPop('加载成功', 'success')
     localStorage.setItem(JSON.stringify(year.urls), JSON.stringify(_papers))
-    showPop('加载成功', 'success')
     disableYear.value = false
   })
 }

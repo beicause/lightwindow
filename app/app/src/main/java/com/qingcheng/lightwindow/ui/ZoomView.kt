@@ -37,7 +37,7 @@ class ZoomView(context: Context) :
                     ViewManager.get(UIWebView::class)!!.apply {
                         applyParams {
                             width = 350f.toIntDip()
-                            height = (350 / 0.618f).toIntDip()
+                            height = 620f.toIntDip()
                             if (ScreenUtil.isLandscape(context)) {
                                 val t = width
                                 width = height

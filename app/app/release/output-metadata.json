@@ -11,9 +11,9 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 118,
-      "versionName": "V1.1.8",
-      "outputFile": "lightwindow-v1.1.8.apk"
+      "versionCode": 119,
+      "versionName": "V1.1.9",
+      "outputFile": "lightwindow-v1.1.9.apk"
     }
   ],
   "elementType": "File"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { features, Features, isGenshinRunning, isNoticeRunning, NOTICE_SERVICE_FIRST, GENSHIN_SERVICE_FIRST } from '../feature'
+import { features, Features, isGenshinRunning, isNoticeRunning, isSnowRunning, NOTICE_SERVICE_FIRST } from '../feature'
 import FeatureItem from '../components/FeatureItem.vue'
 import { Android } from '@/common/js/const'
 import { ref } from '@vue/composition-api'
@@ -7,10 +7,11 @@ import { ref } from '@vue/composition-api'
 const refFeatures = ref(features)
 
 if (localStorage.getItem(NOTICE_SERVICE_FIRST) !== '') refFeatures.value[0].runClick?.call(undefined)
-if (localStorage.getItem(GENSHIN_SERVICE_FIRST) !== '') refFeatures.value[3].runClick?.call(undefined)
+// if (localStorage.getItem(GENSHIN_SERVICE_FIRST) !== '') refFeatures.value[3].runClick?.call(undefined)
 
 isNoticeRunning.value = !!Android?.isNoticeRunning()
 isGenshinRunning.value = !!Android?.isGenshinRunning()
+isSnowRunning.value = !!Android?.isSnowRunning()
 </script>
 
 <template>

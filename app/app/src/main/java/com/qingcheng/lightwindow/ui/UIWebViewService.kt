@@ -4,7 +4,6 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
-import android.view.View
 import android.webkit.WebView
 import androidx.room.Room
 import com.qingcheng.base.*
@@ -14,7 +13,6 @@ import com.qingcheng.base.view.UIWebView
 import com.qingcheng.base.view.ViewManager
 import com.qingcheng.calendar.CalendarJsInterface
 import com.qingcheng.calendar.database.EventDataBase
-import com.umeng.analytics.MobclickAgent
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -56,7 +54,6 @@ class UIWebViewService : Service() {
         }
         when (intent.action) {
             ACTION_START_CALENDAR -> {
-                MobclickAgent.onEvent(this, "ACTION_START_CALENDAR")
                 floatView.let {
                     it.view.findViewById<WebView>(R.id.webview).apply {
                         removeJavascriptInterface(JS_INTERFACE_NAME)
@@ -64,13 +61,12 @@ class UIWebViewService : Service() {
                             CalendarJsInterface(context, it, dataBase),
                             JS_INTERFACE_NAME
                         )
-                        it.loadUrl(CALENDAR_URL)
+                        it.loadUrl("$CALENDAR_URL/")
                     }
                     it.rotateIn()
                 }
             }
             ACTION_START_MAIN -> {
-                MobclickAgent.onEvent(this, "ACTION_START_MAIN")
                 val url = MAIN_URL
                 floatView.let {
                     it.view.findViewById<WebView>(R.id.webview).apply {
@@ -90,7 +86,6 @@ class UIWebViewService : Service() {
 
     override fun onDestroy() {
         scope.cancel()
-        MobclickAgent.onEvent(this, "WEBVIEW_SERVICE_END")
         dataBase.close()
         ViewManager.destroy(UIWebView::class)
         Log.i(this::class.simpleName, "webview 服务 关闭")

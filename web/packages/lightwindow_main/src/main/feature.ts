@@ -18,8 +18,9 @@ export interface Features extends MayBeRef<FeatureProps> {
 
 export const isNoticeRunning = ref(false)
 export const isGenshinRunning = ref(false)
+export const isSnowRunning = ref(false)
 export const NOTICE_SERVICE_FIRST = 'notice_service_first'
-export const GENSHIN_SERVICE_FIRST = 'genshin_service_first'
+// export const GENSHIN_SERVICE_FIRST = 'genshin_service_first'
 
 export const features: Partial<Features>[] = [
   {
@@ -40,9 +41,9 @@ export const features: Partial<Features>[] = [
     }
   },
   { name: '音乐谱', prependIcon: 'fal fa-music', navClick: () => '/music' },
-  { name: '计算机顶会', prependIcon: 'mdi-text-box-search-outline', navClick: () => '/paper' },
+  { name: '计算机会议', prependIcon: 'mdi-text-box-search-outline', navClick: () => '/paper' },
   {
-    name: 'genshin',
+    name: '派蒙',
     showRun: true,
     showNav: false,
     prependIcon: Genshin,
@@ -52,7 +53,20 @@ export const features: Partial<Features>[] = [
       if (!Android) return
       if (isGenshinRunning.value) Android.showGenshin()
       else Android.closeGenshin()
-      localStorage.setItem(GENSHIN_SERVICE_FIRST, '')
+      // localStorage.setItem(GENSHIN_SERVICE_FIRST, '')
+    }
+  },
+  {
+    name: '雪花',
+    showRun: true,
+    showNav: false,
+    prependIcon: 'fal fa-snowflake',
+    isRunning: isSnowRunning,
+    runClick() {
+      isSnowRunning.value = !isSnowRunning.value
+      if (!Android) return
+      if (isSnowRunning.value) Android.showSnow()
+      else Android.closeSnow()
     }
   }
 ]

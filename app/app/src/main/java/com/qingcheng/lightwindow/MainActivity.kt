@@ -13,25 +13,15 @@ import com.qingcheng.base.util.PermissionRequestUtil
 import com.qingcheng.base.util.ToastUtil
 import com.qingcheng.calendar.service.CalendarNoticeService
 import com.qingcheng.lightwindow.ui.UIWebViewService
-import com.umeng.analytics.MobclickAgent
 
 
 class MainActivity : AppCompatActivity() {
     private val requestCode = 0
 
     private fun start() {
-        MobclickAgent.onResume(this)
-        if (!PermissionRequestUtil.isReadPhoneState(this)) {
-            MobclickAgent.onPause(this)
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.READ_PHONE_STATE),
-                requestCode
-            )
-        } else if (!PermissionRequestUtil.isOverlays(this)) {
+       if (!PermissionRequestUtil.isOverlays(this)) {
             stopService(Intent(this, UIWebViewService::class.java))
             stopService(Intent(this, CalendarNoticeService::class.java))
-            MobclickAgent.onPause(this)
             setTheme(R.style.Theme_LightWindow)
             requestOverlaysPermissionDialog(this)
         } else {
@@ -40,7 +30,6 @@ class MainActivity : AppCompatActivity() {
             startService(Intent(this, UIWebViewService::class.java).apply {
                 action = ACTION_START_MAIN
             })
-            MobclickAgent.onPause(this)
             finish()
         }
     }

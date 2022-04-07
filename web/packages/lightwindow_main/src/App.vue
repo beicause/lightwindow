@@ -13,7 +13,6 @@
 </template>
 
 <script setup lang="ts">
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { popState } from '@/common/js/util'
 </script>
 

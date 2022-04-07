@@ -5,7 +5,7 @@ import kotlinx.coroutines.*
 const val PACKAGE_NAME = "com.qingcheng.lightwindow"
 const val ACTION_START_CALENDAR = "$PACKAGE_NAME.ACTION_START_CALENDAR"
 const val ACTION_START_MAIN = "$PACKAGE_NAME.ACTION_START_MAIN"
-const val uiWebViewServiceName = "$PACKAGE_NAME.UIWebViewService"
+const val uiWebViewServiceName = "$PACKAGE_NAME.ui.UIWebViewService"
 const val calendarNoticeService = "com.qingcheng.calendar.service.CalendarNoticeService"
 
 const val DOMAIN = "qingcheng.asia"
